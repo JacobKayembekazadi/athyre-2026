@@ -37,9 +37,9 @@
     <div>
       <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">Sanctuary</h3>
       <ul class="space-y-4 text-xs tracking-widest uppercase">
-        <li class="hover:text-white transition-colors"><a href="/pages/vision">Our Vision</a></li>
-        <li class="hover:text-white transition-colors"><a href="/blogs/journal">The Journal</a></li>
-        <li class="hover:text-white transition-colors"><a href="/pages/stewardship">Stewardship</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ pages['vision'].url }}">Our Vision</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ blogs['journal'].url }}">The Journal</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ pages['stewardship'].url }}">Stewardship</a></li>
       </ul>
     </div>
 
@@ -47,10 +47,10 @@
     <div>
       <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">Support</h3>
       <ul class="space-y-4 text-xs tracking-widest uppercase">
-        <li class="hover:text-white transition-colors"><a href="/pages/shipping">Shipping Rituals</a></li>
-        <li class="hover:text-white transition-colors"><a href="/pages/returns">Returns & Exchanges</a></li>
-        <li class="hover:text-white transition-colors"><a href="/pages/size-guide">Size Guide</a></li>
-        <li class="hover:text-white transition-colors"><a href="/pages/contact">Contact Us</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ pages['shipping'].url }}">Shipping Rituals</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ pages['returns'].url }}">Returns & Exchanges</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ pages['size-guide'].url }}">Size Guide</a></li>
+        <li class="hover:text-white transition-colors"><a href="{{ pages['contact'].url }}">Contact Us</a></li>
       </ul>
     </div>
 
@@ -78,9 +78,9 @@
   <div class="max-w-7xl mx-auto mt-24 pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center text-[9px] uppercase tracking-widest opacity-60">
     <p>&copy; {{ 'now' | date: "%Y" }} Athyre Global. All rights reserved.</p>
     <div class="flex gap-8 mt-4 md:mt-0">
-      <a href="/policies/privacy-policy" class="hover:text-white transition-colors">Privacy Policy</a>
-      <a href="/policies/terms-of-service" class="hover:text-white transition-colors">Terms of Service</a>
-      <a href="/pages/accessibility" class="hover:text-white transition-colors">Accessibility</a>
+      <a href="{{ policies.privacy_policy.url }}" class="hover:text-white transition-colors">Privacy Policy</a>
+      <a href="{{ policies.terms_of_service.url }}" class="hover:text-white transition-colors">Terms of Service</a>
+      <a href="{{ pages['accessibility'].url }}" class="hover:text-white transition-colors">Accessibility</a>
     </div>
   </div>
 </footer>
