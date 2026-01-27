@@ -25,6 +25,46 @@
 
     {{ content_for_header }}
 
+    {% style %}
+      {% assign font_heading = settings.font_heading %}
+      {% assign font_body = settings.font_body %}
+
+      {{ font_heading | font_face: font_display: 'swap' }}
+      {{ font_body | font_face: font_display: 'swap' }}
+
+      :root {
+        --font-heading-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+        --font-body-family: {{ font_body.family }}, {{ font_body.fallback_families }};
+
+        --color-bg: {{ settings.color_bg }};
+        --color-text: {{ settings.color_text }};
+        --color-accent: {{ settings.color_accent }};
+        --color-border: {{ settings.color_border }};
+      }
+
+      /* Base Overrides */
+      body {
+        font-family: var(--font-body-family);
+        color: var(--color-text);
+        background-color: var(--color-bg);
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading-family);
+      }
+
+      /* Tailwind Identity Hijacking (Making static classes dynamic) */
+      .bg-white { background-color: var(--color-bg) !important; }
+      .bg-stone-900 { background-color: var(--color-accent) !important; }
+      .text-stone-900 { color: var(--color-text) !important; }
+      .text-white { color: var(--color-bg) !important; } /* Inverted context */
+      
+      .font-sans { font-family: var(--font-body-family) !important; }
+      .font-serif { font-family: var(--font-heading-family) !important; }
+
+      .border-stone-100, .border-stone-200 { border-color: var(--color-border) !important; }
+    {% endstyle %}
+
     <style>
       [x-cloak] { display: none !important; }
       .snap-x { scroll-snap-type: x mandatory; }
