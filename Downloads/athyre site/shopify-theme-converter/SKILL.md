@@ -35,6 +35,24 @@ Load relevant references before starting:
 | `references/content-extraction.md` | Pulling content from source |
 | `references/metafields-guide.md` | Working with metafields/metaobjects |
 | `references/app-integration.md` | App blocks, subscriptions, checkout |
+| `references/jsx-to-liquid-checklist.md` | Converting JSX patterns to Liquid |
+| `references/icon-mapping.md` | React icon imports → Liquid snippets |
+
+### Automation Scripts
+
+| Script | Use When |
+|--------|----------|
+| `scripts/sanitize_liquid.js` | Scan/fix JSX patterns in Liquid files |
+| `scripts/validate_schema.js` | Check sections have presets |
+| `scripts/generate_template.js` | Generate JSON templates with UUIDs |
+
+### Scaffold Resources
+
+| Resource | Contents |
+|----------|----------|
+| `scaffold/icons/` | 48+ Lucide-based icon snippets |
+| `scaffold/sections/` | Pre-built sections with presets |
+| `scaffold/config/` | Base settings schema |
 
 ### Component References
 
@@ -80,7 +98,97 @@ Load relevant references before starting:
 
 ---
 
+## Blind Spot Prevention
+
+These issues cause 40%+ of post-conversion debugging time. Prevent them proactively.
+
+### Issue 1: JSX Comments Render as Literal Text
+
+**Problem:** `{/* comment */}` renders visibly in Liquid output.
+
+**Solution:** Run sanitizer before deployment:
+```bash
+node scripts/sanitize_liquid.js ./theme/ --fix
+```
+
+Auto-fixes:
+- `{/* comment */}` → `{% comment %}...{% endcomment %}`
+- `className=` → `class=`
+- `htmlFor=` → `for=`
+
+### Issue 2: Missing Icon Assets Crash Theme
+
+**Problem:** `{% render 'icon-arrow-right' %}` fails if snippet doesn't exist.
+
+**Solution:** Copy scaffold icons during initialization:
+```bash
+cp -r scaffold/icons/* theme/snippets/
+```
+
+The `scaffold/icons/` folder contains 48+ Lucide-based icons covering:
+- Navigation (arrows, chevrons)
+- E-commerce (cart, heart, star)
+- Social (Instagram, Facebook, etc.)
+- UI (search, menu, user)
+
+See `references/icon-mapping.md` for React import → snippet mapping.
+
+### Issue 3: Sections Invisible in Theme Editor
+
+**Problem:** Sections without `presets` don't appear in "Add section" menu.
+
+**Solution:** Run validator on all sections:
+```bash
+node scripts/validate_schema.js ./theme/sections/
+```
+
+Checks for:
+- Missing `presets` (except main-*, header, footer)
+- Missing `name` property
+- Invalid block types
+- Duplicate setting IDs
+
+### Issue 4: JSON Template UUID Tedium
+
+**Problem:** Manual section ID creation is error-prone and tedious.
+
+**Solution:** Use template generator:
+```bash
+# Generate about page template
+node scripts/generate_template.js page.about --sections hero,rich-text,team
+
+# Write directly to theme
+node scripts/generate_template.js page.about --sections hero,rich-text --write
+```
+
+---
+
 ## Complete Conversion Workflow
+
+### Phase 0: Initialize Theme Structure
+
+**Before converting anything**, set up the foundation:
+
+```bash
+# 1. Create theme directory structure
+mkdir -p theme/{assets,config,layout,locales,sections,snippets,templates}
+
+# 2. Copy scaffold icons (prevents missing icon errors)
+cp -r scaffold/icons/* theme/snippets/
+
+# 3. Copy base sections with presets
+cp -r scaffold/sections/* theme/sections/
+
+# 4. Copy base config
+cp scaffold/config/settings_schema.json theme/config/
+```
+
+This ensures:
+- All common icons are available from the start
+- Base sections have proper `presets` for Theme Editor visibility
+- Settings schema has required theme structure
+
+---
 
 ### Phase 1: Analyze Source Project
 
@@ -454,7 +562,45 @@ All icons converted to inline SVG in snippets/icons.liquid
 
 ---
 
-### Phase 6: Generate Deployment Package
+### Phase 6: Sanitize & Validate
+
+**Critical step before packaging.** Run automated checks to catch common issues:
+
+```bash
+# 1. Scan and fix JSX patterns in Liquid files
+node scripts/sanitize_liquid.js ./theme/ --fix
+
+# 2. Validate all section schemas
+node scripts/validate_schema.js ./theme/sections/
+
+# 3. Check for missing icons (manual)
+grep -roh "render 'icon-[^']*'" ./theme/ | \
+  sed "s/render 'icon-\([^']*\)'/\1/" | \
+  sort -u | \
+  while read icon; do
+    if [ ! -f "./theme/snippets/icon-${icon}.liquid" ]; then
+      echo "MISSING: icon-${icon}.liquid"
+    fi
+  done
+
+# 4. Check for hardcoded links
+grep -rn 'href="/pages/' ./theme/sections/ ./theme/snippets/
+grep -rn 'href="/collections/' ./theme/sections/ ./theme/snippets/
+grep -rn 'href="/products/' ./theme/sections/ ./theme/snippets/
+```
+
+**Common fixes:**
+| Issue | Fix |
+|-------|-----|
+| JSX comment `{/* */}` | Auto-fixed by sanitizer |
+| `className=` | Auto-fixed by sanitizer |
+| Missing preset | Add `"presets": [{"name": "Section Name"}]` to schema |
+| Missing icon | Copy from `scaffold/icons/` or create new |
+| Hardcoded URL | Use `{{ pages.handle.url }}` or `{{ routes.* }}` |
+
+---
+
+### Phase 7: Generate Deployment Package
 
 **Final output structure:**
 
@@ -487,7 +633,7 @@ deployment-package/
 
 ---
 
-### Phase 7: Generate Setup Checklist
+### Phase 8: Generate Setup Checklist
 
 Create `SETUP-CHECKLIST.md` for client handoff:
 
@@ -663,15 +809,37 @@ These features from the demo require additional setup:
 
 When asked to convert a project, follow this sequence:
 
+0. **Initialize** → Copy scaffold icons, sections, config to theme/
 1. **Analyze** → Map all pages, components, navigation, assets
 2. **Convert** → Transform components to sections with extracted content
 3. **Template** → Create JSON templates with pre-placed sections
 4. **Navigate** → Document menu structure
 5. **Manifest** → List all assets to upload
-6. **Package** → Assemble deployment package
-7. **Document** → Generate setup checklist
+6. **Sanitize** → Run sanitizer + validator scripts
+7. **Package** → Assemble deployment package
+8. **Document** → Generate setup checklist
 
 **Output:** Complete deployment package, not just a theme folder.
+
+---
+
+## Pre-Deployment Checklist
+
+Run before every deployment:
+
+```bash
+# Automated checks
+node scripts/sanitize_liquid.js ./theme/           # Scan for issues
+node scripts/validate_schema.js ./theme/sections/   # Validate schemas
+
+# Manual verification
+- [ ] All sections appear in Theme Editor "Add section" menu
+- [ ] No visible `{/* */}` comments in rendered pages
+- [ ] All icons render (no broken images)
+- [ ] Mobile menu works
+- [ ] All links navigate correctly
+- [ ] Forms submit successfully
+```
 
 ---
 
