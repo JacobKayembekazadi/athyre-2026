@@ -19,7 +19,7 @@
 
 <div class="pt-32 min-h-screen flex flex-col">
   
-  {/* SECTION 1: SEARCH INPUT */}
+  {% comment %} SECTION 1: SEARCH INPUT {% endcomment %}
   <section class="px-8 max-w-5xl mx-auto w-full mb-20">
     <form action="{{ routes.search_url }}" method="get" role="search" class="relative border-b-2 border-stone-200 focus-within:border-stone-900 transition-colors">
       <button type="submit" class="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-6 text-stone-400">
@@ -37,7 +37,7 @@
   </section>
 
   {% if search.performed %}
-    {/* SECTION 4: RESULTS GRID */}
+    {% comment %} SECTION 4: RESULTS GRID {% endcomment %}
     <section class="px-8 max-w-7xl mx-auto w-full flex-grow">
       <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-12">
         Search Results ({{ search.results_count }})
@@ -70,7 +70,7 @@
     
   {% else %}
     
-    {/* SECTION 2: TRENDING */}
+    {% comment %} SECTION 2: TRENDING {% endcomment %}
     <section class="px-8 max-w-7xl mx-auto w-full mb-32">
       <div class="flex items-center gap-2 mb-8 text-stone-400">
         {% render 'icon-trending-up' %}
@@ -86,7 +86,7 @@
       </div>
     </section>
 
-    {/* SECTION 3: CATEGORIES */}
+    {% comment %} SECTION 3: CATEGORIES {% endcomment %}
     <section class="flex-grow bg-stone-50 py-24 border-t border-stone-100">
       <div class="px-8 max-w-7xl mx-auto w-full">
         <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-12">Browse by Category</span>

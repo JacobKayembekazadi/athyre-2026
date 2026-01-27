@@ -34,19 +34,19 @@
 >
   <div class="max-w-7xl mx-auto px-8 flex justify-between items-center">
     
-    {/* MENU TRIGGER (Mobile) */}
+    {% comment %} MENU TRIGGER (Mobile) {% endcomment %}
     <div class="sm:hidden" @click="mobileMenuOpen = true">
       {% render 'icon-menu', class: 'w-6 h-6 cursor-pointer text-stone-900' %}
     </div>
 
-    {/* LEFT NAV (Desktop) */}
+    {% comment %} LEFT NAV (Desktop) {% endcomment %}
     <nav class="hidden sm:flex items-center gap-8">
       {% for link in linklists[section.settings.menu].links limit: 3 %}
         <a href="{{ link.url }}" class="text-[10px] tracking-[0.2em] font-bold uppercase transition-opacity hover:opacity-60">{{ link.title }}</a>
       {% endfor %}
     </nav>
 
-    {/* LOGO (Center) */}
+    {% comment %} LOGO (Center) {% endcomment %}
     <a href="{{ routes.root_url }}" class="absolute left-1/2 -translate-x-1/2 text-center group">
       <h1 class="text-2xl font-black tracking-[0.2em] uppercase m-0 leading-none">
         {% if section.settings.logo %}
@@ -58,7 +58,7 @@
       <span class="text-[8px] tracking-[0.6em] uppercase opacity-60 mt-1 block group-hover:opacity-100 transition-opacity">Spirit • Soul • Body</span>
     </a>
 
-    {/* RIGHT NAV (Icons) */}
+    {% comment %} RIGHT NAV (Icons) {% endcomment %}
     <div class="flex items-center gap-6">
       <nav class="hidden sm:flex items-center gap-8 mr-8">
         {% for link in linklists[section.settings.menu].links offset: 3 %}
@@ -83,7 +83,7 @@
     </div>
   </div>
 
-  {/* MOBILE MENU OVERLAY */}
+  {% comment %} MOBILE MENU OVERLAY {% endcomment %}
   <div 
     x-show="mobileMenuOpen" 
     class="fixed inset-0 bg-white z-[60] flex flex-col justify-center items-center text-center animate-in slide-in-from-left duration-500"

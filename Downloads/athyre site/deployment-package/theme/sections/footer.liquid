@@ -20,7 +20,7 @@
 <footer class="bg-stone-900 text-stone-400 py-32 px-8 border-t border-stone-800">
   <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 md:gap-8">
     
-    {/* COL 1: BRAND */}
+    {% comment %} COL 1: BRAND {% endcomment %}
     <div class="md:col-span-1">
       <h2 class="text-2xl text-white font-black tracking-[0.2em] uppercase mb-6">Athyre</h2>
       <p class="text-xs leading-loose mb-8 max-w-xs">
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    {/* COL 2: MAIN LINKS (Sanctuary) */}
+    {% comment %} COL 2: MAIN LINKS (Sanctuary) {% endcomment %}
     <div>
       <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">Sanctuary</h3>
       <ul class="space-y-4 text-xs tracking-widest uppercase">
@@ -43,7 +43,7 @@
       </ul>
     </div>
 
-    {/* COL 3: SUPPORT LINKS */}
+    {% comment %} COL 3: SUPPORT LINKS {% endcomment %}
     <div>
       <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">Support</h3>
       <ul class="space-y-4 text-xs tracking-widest uppercase">
@@ -54,7 +54,7 @@
       </ul>
     </div>
 
-    {/* COL 4: NEWSLETTER */}
+    {% comment %} COL 4: NEWSLETTER {% endcomment %}
     <div class="md:col-span-1">
       <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">{{ section.settings.newsletter_heading }}</h3>
       {% form 'customer' %}
