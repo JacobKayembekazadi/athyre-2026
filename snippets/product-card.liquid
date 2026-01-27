@@ -1,0 +1,26 @@
+{% comment %}
+  Snippet: product-card.liquid
+  Usage: {% render 'product-card', product: product %}
+{% endcomment %}
+<a href="{{ product.url }}" class="group block">
+  <div class="aspect-[3/4] bg-stone-50 mb-4 overflow-hidden rounded-[2px] relative">
+    {% if product.featured_image %}
+      {{ product.featured_image | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-105', loading: 'lazy' }}
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover opacity-20' }}
+    {% endif %}
+    
+    {% unless product.available %}
+      <div class="absolute inset-0 bg-white/50 flex items-center justify-center">
+        <span class="text-[9px] uppercase tracking-widest font-black text-stone-900 border border-stone-900 px-3 py-1">Sold Out</span>
+      </div>
+    {% endunless %}
+  </div>
+  <h3 class="text-[10px] font-bold tracking-widest uppercase text-stone-900">{{ product.title }}</h3>
+  <div class="flex gap-2">
+    <p class="text-stone-400 text-[10px]">{{ product.price | money }}</p>
+    {% if product.compare_at_price > product.price %}
+      <p class="text-stone-300 text-[10px] line-through">{{ product.compare_at_price | money }}</p>
+    {% endif %}
+  </div>
+</a>

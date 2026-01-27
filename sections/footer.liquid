@@ -1,0 +1,86 @@
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter Heading",
+      "default": "Join The Inner Circle"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer"
+    }
+  ]
+}
+{% endschema %}
+
+<footer class="bg-stone-900 text-stone-400 py-32 px-8 border-t border-stone-800">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 md:gap-8">
+    
+    {/* COL 1: BRAND */}
+    <div class="md:col-span-1">
+      <h2 class="text-2xl text-white font-black tracking-[0.2em] uppercase mb-6">Athyre</h2>
+      <p class="text-xs leading-loose mb-8 max-w-xs">
+        Performance sanctuary wear designed to honor the body in motion and rest.
+      </p>
+      <div class="flex gap-4">
+        {% comment %} Social Icons {% endcomment %}
+        <a href="#" class="hover:text-white transition-colors">{% render 'icon-instagram', class: 'w-5 h-5' %}</a>
+        <a href="#" class="hover:text-white transition-colors">{% render 'icon-facebook', class: 'w-5 h-5' %}</a>
+      </div>
+    </div>
+
+    {/* COL 2: MAIN LINKS (Sanctuary) */}
+    <div>
+      <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">Sanctuary</h3>
+      <ul class="space-y-4 text-xs tracking-widest uppercase">
+        <li class="hover:text-white transition-colors"><a href="/pages/vision">Our Vision</a></li>
+        <li class="hover:text-white transition-colors"><a href="/blogs/journal">The Journal</a></li>
+        <li class="hover:text-white transition-colors"><a href="/pages/stewardship">Stewardship</a></li>
+      </ul>
+    </div>
+
+    {/* COL 3: SUPPORT LINKS */}
+    <div>
+      <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">Support</h3>
+      <ul class="space-y-4 text-xs tracking-widest uppercase">
+        <li class="hover:text-white transition-colors"><a href="/pages/shipping">Shipping Rituals</a></li>
+        <li class="hover:text-white transition-colors"><a href="/pages/returns">Returns & Exchanges</a></li>
+        <li class="hover:text-white transition-colors"><a href="/pages/size-guide">Size Guide</a></li>
+        <li class="hover:text-white transition-colors"><a href="/pages/contact">Contact Us</a></li>
+      </ul>
+    </div>
+
+    {/* COL 4: NEWSLETTER */}
+    <div class="md:col-span-1">
+      <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">{{ section.settings.newsletter_heading }}</h3>
+      {% form 'customer' %}
+        <div class="flex border-b border-stone-700 pb-2">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input 
+              type="email" 
+              name="contact[email]"
+              placeholder="EMAIL ADDRESS" 
+              class="bg-transparent border-none text-[10px] uppercase tracking-widest text-white placeholder:text-stone-600 focus:ring-0 w-full"
+            />
+            <button type="submit" class="text-white hover:opacity-70">
+                {% render 'icon-arrow-right', class: 'w-4 h-4' %}
+            </button>
+        </div>
+      {% endform %}
+    </div>
+
+  </div>
+
+  <div class="max-w-7xl mx-auto mt-24 pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center text-[9px] uppercase tracking-widest opacity-60">
+    <p>&copy; {{ 'now' | date: "%Y" }} Athyre Global. All rights reserved.</p>
+    <div class="flex gap-8 mt-4 md:mt-0">
+      <a href="/policies/privacy-policy" class="hover:text-white transition-colors">Privacy Policy</a>
+      <a href="/policies/terms-of-service" class="hover:text-white transition-colors">Terms of Service</a>
+      <a href="/pages/accessibility" class="hover:text-white transition-colors">Accessibility</a>
+    </div>
+  </div>
+</footer>

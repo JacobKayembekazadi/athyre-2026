@@ -1,0 +1,101 @@
+{% schema %}
+{
+  "name": "Gift Card Product",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Hero Heading",
+      "default": "The Gift of Stewardship"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_text",
+      "label": "Hero Text",
+      "default": "Invite your loved ones into the sanctuary. A digital offering that allows them to choose their own armor for the journey."
+    }
+  ]
+}
+{% endschema %}
+
+<div class="pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
+
+  {/* SECTION 1: HERO */}
+  <section class="grid md:grid-cols-2 gap-16 items-center mb-32">
+    <div class="aspect-[4/5] bg-stone-100 relative overflow-hidden">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 800 | image_tag: class: 'w-full h-full object-cover grayscale' }}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover grayscale opacity-50' }}
+      {% endif %}
+      <div class="absolute inset-0 flex items-center justify-center">
+        <span class="text-stone-900 border border-stone-900 px-8 py-4 text-[10px] uppercase tracking-[0.4em] font-bold bg-white/80 backdrop-blur-sm">Athyre</span>
+      </div>
+    </div>
+    <div>
+      <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-6">Digital Offering</span>
+      <h1 class="text-4xl md:text-5xl font-light tracking-tight uppercase mb-8">{{ section.settings.hero_heading }}</h1>
+      <p class="text-stone-500 text-sm leading-loose mb-12">
+        {{ section.settings.hero_text }}
+      </p>
+      <div class="flex gap-4 items-center">
+        {% render 'icon-gift', class: 'w-6 h-6 text-stone-300' %}
+        <span class="text-[10px] uppercase tracking-widest text-stone-400">Delivered via Email immediately</span>
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 2: SELECTION (Product Form) */}
+  <section class="mb-32 max-w-2xl mx-auto text-center">
+    <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-12">Choose Your Offering</h2>
+    
+    {% form 'product', product %}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        {% for variant in product.variants %}
+          <label class="cursor-pointer">
+            <input type="radio" name="id" value="{{ variant.id }}" class="peer sr-only" {% if forloop.first %}checked{% endif %}>
+            <div class="border border-stone-200 py-6 text-[11px] font-bold tracking-widest hover:border-stone-900 transition-colors peer-checked:bg-stone-900 peer-checked:text-white peer-checked:border-stone-900">
+              {{ variant.price | money_without_trailing_zeros }}
+            </div>
+          </label>
+        {% endfor %}
+      </div>
+      
+      <button type="submit" class="w-full bg-stone-900 text-white py-4 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-stone-800 transition-colors shadow-xl">
+        Add to Sanctuary
+      </button>
+    {% endform %}
+  </section>
+
+  {/* SECTION 3: REDEMPTION RITUAL */}
+  <section class="mb-32 bg-stone-50 p-16 md:p-24 rounded-[2px]">
+    <div class="grid md:grid-cols-3 gap-12 text-center">
+      <div>
+        <span class="text-4xl font-light text-stone-300 mb-6 block">01</span>
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Select</h3>
+        <p class="text-[11px] text-stone-500">Choose the value of your offering above.</p>
+      </div>
+      <div>
+        <span class="text-4xl font-light text-stone-300 mb-6 block">02</span>
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Receive</h3>
+        <p class="text-[11px] text-stone-500">The code arrives instantly via email.</p>
+      </div>
+      <div>
+        <span class="text-4xl font-light text-stone-300 mb-6 block">03</span>
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Redeem</h3>
+        <p class="text-[11px] text-stone-500">Enter code at checkout to apply offering.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* SECTION 4: BALANCE CHECK */}
+  <section class="text-center max-w-md mx-auto">
+    <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-8">Check Balance</h2>
+    <div class="relative">
+      <input type="text" placeholder="ENTER CODE" class="w-full border-b border-stone-200 py-4 text-center text-[10px] tracking-[0.2em] font-bold uppercase focus:outline-none focus:border-stone-900" />
+      <button class="absolute right-0 top-1/2 -translate-y-1/2 text-[9px] uppercase tracking-widest font-black text-stone-400 hover:text-stone-900">Check</button>
+    </div>
+  </section>
+</div>

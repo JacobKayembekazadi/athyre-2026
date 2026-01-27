@@ -1,0 +1,101 @@
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Main Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Sticky Header",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}
+
+<header 
+  class="fixed w-full z-50 transition-all duration-300 {% if section.settings.sticky %}border-b border-stone-100 bg-white/95 backdrop-blur-sm shadow-sm py-4{% else %}bg-transparent py-6{% endif %}"
+  x-data="{ mobileMenuOpen: false }"
+>
+  <div class="max-w-7xl mx-auto px-8 flex justify-between items-center">
+    
+    {/* MENU TRIGGER (Mobile) */}
+    <div class="sm:hidden" @click="mobileMenuOpen = true">
+      {% render 'icon-menu', class: 'w-6 h-6 cursor-pointer text-stone-900' %}
+    </div>
+
+    {/* LEFT NAV (Desktop) */}
+    <nav class="hidden sm:flex items-center gap-8">
+      {% for link in linklists[section.settings.menu].links limit: 3 %}
+        <a href="{{ link.url }}" class="text-[10px] tracking-[0.2em] font-bold uppercase transition-opacity hover:opacity-60">{{ link.title }}</a>
+      {% endfor %}
+    </nav>
+
+    {/* LOGO (Center) */}
+    <a href="{{ routes.root_url }}" class="absolute left-1/2 -translate-x-1/2 text-center group">
+      <h1 class="text-2xl font-black tracking-[0.2em] uppercase m-0 leading-none">
+        {% if section.settings.logo %}
+           {{ section.settings.logo | image_url: width: 200 | image_tag: class: 'h-8 w-auto' }}
+        {% else %}
+           Athyre
+        {% endif %}
+      </h1>
+      <span class="text-[8px] tracking-[0.6em] uppercase opacity-60 mt-1 block group-hover:opacity-100 transition-opacity">Spirit • Soul • Body</span>
+    </a>
+
+    {/* RIGHT NAV (Icons) */}
+    <div class="flex items-center gap-6">
+      <nav class="hidden sm:flex items-center gap-8 mr-8">
+        {% for link in linklists[section.settings.menu].links offset: 3 %}
+            <a href="{{ link.url }}" class="text-[10px] tracking-[0.2em] font-bold uppercase transition-opacity hover:opacity-60">{{ link.title }}</a>
+        {% endfor %}
+      </nav>
+
+      <a href="{{ routes.search_url }}">
+        {% render 'icon-search', class: 'w-4 h-4 cursor-pointer hidden sm:block' %}
+      </a>
+      
+      <a href="{{ routes.account_url }}">
+        {% render 'icon-user', class: 'w-4 h-4 cursor-pointer hidden sm:block' %}
+      </a>
+      
+      <a href="{{ routes.cart_url }}" class="relative">
+        {% render 'icon-shopping-bag', class: 'w-4 h-4 cursor-pointer' %}
+        {% if cart.item_count > 0 %}
+            <span class="absolute -top-2 -right-2 bg-stone-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center">{{ cart.item_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+  </div>
+
+  {/* MOBILE MENU OVERLAY */}
+  <div 
+    x-show="mobileMenuOpen" 
+    class="fixed inset-0 bg-white z-[60] flex flex-col justify-center items-center text-center animate-in slide-in-from-left duration-500"
+    style="display: none;"
+  >
+    <button @click="mobileMenuOpen = false" class="absolute top-8 right-8">
+        {% render 'icon-close', class: 'w-8 h-8' %}
+    </button>
+    <nav class="flex flex-col gap-8">
+        {% for link in linklists[section.settings.menu].links %}
+            <a href="{{ link.url }}" class="text-2xl font-light tracking-[0.2em] uppercase">{{ link.title }}</a>
+        {% endfor %}
+    </nav>
+  </div>
+</header>

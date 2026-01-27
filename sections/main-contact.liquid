@@ -1,0 +1,123 @@
+{% schema %}
+{
+  "name": "Contact Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Connect With Council"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Our team is here to support your journey."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "faq",
+      "name": "FAQ Item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Where is my order?"
+        },
+        {
+          "type": "textarea",
+          "id": "answer",
+          "label": "Answer",
+          "default": "Orders typically ship within 1-2 business days."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact Page",
+      "blocks": [
+        { "type": "faq", "settings": { "question": "Where is my order?", "answer": "Check your email for tracking info." } },
+        { "type": "faq", "settings": { "question": "Returns?", "answer": "30 days, unworn." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
+  
+  {/* SECTION 1: HERO */}
+  <section class="text-center mb-32">
+    <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-4">Support</span>
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight uppercase mb-8">{{ section.settings.heading }}</h1>
+    <p class="text-stone-500 text-sm leading-loose max-w-2xl mx-auto">
+      {{ section.settings.description }}
+    </p>
+  </section>
+
+  {/* SECTION 2: GRID */}
+  <section class="grid md:grid-cols-3 gap-8 mb-32">
+    <div class="bg-stone-50 p-12 text-center group hover:bg-stone-900 hover:text-white transition-all duration-500">
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Order Support</h3>
+        <p class="text-[11px] text-stone-500 mb-8 group-hover:text-stone-400">For help with current orders.</p>
+        <a href="mailto:support@athyre.com" class="text-[10px] font-bold border-b border-stone-200 pb-1 group-hover:border-stone-700">support@athyre.com</a>
+    </div>
+    <div class="bg-stone-50 p-12 text-center group hover:bg-stone-900 hover:text-white transition-all duration-500">
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Wholesale</h3>
+        <p class="text-[11px] text-stone-500 mb-8 group-hover:text-stone-400">Partner with us.</p>
+        <a href="mailto:partners@athyre.com" class="text-[10px] font-bold border-b border-stone-200 pb-1 group-hover:border-stone-700">partners@athyre.com</a>
+    </div>
+    <div class="bg-stone-50 p-12 text-center group hover:bg-stone-900 hover:text-white transition-all duration-500">
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Press</h3>
+        <p class="text-[11px] text-stone-500 mb-8 group-hover:text-stone-400">Share our story.</p>
+        <a href="mailto:press@athyre.com" class="text-[10px] font-bold border-b border-stone-200 pb-1 group-hover:border-stone-700">press@athyre.com</a>
+    </div>
+  </section>
+
+  {/* SECTION 3: FAQ & FORM */}
+  <section class="grid lg:grid-cols-2 gap-20 mb-32">
+    {/* FAQ */}
+    <div>
+        <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-12">Common Questions</h2>
+        <div class="space-y-4">
+            {% for block in section.blocks %}
+                <details class="border-b border-stone-100 group">
+                    <summary class="w-full py-6 flex justify-between items-center text-left hover:text-stone-600 transition-colors cursor-pointer list-none">
+                        <span class="text-[11px] uppercase tracking-[0.2em] font-bold pr-8">{{ block.settings.question }}</span>
+                        {% render 'icon-plus', class: 'w-4 h-4' %}
+                    </summary>
+                    <div class="text-stone-500 text-sm leading-relaxed pb-6 animate-in fade-in">
+                        {{ block.settings.answer }}
+                    </div>
+                </details>
+            {% endfor %}
+        </div>
+    </div>
+
+    {/* FORM */}
+    <div class="bg-white border border-stone-100 p-12 shadow-xl relative overflow-hidden">
+        <h2 class="text-2xl font-serif italic mb-8">Send a Message</h2>
+        {% form 'contact' %}
+            {% if form.posted_successfully? %}
+                <p class="text-green-500 text-sm mb-4">Message sent successfully.</p>
+            {% endif %}
+            <div class="grid grid-cols-2 gap-8 mb-8">
+                <input type="text" name="contact[first_name]" placeholder="NAME" class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 text-[10px] uppercase tracking-widest" required>
+                <input type="text" name="contact[order_number]" placeholder="ORDER # (OPTIONAL)" class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 text-[10px] uppercase tracking-widest">
+            </div>
+            <div class="mb-8">
+                <input type="email" name="contact[email]" placeholder="EMAIL" class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 text-[10px] uppercase tracking-widest" required>
+            </div>
+            <div class="mb-8">
+                <textarea name="contact[body]" rows="4" placeholder="MESSAGE" class="w-full border-b border-stone-200 py-2 focus:outline-none focus:border-stone-900 text-[10px] uppercase tracking-widest resize-none" required></textarea>
+            </div>
+            <button type="submit" class="w-full bg-stone-900 text-white py-4 text-[10px] tracking-[0.3em] font-black uppercase hover:bg-stone-800 transition-colors shadow-lg flex justify-between px-8">
+                <span>Send Message</span>
+            </button>
+        {% endform %}
+    </div>
+  </section>
+</div>

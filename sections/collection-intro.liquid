@@ -1,0 +1,45 @@
+{% schema %}
+{
+  "name": "Collection Intro",
+  "settings": [
+    {
+      "type": "text",
+      "id": "small_text",
+      "label": "Small Heading",
+      "default": "The Rise Collection"
+    },
+    {
+      "type": "textarea",
+      "id": "main_text",
+      "label": "Main Text",
+      "default": "Armor for the spirit. Designed to move with you through every season of the soul."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Intro"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="grid md:grid-cols-2 h-screen">
+  <div class="bg-stone-900 text-white flex flex-col justify-center p-24">
+    <span class="text-[10px] uppercase tracking-[0.4em] text-stone-500 font-bold block mb-8">{{ section.settings.small_text }}</span>
+    <h2 class="text-3xl md:text-5xl font-serif italic leading-relaxed text-stone-200">
+      "{{ section.settings.main_text }}"
+    </h2>
+  </div>
+  <div class="h-full relative overflow-hidden group">
+    {% if section.settings.image %}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000' }}
+    {% else %}
+        {{ 'image' | placeholder_svg_tag: 'w-full h-full object-cover grayscale opacity-50 bg-stone-200' }}
+    {% endif %}
+  </div>
+</section>

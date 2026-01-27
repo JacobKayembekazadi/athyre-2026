@@ -1,0 +1,14 @@
+{
+    "sections": {
+        "main": {
+            "type": "main-gift-card-product",
+            "settings": {
+                "hero_heading": "The Gift of Stewardship",
+                "hero_text": "Invite your loved ones into the sanctuary."
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

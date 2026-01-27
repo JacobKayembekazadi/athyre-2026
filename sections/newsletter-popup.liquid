@@ -1,0 +1,78 @@
+{% schema %}
+{
+  "name": "Newsletter Popup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join The Community"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Receive early access to drops and daily intentions."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter Popup"
+    }
+  ]
+}
+{% endschema %}
+
+<div 
+  x-data="{ open: false }" 
+  x-init="setTimeout(() => open = true, 5000)" 
+  x-show="open" 
+  class="fixed bottom-8 right-8 z-50 animate-in fade-in slide-in-from-bottom-8 duration-700 hidden md:block"
+  style="display: none;" 
+>
+  <div class="bg-stone-900 text-white p-8 max-w-sm shadow-2xl relative">
+    <button @click="open = false" class="absolute right-4 top-4 text-stone-500 hover:text-white">
+      {% render 'icon-close' %}
+    </button>
+    
+    <span class="text-[9px] uppercase tracking-widest text-stone-400 block mb-4">{{ section.settings.heading }}</span>
+    <h3 class="text-xl font-serif italic mb-6 text-stone-200">
+      "{{ section.settings.subheading }}"
+    </h3>
+    
+    {% form 'customer' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="flex border-b border-stone-700 pb-2">
+        <input 
+          type="email" 
+          name="contact[email]"
+          placeholder="EMAIL ADDRESS" 
+          class="bg-transparent border-none text-[10px] uppercase tracking-widest text-white placeholder:text-stone-600 focus:ring-0 w-full" 
+          required
+        />
+        <button type="submit" class="text-[9px] uppercase font-bold text-stone-400 hover:text-white">Join</button>
+      </div>
+      {% if form.posted_successfully? %}
+        <p class="text-[10px] text-green-400 mt-2">Welcome to the sanctuary.</p>
+      {% endif %}
+    {% endform %}
+  </div>
+</div>
+
+{% comment %}
+    Note: Requires Alpine.js or vanilla JS equivalent in theme.js to work.
+    For simplicity here, assuming Alpine or adding simple script.
+{% endcomment %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const popup = document.querySelector('[x-data]');
+        if(popup) {
+            setTimeout(() => {
+                popup.style.display = 'block';
+            }, 5000);
+            popup.querySelector('button').addEventListener('click', () => {
+                popup.style.display = 'none';
+            })
+        }
+    });
+</script>

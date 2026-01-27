@@ -1,0 +1,57 @@
+{
+    "sections": {
+        "hero": {
+            "type": "video-hero",
+            "settings": {
+                "heading": "Move With Purpose",
+                "subheading": "Athyre",
+                "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+                "button_text": "Enter Sanctuary",
+                "button_link": "shopify://collections/all"
+            }
+        },
+        "intro": {
+            "type": "collection-intro",
+            "settings": {
+                "small_text": "The Rise Collection",
+                "main_text": "Armor for the spirit. Designed to move with you through every season of the soul."
+            }
+        },
+        "featured_products": {
+            "type": "featured-collection",
+            "settings": {
+                "title": "New Arrivals",
+                "collection": "frontpage",
+                "products_to_show": 4
+            }
+        },
+        "intention": {
+            "type": "intention-setter",
+            "settings": {
+                "heading": "Set Your Intention"
+            }
+        },
+        "blog": {
+            "type": "blog-posts",
+            "settings": {
+                "heading": "The Journal",
+                "blog": "news"
+            }
+        },
+        "popup": {
+            "type": "newsletter-popup",
+            "settings": {
+                "heading": "Join The Community",
+                "subheading": "Receive early access to drops and daily intentions."
+            }
+        }
+    },
+    "order": [
+        "hero",
+        "intro",
+        "featured_products",
+        "intention",
+        "blog",
+        "popup"
+    ]
+}
