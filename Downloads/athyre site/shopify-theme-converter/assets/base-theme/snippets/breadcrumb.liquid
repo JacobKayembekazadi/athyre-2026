@@ -1,0 +1,184 @@
+{%- comment -%}
+  snippets/breadcrumb.liquid
+
+  Renders a breadcrumb navigation trail with structured data.
+
+  Accepts:
+  - product: {Product} Product object (optional, for product pages)
+  - collection: {Collection} Collection object (optional, for collection pages)
+  - article: {Article} Article object (optional, for article pages)
+  - blog: {Blog} Blog object (optional, for blog pages)
+  - page_title: {String} Current page title (optional, for custom pages)
+
+  Usage:
+    {% render 'breadcrumb' %}
+    {% render 'breadcrumb', product: product %}
+    {% render 'breadcrumb', collection: collection %}
+    {% render 'breadcrumb', article: article, blog: blog %}
+{%- endcomment -%}
+
+{%- liquid
+  assign show_breadcrumb = true
+
+  # Skip breadcrumb on homepage
+  if request.page_type == 'index'
+    assign show_breadcrumb = false
+  endif
+-%}
+
+{%- if show_breadcrumb -%}
+  <nav class="breadcrumb" aria-label="{{ 'general.breadcrumb' | t | default: 'Breadcrumb' }}">
+    <ol class="breadcrumb__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+      {%- comment -%} Home link (always first) {%- endcomment -%}
+      <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ routes.root_url }}" class="breadcrumb__link" itemprop="item">
+          <span itemprop="name">{{ 'general.home' | t | default: 'Home' }}</span>
+        </a>
+        <meta itemprop="position" content="1" />
+      </li>
+
+      {%- comment -%} Collection page {%- endcomment -%}
+      {%- if request.page_type == 'collection' and collection -%}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" aria-current="page">{{ collection.title }}</span>
+          <meta itemprop="item" content="{{ shop.url }}{{ collection.url }}" />
+          <meta itemprop="position" content="2" />
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Product page {%- endcomment -%}
+      {%- if request.page_type == 'product' and product -%}
+        {%- if product.collections.size > 0 -%}
+          {%- assign primary_collection = product.collections | first -%}
+          <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ primary_collection.url }}" class="breadcrumb__link" itemprop="item">
+              <span itemprop="name">{{ primary_collection.title }}</span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </li>
+          <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ product.title }}</span>
+            <meta itemprop="item" content="{{ shop.url }}{{ product.url }}" />
+            <meta itemprop="position" content="3" />
+          </li>
+        {%- else -%}
+          <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ product.title }}</span>
+            <meta itemprop="item" content="{{ shop.url }}{{ product.url }}" />
+            <meta itemprop="position" content="2" />
+          </li>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} Blog page {%- endcomment -%}
+      {%- if request.page_type == 'blog' and blog -%}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" aria-current="page">{{ blog.title }}</span>
+          <meta itemprop="item" content="{{ shop.url }}{{ blog.url }}" />
+          <meta itemprop="position" content="2" />
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Article page {%- endcomment -%}
+      {%- if request.page_type == 'article' and article -%}
+        {%- if blog -%}
+          <li class="breadcrumb__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" class="breadcrumb__link" itemprop="item">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </li>
+          <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ article.title }}</span>
+            <meta itemprop="item" content="{{ shop.url }}{{ article.url }}" />
+            <meta itemprop="position" content="3" />
+          </li>
+        {%- else -%}
+          <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ article.title }}</span>
+            <meta itemprop="item" content="{{ shop.url }}{{ article.url }}" />
+            <meta itemprop="position" content="2" />
+          </li>
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%} Generic page {%- endcomment -%}
+      {%- if request.page_type == 'page' -%}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" aria-current="page">{{ page.title }}</span>
+          <meta itemprop="item" content="{{ shop.url }}{{ page.url }}" />
+          <meta itemprop="position" content="2" />
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Search page {%- endcomment -%}
+      {%- if request.page_type == 'search' -%}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" aria-current="page">{{ 'general.search' | t | default: 'Search' }}</span>
+          <meta itemprop="item" content="{{ shop.url }}{{ routes.search_url }}" />
+          <meta itemprop="position" content="2" />
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Cart page {%- endcomment -%}
+      {%- if request.page_type == 'cart' -%}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" aria-current="page">{{ 'cart.title' | t | default: 'Cart' }}</span>
+          <meta itemprop="item" content="{{ shop.url }}{{ routes.cart_url }}" />
+          <meta itemprop="position" content="2" />
+        </li>
+      {%- endif -%}
+
+      {%- comment -%} Custom page title fallback {%- endcomment -%}
+      {%- if page_title -%}
+        <li class="breadcrumb__item breadcrumb__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" aria-current="page">{{ page_title }}</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      {%- endif -%}
+    </ol>
+  </nav>
+
+  <style>
+    .breadcrumb {
+      padding: 1rem 0;
+    }
+
+    .breadcrumb__list {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 0.875rem;
+    }
+
+    .breadcrumb__item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .breadcrumb__item:not(:last-child)::after {
+      content: '/';
+      color: var(--color-text-muted, #666);
+    }
+
+    .breadcrumb__link {
+      color: var(--color-text-muted, #666);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumb__link:hover {
+      color: var(--color-text, #000);
+      text-decoration: underline;
+    }
+
+    .breadcrumb__item--current span {
+      color: var(--color-text, #000);
+    }
+  </style>
+{%- endif -%}

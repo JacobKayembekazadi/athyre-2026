@@ -1,0 +1,193 @@
+{%- comment -%}
+  snippets/social-share.liquid
+
+  Renders social sharing buttons for articles and products.
+
+  Accepts:
+  - share_title: {String} Title to share (required)
+  - share_url: {String} URL to share (required, relative URL)
+  - share_image: {String} Image URL for Pinterest (optional)
+  - class: {String} Additional CSS classes (optional)
+  - platforms: {String} Comma-separated list of platforms (optional, default: all)
+
+  Usage:
+    {% render 'social-share', share_title: article.title, share_url: article.url %}
+    {% render 'social-share', share_title: product.title, share_url: product.url, share_image: product.featured_image | image_url: width: 600 %}
+    {% render 'social-share', share_title: page.title, share_url: page.url, platforms: 'facebook,twitter' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign full_url = shop.url | append: share_url
+  assign encoded_url = full_url | url_encode
+  assign encoded_title = share_title | url_encode
+
+  assign platforms = platforms | default: 'facebook,twitter,pinterest,email,copy'
+  assign platforms_array = platforms | split: ','
+
+  assign share_class = 'social-share'
+  if class
+    assign share_class = share_class | append: ' ' | append: class
+  endif
+-%}
+
+<div class="{{ share_class }}">
+  <span class="social-share__label">{{ 'general.share' | t | default: 'Share' }}</span>
+
+  <ul class="social-share__list">
+    {%- for platform in platforms_array -%}
+      {%- assign platform = platform | strip -%}
+
+      {%- case platform -%}
+        {%- when 'facebook' -%}
+          <li class="social-share__item">
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u={{ encoded_url }}"
+              class="social-share__link social-share__link--facebook"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'general.share_on' | t: platform: 'Facebook' | default: 'Share on Facebook' }}"
+            >
+              {%- render 'icon', icon: 'facebook', size: 20 -%}
+            </a>
+          </li>
+
+        {%- when 'twitter' -%}
+          <li class="social-share__item">
+            <a
+              href="https://twitter.com/intent/tweet?text={{ encoded_title }}&url={{ encoded_url }}"
+              class="social-share__link social-share__link--twitter"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'general.share_on' | t: platform: 'Twitter' | default: 'Share on Twitter' }}"
+            >
+              {%- render 'icon', icon: 'twitter', size: 20 -%}
+            </a>
+          </li>
+
+        {%- when 'pinterest' -%}
+          {%- liquid
+            if share_image
+              assign pinterest_image = share_image | url_encode
+            endif
+          -%}
+          <li class="social-share__item">
+            <a
+              href="https://pinterest.com/pin/create/button/?url={{ encoded_url }}&description={{ encoded_title }}{% if pinterest_image %}&media={{ pinterest_image }}{% endif %}"
+              class="social-share__link social-share__link--pinterest"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="{{ 'general.share_on' | t: platform: 'Pinterest' | default: 'Share on Pinterest' }}"
+            >
+              {%- render 'icon', icon: 'pinterest', size: 20 -%}
+            </a>
+          </li>
+
+        {%- when 'email' -%}
+          <li class="social-share__item">
+            <a
+              href="mailto:?subject={{ encoded_title }}&body={{ encoded_url }}"
+              class="social-share__link social-share__link--email"
+              aria-label="{{ 'general.share_via_email' | t | default: 'Share via email' }}"
+            >
+              {%- render 'icon', icon: 'mail', size: 20 -%}
+            </a>
+          </li>
+
+        {%- when 'copy' -%}
+          <li class="social-share__item">
+            <button
+              type="button"
+              class="social-share__link social-share__link--copy"
+              data-copy-url="{{ full_url }}"
+              aria-label="{{ 'general.copy_link' | t | default: 'Copy link' }}"
+            >
+              {%- render 'icon', icon: 'external-link', size: 20 -%}
+            </button>
+          </li>
+
+      {%- endcase -%}
+    {%- endfor -%}
+  </ul>
+</div>
+
+<style>
+  .social-share {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .social-share__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted, #666);
+  }
+
+  .social-share__list {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .social-share__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--color-text, #000);
+    background: var(--color-background-alt, #f5f5f5);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .social-share__link:hover {
+    color: var(--color-background, #fff);
+  }
+
+  .social-share__link--facebook:hover {
+    background: #1877f2;
+  }
+
+  .social-share__link--twitter:hover {
+    background: #1da1f2;
+  }
+
+  .social-share__link--pinterest:hover {
+    background: #e60023;
+  }
+
+  .social-share__link--email:hover {
+    background: var(--color-primary, #000);
+  }
+
+  .social-share__link--copy:hover {
+    background: var(--color-primary, #000);
+  }
+
+  .social-share__link--copy.copied {
+    background: #10b981;
+    color: #fff;
+  }
+</style>
+
+<script>
+  (function() {
+    document.querySelectorAll('[data-copy-url]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        var url = this.getAttribute('data-copy-url');
+        navigator.clipboard.writeText(url).then(function() {
+          button.classList.add('copied');
+          setTimeout(function() {
+            button.classList.remove('copied');
+          }, 2000);
+        });
+      });
+    });
+  })();
+</script>

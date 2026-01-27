@@ -1,0 +1,293 @@
+{%- comment -%}
+  sections/main-addresses.liquid
+
+  Customer address management page.
+  Add, edit, and delete addresses.
+{%- endcomment -%}
+
+<section class="section-{{ section.id }} addresses-page">
+  <div class="container">
+    <header class="addresses-page__header">
+      <div>
+        <a href="{{ routes.account_url }}" class="addresses-page__back">
+          {%- render 'icon', icon: 'chevron-left', size: 16 -%}
+          {{ 'customer.account.return' | t | default: 'Return to Account' }}
+        </a>
+        <h1>{{ 'customer.addresses.title' | t | default: 'Your Addresses' }}</h1>
+      </div>
+      <button type="button" class="btn btn--primary" data-toggle-new-address>
+        {{ 'customer.addresses.add_new' | t | default: 'Add new address' }}
+      </button>
+    </header>
+
+    {%- comment -%} New address form {%- endcomment -%}
+    <div class="addresses-page__form-wrapper" id="new-address-form" hidden>
+      <h2>{{ 'customer.addresses.add_new' | t | default: 'Add new address' }}</h2>
+      {%- form 'customer_address', customer.new_address -%}
+        {%- render 'address-form', form: form -%}
+        <div class="addresses-page__form-actions">
+          <button type="submit" class="btn btn--primary">
+            {{ 'customer.addresses.add' | t | default: 'Add address' }}
+          </button>
+          <button type="button" class="btn btn--secondary" data-cancel-new-address>
+            {{ 'customer.addresses.cancel' | t | default: 'Cancel' }}
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+
+    {%- comment -%} Existing addresses {%- endcomment -%}
+    {%- if customer.addresses.size > 0 -%}
+      <ul class="addresses-page__list">
+        {%- for address in customer.addresses -%}
+          <li class="addresses-page__item" data-address-item="{{ address.id }}">
+            <div class="addresses-page__card">
+              {%- if address == customer.default_address -%}
+                <span class="addresses-page__default-badge">
+                  {{ 'customer.addresses.default' | t | default: 'Default' }}
+                </span>
+              {%- endif -%}
+
+              <address class="addresses-page__address">
+                {{ address | format_address }}
+              </address>
+
+              <div class="addresses-page__actions">
+                <button type="button" class="btn btn--secondary btn--small" data-edit-address="{{ address.id }}">
+                  {{ 'customer.addresses.edit' | t | default: 'Edit' }}
+                </button>
+                <button type="button" class="btn btn--outline btn--small" data-delete-address="{{ address.id }}">
+                  {{ 'customer.addresses.delete' | t | default: 'Delete' }}
+                </button>
+              </div>
+            </div>
+
+            {%- comment -%} Edit form (hidden by default) {%- endcomment -%}
+            <div class="addresses-page__edit-form" id="edit-address-{{ address.id }}" hidden>
+              <h3>{{ 'customer.addresses.edit_address' | t | default: 'Edit address' }}</h3>
+              {%- form 'customer_address', address -%}
+                {%- render 'address-form', form: form, address: address -%}
+                <div class="addresses-page__form-actions">
+                  <button type="submit" class="btn btn--primary">
+                    {{ 'customer.addresses.update' | t | default: 'Update address' }}
+                  </button>
+                  <button type="button" class="btn btn--secondary" data-cancel-edit="{{ address.id }}">
+                    {{ 'customer.addresses.cancel' | t | default: 'Cancel' }}
+                  </button>
+                </div>
+              {%- endform -%}
+            </div>
+
+            {%- comment -%} Delete form (hidden) {%- endcomment -%}
+            {%- form 'customer_address', address -%}
+              <input type="hidden" name="_method" value="delete">
+              <button type="submit" id="delete-form-{{ address.id }}" hidden>Delete</button>
+            {%- endform -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <div class="addresses-page__empty">
+        <p>{{ 'customer.addresses.no_addresses' | t | default: "You haven't saved any addresses yet." }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  }
+
+  .addresses-page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .addresses-page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+  }
+
+  .addresses-page__back:hover {
+    color: var(--color-primary, #000);
+  }
+
+  .addresses-page__header h1 {
+    margin: 0;
+  }
+
+  .addresses-page__form-wrapper,
+  .addresses-page__edit-form {
+    background: var(--color-background-alt, #f5f5f5);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .addresses-page__form-wrapper h2,
+  .addresses-page__edit-form h3 {
+    margin: 0 0 1.5rem;
+  }
+
+  .addresses-page__form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .addresses-page__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .addresses-page__card {
+    position: relative;
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e5e5e5);
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .addresses-page__default-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--color-primary, #000);
+    color: var(--color-background, #fff);
+    border-radius: 4px;
+  }
+
+  .addresses-page__address {
+    font-style: normal;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .addresses-page__actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .addresses-page__empty {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--color-background-alt, #f5f5f5);
+    border-radius: 8px;
+  }
+
+  .btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .btn--outline {
+    background: transparent;
+    border: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .btn--outline:hover {
+    border-color: #dc3545;
+    color: #dc3545;
+  }
+{% endstyle %}
+
+<script>
+  (function() {
+    // Toggle new address form
+    const newForm = document.getElementById('new-address-form');
+    document.querySelectorAll('[data-toggle-new-address]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        newForm.hidden = !newForm.hidden;
+        if (!newForm.hidden) newForm.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+    document.querySelectorAll('[data-cancel-new-address]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        newForm.hidden = true;
+      });
+    });
+
+    // Toggle edit forms
+    document.querySelectorAll('[data-edit-address]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-edit-address');
+        const editForm = document.getElementById('edit-address-' + id);
+        const card = btn.closest('.addresses-page__card');
+        card.hidden = true;
+        editForm.hidden = false;
+      });
+    });
+    document.querySelectorAll('[data-cancel-edit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-cancel-edit');
+        const editForm = document.getElementById('edit-address-' + id);
+        const item = document.querySelector('[data-address-item="' + id + '"]');
+        const card = item.querySelector('.addresses-page__card');
+        editForm.hidden = true;
+        card.hidden = false;
+      });
+    });
+
+    // Delete confirmation
+    document.querySelectorAll('[data-delete-address]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete this address?')) {
+          const id = btn.getAttribute('data-delete-address');
+          document.getElementById('delete-form-' + id).click();
+        }
+      });
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Customer addresses",
+  "tag": "section",
+  "class": "section-addresses",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "templates": ["customers/addresses"]
+}
+{% endschema %}

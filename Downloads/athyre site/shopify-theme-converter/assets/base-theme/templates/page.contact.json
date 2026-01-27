@@ -1,0 +1,60 @@
+{
+  "_comment": "Contact page template - sections pre-configured from React prototype",
+  "sections": {
+    "page-hero": {
+      "type": "page-hero",
+      "settings": {
+        "heading": "Get in Touch",
+        "subheading": "We'd love to hear from you",
+        "show_breadcrumb": true
+      }
+    },
+    "contact-form": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Send us a message",
+        "show_phone": true,
+        "phone": "(555) 123-4567",
+        "show_email": true,
+        "email": "hello@brandname.com",
+        "show_address": true,
+        "address": "123 Main Street, City, State 12345",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "faq": {
+      "type": "collapsible-content",
+      "settings": {
+        "title": "Frequently Asked Questions",
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": {
+        "faq-1": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What are your business hours?",
+            "content": "<p>We're available Monday through Friday, 9am to 5pm EST. We typically respond to inquiries within 24 hours.</p>"
+          }
+        },
+        "faq-2": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "How can I track my order?",
+            "content": "<p>Once your order ships, you'll receive an email with tracking information. You can also log into your account to view order status.</p>"
+          }
+        },
+        "faq-3": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "What is your return policy?",
+            "content": "<p>We offer a 30-day return policy on all unused items in original packaging. Visit our returns page for more details.</p>"
+          }
+        }
+      },
+      "block_order": ["faq-1", "faq-2", "faq-3"]
+    }
+  },
+  "order": ["page-hero", "contact-form", "faq"]
+}

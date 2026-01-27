@@ -1,0 +1,40 @@
+{% schema %}
+{
+  "name": "Intention Setter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Set Your Intention"
+    },
+    {
+      "type": "textarea",
+      "id": "intentions",
+      "label": "Intentions (Comma separated)",
+      "default": "I am enough., I move with purpose., I honor my temple., Peace begins within."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Intention Setter"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="py-32 bg-stone-900 text-white text-center cursor-pointer group relative overflow-hidden" onclick="this.querySelector('button').click()">
+  <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat"></div>
+  <div class="relative z-10 transition-transform duration-700 group-hover:scale-105">
+    <span class="text-[10px] uppercase tracking-[0.4em] text-stone-500 font-bold block mb-8">{{ section.settings.heading }}</span>
+    <h2 id="intention-text-{{ section.id }}" class="text-4xl md:text-6xl font-serif italic text-stone-200">
+      Click to Receive
+    </h2>
+  </div>
+  
+  <button class="hidden" onclick="
+    const intentions = '{{ section.settings.intentions }}'.split(',');
+    const random = intentions[Math.floor(Math.random() * intentions.length)];
+    document.getElementById('intention-text-{{ section.id }}').innerText = random.trim();
+  ">Generate</button>
+</section>

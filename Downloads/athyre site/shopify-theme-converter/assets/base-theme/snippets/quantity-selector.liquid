@@ -1,0 +1,115 @@
+{%- comment -%}
+  Quantity Selector Snippet
+
+  Accepts:
+  - form_id: {String} Form ID to associate input with
+  - line_key: {String} Cart line item key (for cart updates)
+  - value: {Number} Current quantity value
+  - max: {Number} Maximum quantity allowed
+  - min: {Number} Minimum quantity (default 1)
+{%- endcomment -%}
+
+{%- liquid
+  assign min = min | default: 1
+  assign max = max | default: 99
+  assign value = value | default: 1
+-%}
+
+<quantity-input class="quantity-selector">
+  <button
+    type="button"
+    class="quantity-btn quantity-btn--minus"
+    aria-label="{{ 'products.product.quantity.decrease' | t }}"
+    {% if value <= min %}disabled{% endif %}
+  >
+    {% render 'icon-minus' %}
+  </button>
+
+  <input
+    type="number"
+    class="quantity-input"
+    name="quantity"
+    min="{{ min }}"
+    max="{{ max }}"
+    value="{{ value }}"
+    aria-label="{{ 'products.product.quantity.input_label' | t }}"
+    {% if form_id %}form="{{ form_id }}"{% endif %}
+    {% if line_key %}data-line-key="{{ line_key }}"{% endif %}
+  >
+
+  <button
+    type="button"
+    class="quantity-btn quantity-btn--plus"
+    aria-label="{{ 'products.product.quantity.increase' | t }}"
+    {% if value >= max %}disabled{% endif %}
+  >
+    {% render 'icon-plus' %}
+  </button>
+</quantity-input>
+
+<style>
+  .quantity-selector {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 4px;
+  }
+
+  .quantity-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text, #1a1a1a);
+    transition: background-color 0.2s, opacity 0.2s;
+  }
+
+  .quantity-btn:hover:not(:disabled) {
+    background-color: var(--color-background-secondary, #f5f5f5);
+  }
+
+  .quantity-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .quantity-btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .quantity-input {
+    width: 3rem;
+    height: 2.5rem;
+    padding: 0;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-left: 1px solid var(--color-border, #e5e5e5);
+    border-right: 1px solid var(--color-border, #e5e5e5);
+    background: transparent;
+    -moz-appearance: textfield;
+  }
+
+  .quantity-input::-webkit-outer-spin-button,
+  .quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .quantity-input:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--color-primary, #1a1a1a);
+  }
+
+  .quantity-selector.is-loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+</style>

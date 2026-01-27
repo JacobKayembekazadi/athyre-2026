@@ -1,0 +1,228 @@
+{%- comment -%}
+  sections/main-register.liquid
+
+  Customer registration form.
+{%- endcomment -%}
+
+<section class="section-{{ section.id }} register-page">
+  <div class="container container--narrow">
+    <h1 class="register-page__title">{{ 'customer.register.title' | t | default: 'Create Account' }}</h1>
+
+    {%- form 'create_customer', class: 'register-page__form' -%}
+      {%- if form.errors -%}
+        <div class="form__message form__message--error">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="form__row form__row--half">
+        <div class="form__field">
+          <label for="first-name-{{ section.id }}" class="form__label">
+            {{ 'customer.register.first_name' | t | default: 'First name' }}
+          </label>
+          <input
+            type="text"
+            id="first-name-{{ section.id }}"
+            name="customer[first_name]"
+            class="form__input"
+            autocomplete="given-name"
+            required
+          >
+        </div>
+        <div class="form__field">
+          <label for="last-name-{{ section.id }}" class="form__label">
+            {{ 'customer.register.last_name' | t | default: 'Last name' }}
+          </label>
+          <input
+            type="text"
+            id="last-name-{{ section.id }}"
+            name="customer[last_name]"
+            class="form__input"
+            autocomplete="family-name"
+            required
+          >
+        </div>
+      </div>
+
+      <div class="form__row">
+        <label for="email-{{ section.id }}" class="form__label">
+          {{ 'customer.register.email' | t | default: 'Email' }}
+        </label>
+        <input
+          type="email"
+          id="email-{{ section.id }}"
+          name="customer[email]"
+          class="form__input"
+          autocomplete="email"
+          autocapitalize="off"
+          autocorrect="off"
+          required
+        >
+      </div>
+
+      <div class="form__row">
+        <label for="password-{{ section.id }}" class="form__label">
+          {{ 'customer.register.password' | t | default: 'Password' }}
+        </label>
+        <input
+          type="password"
+          id="password-{{ section.id }}"
+          name="customer[password]"
+          class="form__input"
+          autocomplete="new-password"
+          required
+        >
+      </div>
+
+      {%- if section.settings.show_marketing_checkbox -%}
+        <div class="form__row">
+          <label class="form__checkbox">
+            <input type="checkbox" name="customer[accepts_marketing]" value="1">
+            <span>{{ 'customer.register.accepts_marketing' | t | default: 'Subscribe to our newsletter' }}</span>
+          </label>
+        </div>
+      {%- endif -%}
+
+      <button type="submit" class="btn btn--primary btn--full">
+        {{ 'customer.register.submit' | t | default: 'Create' }}
+      </button>
+
+      <p class="register-page__links">
+        {{ 'customer.register.have_account' | t | default: 'Already have an account?' }}
+        <a href="{{ routes.account_login_url }}">{{ 'customer.login.title' | t | default: 'Login' }}</a>
+      </p>
+    {%- endform -%}
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .register-page__title {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .register-page__form {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .form__row {
+    margin-bottom: 1rem;
+  }
+
+  .form__row--half {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    .form__row--half {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .form__input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 4px;
+  }
+
+  .form__input:focus {
+    outline: none;
+    border-color: var(--color-primary, #000);
+  }
+
+  .form__checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    cursor: pointer;
+  }
+
+  .form__checkbox input {
+    margin-top: 0.25rem;
+  }
+
+  .btn--full {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .register-page__links {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--color-text-muted, #666);
+  }
+
+  .register-page__links a {
+    color: var(--color-primary, #000);
+  }
+
+  .form__message {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+  }
+
+  .form__message--error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Customer register",
+  "tag": "section",
+  "class": "section-register",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_marketing_checkbox",
+      "label": "Show newsletter signup checkbox",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "templates": ["customers/register"]
+}
+{% endschema %}

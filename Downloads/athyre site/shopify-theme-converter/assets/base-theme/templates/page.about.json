@@ -1,0 +1,107 @@
+{
+  "_comment": "About page template - sections pre-configured from React prototype",
+  "sections": {
+    "page-hero": {
+      "type": "page-hero",
+      "settings": {
+        "heading": "About Us",
+        "subheading": "Our story, mission, and the people behind the brand",
+        "show_breadcrumb": true
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "image": "",
+        "heading": "How We Started",
+        "text": "<p>It all began in a small garage in 2015. What started as a passion project has grown into a brand trusted by thousands of customers worldwide.</p><p>Today, we continue to innovate and push boundaries, never forgetting the values that got us here.</p>",
+        "button_text": "Our Products",
+        "button_link": "shopify://collections/all",
+        "image_position": "right",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    },
+    "values": {
+      "type": "multicolumn",
+      "settings": {
+        "title": "Our Values",
+        "columns_desktop": 3,
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": {
+        "value-1": {
+          "type": "column",
+          "settings": {
+            "title": "Quality",
+            "text": "<p>We never compromise on materials or craftsmanship. Every product is built to last.</p>"
+          }
+        },
+        "value-2": {
+          "type": "column",
+          "settings": {
+            "title": "Sustainability",
+            "text": "<p>Every decision we make considers our environmental impact. We're committed to a greener future.</p>"
+          }
+        },
+        "value-3": {
+          "type": "column",
+          "settings": {
+            "title": "Community",
+            "text": "<p>We give back to the communities we serve. 1% of profits support local initiatives.</p>"
+          }
+        }
+      },
+      "block_order": ["value-1", "value-2", "value-3"]
+    },
+    "team": {
+      "type": "team-grid",
+      "settings": {
+        "title": "Meet the Team",
+        "columns": 3,
+        "padding_top": 60,
+        "padding_bottom": 60
+      },
+      "blocks": {
+        "member-1": {
+          "type": "team_member",
+          "settings": {
+            "name": "Jane Smith",
+            "role": "Founder & CEO",
+            "bio": "Jane started the company with a vision to create products that make a difference in people's lives."
+          }
+        },
+        "member-2": {
+          "type": "team_member",
+          "settings": {
+            "name": "John Doe",
+            "role": "Head of Design",
+            "bio": "John brings 15 years of design experience and a passion for creating beautiful, functional products."
+          }
+        },
+        "member-3": {
+          "type": "team_member",
+          "settings": {
+            "name": "Sarah Johnson",
+            "role": "Operations Lead",
+            "bio": "Sarah ensures every order is fulfilled with care and attention to detail."
+          }
+        }
+      },
+      "block_order": ["member-1", "member-2", "member-3"]
+    },
+    "cta": {
+      "type": "rich-text",
+      "settings": {
+        "heading": "Join Our Journey",
+        "text": "<p>We're always looking for passionate people to join our team and help us build something amazing.</p>",
+        "button_text": "View Careers",
+        "button_link": "/pages/careers",
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": ["page-hero", "story", "values", "team", "cta"]
+}

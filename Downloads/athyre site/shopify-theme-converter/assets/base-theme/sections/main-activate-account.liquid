@@ -1,0 +1,238 @@
+{{ 'customer.css' | asset_url | stylesheet_tag }}
+
+<div class="customer activate-account section-{{ section.id }}">
+  <div class="customer-container">
+    <h1 class="customer-title">{{ 'customer.activate_account.title' | t }}</h1>
+    <p class="customer-subtitle">{{ 'customer.activate_account.subtext' | t }}</p>
+
+    {%- form 'activate_customer_password' -%}
+      {%- if form.errors -%}
+        <div class="form-errors">
+          <h2 class="form-errors-heading" tabindex="-1" autofocus>
+            {% render 'icon', icon: 'error' %}
+            {{ 'customer.activate_account.form_error' | t }}
+          </h2>
+          <ul class="form-errors-list">
+            {%- for field in form.errors -%}
+              <li>
+                {%- if field == 'form' -%}
+                  {{ form.errors.messages[field] }}
+                {%- else -%}
+                  <a href="#{{ field }}">
+                    {{ form.errors.translated_fields[field] }} - {{ form.errors.messages[field] }}
+                  </a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <div class="field">
+        <label for="password" class="field-label">
+          {{ 'customer.activate_account.password' | t }}
+        </label>
+        <input
+          type="password"
+          name="customer[password]"
+          id="password"
+          class="field-input{% if form.errors contains 'password' %} field-input--error{% endif %}"
+          autocomplete="new-password"
+          {% if form.errors contains 'password' %}
+            aria-invalid="true"
+            aria-describedby="password-error"
+          {% endif %}
+          required
+        >
+        {%- if form.errors contains 'password' -%}
+          <p id="password-error" class="field-error">
+            {{ form.errors.messages.password }}
+          </p>
+        {%- endif -%}
+      </div>
+
+      <div class="field">
+        <label for="password_confirmation" class="field-label">
+          {{ 'customer.activate_account.password_confirm' | t }}
+        </label>
+        <input
+          type="password"
+          name="customer[password_confirmation]"
+          id="password_confirmation"
+          class="field-input{% if form.errors contains 'password_confirmation' %} field-input--error{% endif %}"
+          autocomplete="new-password"
+          {% if form.errors contains 'password_confirmation' %}
+            aria-invalid="true"
+            aria-describedby="password-confirm-error"
+          {% endif %}
+          required
+        >
+        {%- if form.errors contains 'password_confirmation' -%}
+          <p id="password-confirm-error" class="field-error">
+            {{ form.errors.messages.password_confirmation }}
+          </p>
+        {%- endif -%}
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--full">
+        {{ 'customer.activate_account.submit' | t }}
+      </button>
+
+      <p class="activate-decline">
+        <a href="{{ routes.account_url }}">
+          {{ 'customer.activate_account.cancel' | t }}
+        </a>
+      </p>
+    {%- endform -%}
+  </div>
+</div>
+
+<style>
+  .activate-account {
+    padding: {{ section.settings.padding_top }}px 1rem {{ section.settings.padding_bottom }}px;
+  }
+
+  .customer-container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .customer-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .customer-subtitle {
+    text-align: center;
+    color: var(--color-text-muted, #666);
+    margin-bottom: 2rem;
+  }
+
+  .form-errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 4px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-errors-heading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    color: #dc2626;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-errors-heading svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .form-errors-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    font-size: 0.875rem;
+    color: #b91c1c;
+  }
+
+  .form-errors-list a {
+    color: inherit;
+  }
+
+  .field {
+    margin-bottom: 1.25rem;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-primary, #000);
+  }
+
+  .field-input--error {
+    border-color: #dc2626;
+  }
+
+  .field-error {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #dc2626;
+  }
+
+  .btn--full {
+    width: 100%;
+  }
+
+  .btn--primary {
+    background: var(--color-primary, #000);
+    color: var(--color-primary-contrast, #fff);
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn--primary:hover {
+    opacity: 0.9;
+  }
+
+  .activate-decline {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .activate-decline a {
+    color: var(--color-text-muted, #666);
+    text-decoration: underline;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Activate account",
+  "tag": "section",
+  "class": "section-activate-account",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 60,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 60,
+      "unit": "px"
+    }
+  ]
+}
+{% endschema %}

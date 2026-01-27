@@ -1,0 +1,56 @@
+{% schema %}
+{
+  "name": "Returns Page",
+  "settings": [
+      {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Returns & Exchanges"
+      }
+  ],
+  "presets": [
+    {
+      "name": "Returns Page"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
+  
+  {/* HERO */}
+  <section class="text-center mb-24">
+    <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-4">Policy</span>
+    <h1 class="text-4xl md:text-5xl font-light tracking-tight uppercase mb-8">{{ section.settings.heading }}</h1>
+    <p class="text-stone-500 text-sm leading-loose max-w-2xl mx-auto">
+      If existing does not honor your temple, we accept returns within 30 days of receipt.
+    </p>
+  </section>
+
+  {/* STEPS */}
+  <section class="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto mb-32">
+    <div class="text-center">
+        <div class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6 text-stone-300 font-serif italic text-2xl">1</div>
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Request</h3>
+        <p class="text-[11px] text-stone-500">Initiate return via our portal.</p>
+    </div>
+    <div class="text-center">
+        <div class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6 text-stone-300 font-serif italic text-2xl">2</div>
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Prepare</h3>
+        <p class="text-[11px] text-stone-500">Pack items in original condition.</p>
+    </div>
+    <div class="text-center">
+        <div class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6 text-stone-300 font-serif italic text-2xl">3</div>
+        <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">Refund</h3>
+        <p class="text-[11px] text-stone-500">Processed within 5-7 days of receipt.</p>
+    </div>
+  </section>
+
+  {/* ACTION */}
+  <section class="text-center">
+    <a href="#" class="inline-block bg-stone-900 text-white py-4 px-12 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-stone-800 transition-colors shadow-xl">
+        Start Return
+    </a>
+  </section>
+</div>

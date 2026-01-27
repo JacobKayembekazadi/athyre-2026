@@ -1,0 +1,230 @@
+{%- comment -%}
+  Product Card Snippet
+
+  Accepts:
+  - product: {Object} Product object (required)
+  - show_vendor: {Boolean} Show vendor name
+  - image_ratio: {String} Image aspect ratio (adapt, square, portrait)
+  - show_secondary_image: {Boolean} Show second image on hover
+  - lazy_load: {Boolean} Lazy load images (default true)
+{%- endcomment -%}
+
+{%- liquid
+  assign first_variant = product.selected_or_first_available_variant
+  assign featured_image = product.featured_media
+  assign lazy_load = lazy_load | default: true
+
+  case image_ratio
+    when 'square'
+      assign aspect_ratio = 1
+    when 'portrait'
+      assign aspect_ratio = 0.67
+    else
+      assign aspect_ratio = featured_image.aspect_ratio | default: 1
+  endcase
+-%}
+
+<article class="product-card{% unless product.available %} product-card--sold-out{% endunless %}">
+
+  {%- comment -%} Product Image {%- endcomment -%}
+  <div class="product-card-media" style="--aspect-ratio: {{ aspect_ratio }}">
+    <a href="{{ product.url }}" class="product-card-link" aria-label="{{ product.title | escape }}">
+      {%- if featured_image != blank -%}
+        {{ featured_image | image_url: width: 600 | image_tag:
+          loading: lazy_load | ternary: 'lazy', 'eager',
+          widths: '165, 360, 533, 720',
+          sizes: '(min-width: 1200px) 267px, (min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+          alt: featured_image.alt | default: product.title,
+          class: 'product-card-image'
+        }}
+
+        {%- if show_secondary_image and product.media.size > 1 -%}
+          {{ product.media[1] | image_url: width: 600 | image_tag:
+            loading: 'lazy',
+            alt: product.media[1].alt | default: product.title,
+            class: 'product-card-image product-card-image--secondary'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        <div class="product-card-placeholder">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Badges {%- endcomment -%}
+    <div class="product-card-badges">
+      {%- if product.compare_at_price > product.price -%}
+        {%- liquid
+          assign savings = product.compare_at_price | minus: product.price
+          assign savings_percent = savings | times: 100.0 | divided_by: product.compare_at_price | round
+        -%}
+        <span class="badge badge--sale">-{{ savings_percent }}%</span>
+      {%- endif -%}
+
+      {%- unless product.available -%}
+        <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+      {%- endunless -%}
+    </div>
+
+    {%- comment -%} Quick Add {%- endcomment -%}
+    {%- if product.available -%}
+      <div class="product-card-actions">
+        {%- if product.has_only_default_variant -%}
+          <quick-add-button>
+            <button
+              type="button"
+              class="btn btn--icon btn--quick-add"
+              data-variant-id="{{ first_variant.id }}"
+              aria-label="{{ 'products.product.add_to_cart' | t }}"
+            >
+              {% render 'icon-plus' %}
+            </button>
+          </quick-add-button>
+        {%- else -%}
+          <a
+            href="{{ product.url }}"
+            class="btn btn--icon btn--quick-add"
+            aria-label="{{ 'products.product.choose_options' | t }}"
+          >
+            {% render 'icon-eye' %}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} Product Info {%- endcomment -%}
+  <div class="product-card-info">
+    {%- if show_vendor and product.vendor -%}
+      <p class="product-card-vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+
+    <h3 class="product-card-title">
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    </h3>
+
+    <div class="product-card-price">
+      {% render 'price', product: product, use_variant: false %}
+    </div>
+
+    {%- comment -%} Color Swatches {%- endcomment -%}
+    {%- unless product.has_only_default_variant -%}
+      {%- for option in product.options_with_values -%}
+        {%- assign option_name_downcase = option.name | downcase -%}
+        {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
+          <ul class="product-card-swatches" aria-label="{{ option.name }}">
+            {%- for value in option.values limit: 5 -%}
+              <li>
+                <span
+                  class="color-swatch"
+                  style="background-color: {{ value | handle }}"
+                  title="{{ value }}"
+                ></span>
+              </li>
+            {%- endfor -%}
+            {%- if option.values.size > 5 -%}
+              <li class="swatch-more">+{{ option.values.size | minus: 5 }}</li>
+            {%- endif -%}
+          </ul>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endunless -%}
+  </div>
+
+</article>
+
+<style>
+  .product-card {
+    position: relative;
+  }
+
+  .product-card-media {
+    position: relative;
+    aspect-ratio: var(--aspect-ratio);
+    overflow: hidden;
+    background-color: var(--color-background-secondary, #f5f5f5);
+  }
+
+  .product-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-card-image--secondary {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+
+  .product-card:hover .product-card-image--secondary {
+    opacity: 1;
+  }
+
+  .product-card-badges {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .product-card-actions {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .product-card:hover .product-card-actions {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .product-card-info {
+    padding: 0.75rem 0;
+  }
+
+  .product-card-vendor {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.25rem;
+  }
+
+  .product-card-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+  }
+
+  .product-card-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .product-card-swatches {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .color-swatch {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .swatch-more {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
+</style>

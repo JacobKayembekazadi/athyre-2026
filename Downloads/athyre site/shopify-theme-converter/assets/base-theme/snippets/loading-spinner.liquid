@@ -1,0 +1,91 @@
+{%- comment -%}
+  snippets/loading-spinner.liquid
+
+  Renders an accessible loading spinner.
+
+  Accepts:
+  - size: {String} Size variant: 'small', 'medium', 'large' (optional, default: 'medium')
+  - class: {String} Additional CSS classes (optional)
+
+  Usage:
+    {% render 'loading-spinner', size: 'small' %}
+    {% render 'loading-spinner', size: 'large', class: 'my-custom-class' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign size = size | default: 'medium'
+  assign spinner_class = 'loading-spinner loading-spinner--' | append: size
+  if class
+    assign spinner_class = spinner_class | append: ' ' | append: class
+  endif
+-%}
+
+<span class="{{ spinner_class }}" aria-hidden="true">
+  <svg
+    class="loading-spinner__icon"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      class="loading-spinner__track"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      stroke-width="2"
+    />
+    <path
+      class="loading-spinner__indicator"
+      d="M12 2a10 10 0 0 1 10 10"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+  </svg>
+</span>
+<span class="visually-hidden">{{ 'accessibility.loading' | t }}</span>
+
+<style>
+  .loading-spinner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .loading-spinner--small .loading-spinner__icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .loading-spinner--medium .loading-spinner__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .loading-spinner--large .loading-spinner__icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .loading-spinner__icon {
+    animation: loading-spinner-rotate 1s linear infinite;
+  }
+
+  .loading-spinner__track {
+    opacity: 0.25;
+  }
+
+  .loading-spinner__indicator {
+    opacity: 1;
+  }
+
+  @keyframes loading-spinner-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

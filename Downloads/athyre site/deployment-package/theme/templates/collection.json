@@ -1,0 +1,24 @@
+{
+    "sections": {
+        "banner": {
+            "type": "video-hero",
+            "settings": {
+                "heading": "The Collection",
+                "subheading": "Shop All",
+                "video_url": "",
+                "button_text": "",
+                "button_link": ""
+            }
+        },
+        "product-grid": {
+            "type": "main-collection",
+            "settings": {
+                "products_per_page": 12
+            }
+        }
+    },
+    "order": [
+        "banner",
+        "product-grid"
+    ]
+}

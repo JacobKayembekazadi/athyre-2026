@@ -1,0 +1,43 @@
+{% schema %}
+{
+  "name": "Vision Manifesto",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Create <br/> <span class='font-serif italic text-stone-400'>Sanctuary</span> <br/> Through <br/> Movement."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link Text",
+      "default": "Read The Manifesto"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vision Manifesto"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="min-h-[80vh] flex flex-col justify-center items-center text-center relative mb-32">
+  <h1 class="text-5xl md:text-[8vw] leading-[0.9] font-light tracking-tighter uppercase mb-12 mix-blend-difference">
+    {{ section.settings.heading }}
+  </h1>
+  {% if section.settings.link_text != blank %}
+    <a href="{{ section.settings.link_url }}" class="text-[10px] uppercase tracking-[0.4em] font-black text-stone-900 border-b-2 border-stone-900 pb-2">
+      {{ section.settings.link_text }}
+    </a>
+  {% endif %}
+  <div class="absolute bottom-10 animate-bounce">
+    {% render 'icon-arrow-down', class: 'w-6 h-6 text-stone-300' %}
+  </div>
+</section>

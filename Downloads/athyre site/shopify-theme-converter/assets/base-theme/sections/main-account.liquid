@@ -1,0 +1,320 @@
+{%- comment -%}
+  sections/main-account.liquid
+
+  Customer account dashboard.
+  Shows account info and order history.
+{%- endcomment -%}
+
+<section class="section-{{ section.id }} account-page">
+  <div class="container">
+    <header class="account-page__header">
+      <h1>{{ 'customer.account.title' | t | default: 'My Account' }}</h1>
+      <a href="{{ routes.account_logout_url }}" class="btn btn--secondary btn--small">
+        {{ 'customer.account.logout' | t | default: 'Log out' }}
+      </a>
+    </header>
+
+    <div class="account-page__grid">
+      {%- comment -%} Account info sidebar {%- endcomment -%}
+      <aside class="account-page__sidebar">
+        <div class="account-page__info-card">
+          <h2 class="account-page__info-title">{{ 'customer.account.details' | t | default: 'Account Details' }}</h2>
+          <p class="account-page__name">{{ customer.name }}</p>
+          <p class="account-page__email">{{ customer.email }}</p>
+        </div>
+
+        {%- if customer.default_address -%}
+          <div class="account-page__info-card">
+            <h3 class="account-page__info-title">{{ 'customer.account.default_address' | t | default: 'Default Address' }}</h3>
+            <address class="account-page__address">
+              {{ customer.default_address | format_address }}
+            </address>
+          </div>
+        {%- endif -%}
+
+        <a href="{{ routes.account_addresses_url }}" class="btn btn--secondary btn--full">
+          {{ 'customer.account.manage_addresses' | t | default: 'Manage addresses' }}
+        </a>
+      </aside>
+
+      {%- comment -%} Order history {%- endcomment -%}
+      <div class="account-page__main">
+        <h2 class="account-page__section-title">{{ 'customer.orders.title' | t | default: 'Order History' }}</h2>
+
+        {%- if customer.orders.size > 0 -%}
+          <div class="account-page__orders">
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>{{ 'customer.orders.order_number' | t | default: 'Order' }}</th>
+                  <th>{{ 'customer.orders.date' | t | default: 'Date' }}</th>
+                  <th>{{ 'customer.orders.payment_status' | t | default: 'Payment' }}</th>
+                  <th>{{ 'customer.orders.fulfillment_status' | t | default: 'Fulfillment' }}</th>
+                  <th>{{ 'customer.orders.total' | t | default: 'Total' }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {%- for order in customer.orders -%}
+                  <tr>
+                    <td>
+                      <a href="{{ order.customer_url }}" class="orders-table__link">
+                        {{ order.name }}
+                      </a>
+                    </td>
+                    <td>{{ order.created_at | date: format: 'abbreviated_date' }}</td>
+                    <td>
+                      <span class="orders-table__status orders-table__status--{{ order.financial_status }}">
+                        {{ order.financial_status_label }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="orders-table__status orders-table__status--{{ order.fulfillment_status }}">
+                        {{ order.fulfillment_status_label | default: 'Unfulfilled' }}
+                      </span>
+                    </td>
+                    <td>{{ order.total_price | money }}</td>
+                  </tr>
+                {%- endfor -%}
+              </tbody>
+            </table>
+          </div>
+
+          {%- comment -%} Mobile order cards {%- endcomment -%}
+          <div class="account-page__orders-mobile">
+            {%- for order in customer.orders -%}
+              <a href="{{ order.customer_url }}" class="order-card">
+                <div class="order-card__header">
+                  <span class="order-card__number">{{ order.name }}</span>
+                  <span class="order-card__total">{{ order.total_price | money }}</span>
+                </div>
+                <div class="order-card__details">
+                  <span>{{ order.created_at | date: format: 'abbreviated_date' }}</span>
+                  <span class="order-card__status">{{ order.fulfillment_status_label | default: 'Unfulfilled' }}</span>
+                </div>
+              </a>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="account-page__empty">
+            <p>{{ 'customer.orders.none' | t | default: "You haven't placed any orders yet." }}</p>
+            <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
+              {{ 'customer.orders.start_shopping' | t | default: 'Start shopping' }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+  }
+
+  .account-page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .account-page__header h1 {
+    margin: 0;
+  }
+
+  .account-page__grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .account-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .account-page__info-card {
+    background: var(--color-background-alt, #f5f5f5);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .account-page__info-title {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted, #666);
+    margin: 0 0 0.75rem;
+  }
+
+  .account-page__name {
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .account-page__email {
+    color: var(--color-text-muted, #666);
+    margin: 0.25rem 0 0;
+  }
+
+  .account-page__address {
+    font-style: normal;
+    line-height: 1.6;
+  }
+
+  .account-page__section-title {
+    margin: 0 0 1.5rem;
+  }
+
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .orders-table th {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted, #666);
+    font-weight: 500;
+  }
+
+  .orders-table__link {
+    color: var(--color-primary, #000);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .orders-table__link:hover {
+    text-decoration: underline;
+  }
+
+  .orders-table__status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    background: var(--color-background-alt, #f5f5f5);
+  }
+
+  .orders-table__status--paid {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .orders-table__status--fulfilled {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  /* Mobile orders */
+  .account-page__orders-mobile {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .account-page__orders {
+      display: none;
+    }
+
+    .account-page__orders-mobile {
+      display: block;
+    }
+  }
+
+  .order-card {
+    display: block;
+    padding: 1rem;
+    background: var(--color-background-alt, #f5f5f5);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    margin-bottom: 0.75rem;
+  }
+
+  .order-card__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .order-card__number {
+    font-weight: 600;
+  }
+
+  .order-card__total {
+    font-weight: 600;
+  }
+
+  .order-card__details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+  }
+
+  .account-page__empty {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: var(--color-background-alt, #f5f5f5);
+    border-radius: 8px;
+  }
+
+  .account-page__empty p {
+    margin-bottom: 1.5rem;
+  }
+
+  .btn--full {
+    width: 100%;
+  }
+
+  .btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Customer account",
+  "tag": "section",
+  "class": "section-account",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "templates": ["customers/account"]
+}
+{% endschema %}

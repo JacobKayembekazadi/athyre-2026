@@ -1,0 +1,139 @@
+{%- comment -%}
+  Price Snippet
+
+  Accepts:
+  - product: {Object} Product or line item object (required)
+  - use_variant: {Boolean} Use selected variant price instead of product price
+  - show_badges: {Boolean} Show sale/sold out badges
+{%- endcomment -%}
+
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price
+  assign available = target.available
+
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+  else
+    assign money_price = price | money
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+-%}
+
+<div class="price{% if on_sale %} price--on-sale{% endif %}{% unless available %} price--sold-out{% endunless %}">
+
+  <div class="price-container">
+    {%- if on_sale -%}
+      <span class="price-compare" aria-hidden="true">
+        <s>{{ compare_at_price | money }}</s>
+      </span>
+      <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}: {{ compare_at_price | money }}</span>
+    {%- endif -%}
+
+    <span class="price-regular{% if on_sale %} price-regular--sale{% endif %}">
+      {%- if on_sale -%}
+        <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}:</span>
+      {%- endif -%}
+      {{ money_price }}
+    </span>
+  </div>
+
+  {%- comment -%} Badges {%- endcomment -%}
+  {%- if show_badges -%}
+    {%- if on_sale -%}
+      {%- liquid
+        assign savings = compare_at_price | minus: price
+        assign savings_percent = savings | times: 100.0 | divided_by: compare_at_price | round
+      -%}
+      <span class="badge badge--sale">
+        {{ 'products.product.on_sale' | t }} -{{ savings_percent }}%
+      </span>
+    {%- endif -%}
+
+    {%- unless available -%}
+      <span class="badge badge--sold-out">
+        {{ 'products.product.sold_out' | t }}
+      </span>
+    {%- endunless -%}
+  {%- endif -%}
+
+</div>
+
+{%- comment -%} Unit Price {%- endcomment -%}
+{%- if target.unit_price_measurement -%}
+  <div class="unit-price">
+    <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}:</span>
+    {{ target.unit_price | money }}
+    <span class="unit-price-separator">/</span>
+    {%- if target.unit_price_measurement.reference_value != 1 -%}
+      {{ target.unit_price_measurement.reference_value }}
+    {%- endif -%}
+    {{ target.unit_price_measurement.reference_unit }}
+  </div>
+{%- endif -%}
+
+<style>
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .price-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .price-compare {
+    color: var(--color-text-secondary, #666);
+    font-size: 0.9em;
+  }
+
+  .price-regular {
+    font-weight: 600;
+  }
+
+  .price-regular--sale {
+    color: var(--color-sale, #c41e3a);
+  }
+
+  .unit-price {
+    font-size: 0.85em;
+    color: var(--color-text-secondary, #666);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.2em 0.5em;
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+
+  .badge--sale {
+    background-color: var(--color-sale, #c41e3a);
+    color: white;
+  }
+
+  .badge--sold-out {
+    background-color: var(--color-sold-out, #666);
+    color: white;
+  }
+</style>

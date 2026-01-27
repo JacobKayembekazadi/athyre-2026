@@ -1,0 +1,13 @@
+{
+    "sections": {
+        "main": {
+            "type": "main-search",
+            "settings": {
+                "heading": "WHAT ARE YOU SEEKING?"
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

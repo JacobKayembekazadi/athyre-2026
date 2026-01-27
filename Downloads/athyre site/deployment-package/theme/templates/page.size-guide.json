@@ -1,0 +1,13 @@
+{
+    "sections": {
+        "main": {
+            "type": "size-guide",
+            "settings": {
+                "heading": "Engineered for the Temple"
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

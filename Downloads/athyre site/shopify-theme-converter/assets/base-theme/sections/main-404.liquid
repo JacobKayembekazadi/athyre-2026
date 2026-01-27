@@ -1,0 +1,267 @@
+{%- comment -%}
+  sections/main-404.liquid
+
+  404 Not Found page section.
+  Displays a friendly error message and navigation options.
+{%- endcomment -%}
+
+<section class="section-{{ section.id }} error-404">
+  <div class="container">
+    <div class="error-404__content">
+      {%- if section.settings.show_error_code -%}
+        <span class="error-404__code">404</span>
+      {%- endif -%}
+
+      <h1 class="error-404__heading">{{ section.settings.heading }}</h1>
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="error-404__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+
+      <div class="error-404__actions">
+        {%- if section.settings.button_text != blank -%}
+          <a href="{{ section.settings.button_link }}" class="btn btn--primary">
+            {{ section.settings.button_text }}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.show_search -%}
+          <form action="{{ routes.search_url }}" method="get" class="error-404__search" role="search">
+            <label for="search-404-{{ section.id }}" class="visually-hidden">
+              {{ 'general.search.placeholder' | t | default: 'Search' }}
+            </label>
+            <input
+              type="search"
+              id="search-404-{{ section.id }}"
+              name="q"
+              placeholder="{{ 'general.search.placeholder' | t | default: 'Search our store...' }}"
+              class="error-404__search-input"
+            >
+            <button type="submit" class="error-404__search-submit btn btn--secondary">
+              {%- render 'icon', icon: 'search', size: 20 -%}
+              <span class="visually-hidden">{{ 'general.search.submit' | t | default: 'Search' }}</span>
+            </button>
+          </form>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_popular_links -%}
+        <div class="error-404__links">
+          <p class="error-404__links-heading">{{ 'general.404.popular_links' | t | default: 'Popular links' }}</p>
+          <ul class="error-404__links-list">
+            <li><a href="{{ routes.root_url }}">{{ 'general.home' | t | default: 'Home' }}</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}">{{ 'general.404.all_products' | t | default: 'All products' }}</a></li>
+            {%- for collection in collections limit: 3 -%}
+              <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .error-404__content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .error-404__code {
+    display: block;
+    font-size: clamp(4rem, 15vw, 10rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-border, #e5e5e5);
+    margin-bottom: 1rem;
+  }
+
+  .error-404__heading {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: 1rem;
+  }
+
+  .error-404__subheading {
+    font-size: 1.125rem;
+    color: var(--color-text-muted, #666);
+    margin-bottom: 2rem;
+  }
+
+  .error-404__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .error-404__search {
+    display: flex;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .error-404__search-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+  }
+
+  .error-404__search-input:focus {
+    outline: none;
+    border-color: var(--color-primary, #000);
+  }
+
+  .error-404__search-submit {
+    border-radius: 0 4px 4px 0;
+    padding: 0.75rem 1rem;
+  }
+
+  .error-404__links {
+    border-top: 1px solid var(--color-border, #e5e5e5);
+    padding-top: 2rem;
+  }
+
+  .error-404__links-heading {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted, #666);
+    margin-bottom: 1rem;
+  }
+
+  .error-404__links-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .error-404__links-list a {
+    color: var(--color-text, #000);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .error-404__links-list a:hover {
+    color: var(--color-primary, #000);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .error-404__actions {
+      width: 100%;
+    }
+
+    .error-404__actions .btn {
+      width: 100%;
+    }
+
+    .error-404__search {
+      max-width: none;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "404 page",
+  "tag": "section",
+  "class": "section-404",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_error_code",
+      "label": "Show 404 error code",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Page not found"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "The page you're looking for doesn't exist or has been moved."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "header",
+      "content": "Additional options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search form",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_popular_links",
+      "label": "Show popular links",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "templates": ["404"]
+}
+{% endschema %}

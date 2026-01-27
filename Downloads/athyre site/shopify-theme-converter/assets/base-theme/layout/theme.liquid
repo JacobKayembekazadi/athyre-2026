@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page_title }}{% if page_title != shop.name %} | {{ shop.name }}{% endif %}</title>
+  <meta name="description" content="{{ page_description | escape }}">
+  
+  {{ content_for_header }}
+  
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  
+  {% style %}
+    :root {
+      --color-primary: {{ settings.color_primary }};
+      --color-secondary: {{ settings.color_secondary }};
+      --color-background: {{ settings.color_background }};
+      --color-text: {{ settings.color_text }};
+      --font-heading: {{ settings.font_heading.family }}, {{ settings.font_heading.fallback_families }};
+      --font-body: {{ settings.font_body.family }}, {{ settings.font_body.fallback_families }};
+    }
+  {% endstyle %}
+</head>
+<body class="template-{{ template.name }}">
+  <a href="#main-content" class="skip-link">{{ 'general.skip_to_content' | t }}</a>
+  
+  {% sections 'header-group' %}
+  
+  <main id="main-content">
+    {{ content_for_layout }}
+  </main>
+  
+  {% sections 'footer-group' %}
+  
+  {{ 'theme.js' | asset_url | script_tag }}
+</body>
+</html>

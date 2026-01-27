@@ -1,0 +1,275 @@
+{%- comment -%}
+  sections/main-login.liquid
+
+  Customer login form.
+  Includes password recovery option.
+{%- endcomment -%}
+
+<section class="section-{{ section.id }} login-page">
+  <div class="container container--narrow">
+    <div class="login-page__form-wrapper" id="login-form">
+      <h1 class="login-page__title">{{ 'customer.login.title' | t | default: 'Login' }}</h1>
+
+      {%- form 'customer_login', class: 'login-page__form' -%}
+        {%- if form.errors -%}
+          <div class="form__message form__message--error">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="form__row">
+          <label for="customer-email-{{ section.id }}" class="form__label">
+            {{ 'customer.login.email' | t | default: 'Email' }}
+          </label>
+          <input
+            type="email"
+            id="customer-email-{{ section.id }}"
+            name="customer[email]"
+            class="form__input"
+            autocomplete="email"
+            autocapitalize="off"
+            autocorrect="off"
+            required
+          >
+        </div>
+
+        <div class="form__row">
+          <label for="customer-password-{{ section.id }}" class="form__label">
+            {{ 'customer.login.password' | t | default: 'Password' }}
+          </label>
+          <input
+            type="password"
+            id="customer-password-{{ section.id }}"
+            name="customer[password]"
+            class="form__input"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">
+          {{ 'customer.login.submit' | t | default: 'Sign in' }}
+        </button>
+
+        <div class="login-page__links">
+          <button type="button" class="login-page__link" data-toggle-recover>
+            {{ 'customer.login.forgot_password' | t | default: 'Forgot your password?' }}
+          </button>
+          <span class="login-page__separator">&bull;</span>
+          <a href="{{ routes.account_register_url }}" class="login-page__link">
+            {{ 'customer.login.create_account' | t | default: 'Create account' }}
+          </a>
+        </div>
+      {%- endform -%}
+    </div>
+
+    {%- comment -%} Password recovery form {%- endcomment -%}
+    <div class="login-page__form-wrapper" id="recover-form" hidden>
+      <h1 class="login-page__title">{{ 'customer.recover_password.title' | t | default: 'Reset your password' }}</h1>
+      <p class="login-page__subtitle">
+        {{ 'customer.recover_password.subtext' | t | default: "We'll send you an email to reset your password." }}
+      </p>
+
+      {%- form 'recover_customer_password', class: 'login-page__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="form__message form__message--success">
+            {{ 'customer.recover_password.success' | t | default: "We've sent you an email with a link to reset your password." }}
+          </div>
+        {%- endif -%}
+
+        {%- if form.errors -%}
+          <div class="form__message form__message--error">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="form__row">
+          <label for="recover-email-{{ section.id }}" class="form__label">
+            {{ 'customer.recover_password.email' | t | default: 'Email' }}
+          </label>
+          <input
+            type="email"
+            id="recover-email-{{ section.id }}"
+            name="email"
+            class="form__input"
+            autocomplete="email"
+            autocapitalize="off"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">
+          {{ 'customer.recover_password.submit' | t | default: 'Submit' }}
+        </button>
+
+        <button type="button" class="login-page__link login-page__back" data-toggle-login>
+          {{ 'customer.recover_password.cancel' | t | default: 'Cancel' }}
+        </button>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .login-page__form-wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .login-page__title {
+    margin-bottom: 0.5rem;
+  }
+
+  .login-page__subtitle {
+    color: var(--color-text-muted, #666);
+    margin-bottom: 2rem;
+  }
+
+  .login-page__form {
+    text-align: left;
+  }
+
+  .form__row {
+    margin-bottom: 1rem;
+  }
+
+  .form__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .form__input {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 4px;
+  }
+
+  .form__input:focus {
+    outline: none;
+    border-color: var(--color-primary, #000);
+  }
+
+  .btn--full {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .login-page__links {
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+
+  .login-page__link {
+    color: var(--color-text-muted, #666);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+  }
+
+  .login-page__link:hover {
+    color: var(--color-primary, #000);
+    text-decoration: underline;
+  }
+
+  .login-page__separator {
+    margin: 0 0.5rem;
+    color: var(--color-text-muted, #999);
+  }
+
+  .login-page__back {
+    display: block;
+    margin: 1.5rem auto 0;
+  }
+
+  .form__message {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .form__message--success {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .form__message--error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+{% endstyle %}
+
+<script>
+  (function() {
+    const loginForm = document.getElementById('login-form');
+    const recoverForm = document.getElementById('recover-form');
+
+    document.querySelectorAll('[data-toggle-recover]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        loginForm.hidden = true;
+        recoverForm.hidden = false;
+      });
+    });
+
+    document.querySelectorAll('[data-toggle-login]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        loginForm.hidden = false;
+        recoverForm.hidden = true;
+      });
+    });
+
+    // Check URL hash for recover
+    if (window.location.hash === '#recover') {
+      loginForm.hidden = true;
+      recoverForm.hidden = false;
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Customer login",
+  "tag": "section",
+  "class": "section-login",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ],
+  "templates": ["customers/login"]
+}
+{% endschema %}

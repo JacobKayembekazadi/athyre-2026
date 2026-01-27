@@ -1,0 +1,80 @@
+[
+    {
+        "name": "theme_info",
+        "theme_name": "Athyre Sanctuary",
+        "theme_author": "Gemini Agent",
+        "theme_version": "1.0.0",
+        "theme_documentation_url": "https://athyre.com",
+        "theme_support_url": "https://athyre.com/contact"
+    },
+    {
+        "name": "Colors",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Base Colors"
+            },
+            {
+                "type": "color",
+                "id": "color_bg",
+                "label": "Background",
+                "default": "#ffffff"
+            },
+            {
+                "type": "color",
+                "id": "color_text",
+                "label": "Text",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "color_accent",
+                "label": "Accent",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "color_border",
+                "label": "Border",
+                "default": "#e7e5e4"
+            }
+        ]
+    },
+    {
+        "name": "Typography",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Fonts"
+            },
+            {
+                "type": "font_picker",
+                "id": "font_heading",
+                "label": "Heading Font",
+                "default": "helvetica_n4"
+            },
+            {
+                "type": "font_picker",
+                "id": "font_body",
+                "label": "Body Font",
+                "default": "helvetica_n4"
+            }
+        ]
+    },
+    {
+        "name": "Social Media",
+        "settings": [
+            {
+                "type": "text",
+                "id": "social_instagram_link",
+                "label": "Instagram",
+                "info": "https://instagram.com/athyre"
+            },
+            {
+                "type": "text",
+                "id": "social_facebook_link",
+                "label": "Facebook"
+            }
+        ]
+    }
+]
