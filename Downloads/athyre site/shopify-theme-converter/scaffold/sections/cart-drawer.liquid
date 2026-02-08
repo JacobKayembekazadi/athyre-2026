@@ -1,0 +1,565 @@
+{%- comment -%}
+  SCAFFOLD: Cart Drawer (AJAX Cart)
+
+  Slide-out cart drawer that opens when products are added to cart.
+  Supports AJAX updates without page reload.
+
+  Dependencies:
+  - assets/product-form.js (CartManager class)
+  - snippets/price.liquid
+
+  Usage:
+  {% section 'cart-drawer' %}
+{%- endcomment -%}
+
+<cart-drawer class="cart-drawer" id="CartDrawer">
+  <div class="cart-drawer__overlay" data-cart-drawer-overlay></div>
+
+  <div class="cart-drawer__panel" role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}">
+    <div class="cart-drawer__header">
+      <h2 class="cart-drawer__title">
+        {{ 'cart.title' | t }}
+        <span class="cart-drawer__count" data-cart-count>
+          ({{ cart.item_count }})
+        </span>
+      </h2>
+      <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="{{ 'accessibility.close' | t }}">
+        {% render 'icon-close' %}
+      </button>
+    </div>
+
+    <div class="cart-drawer__content" data-cart-drawer-content>
+      {%- if cart.item_count > 0 -%}
+        <form action="{{ routes.cart_url }}" method="post" id="CartDrawerForm">
+          <div class="cart-drawer__items" data-cart-items>
+            {%- for item in cart.items -%}
+              <div class="cart-drawer__item" data-cart-item data-key="{{ item.key }}">
+                <div class="cart-drawer__item-media">
+                  <a href="{{ item.url }}">
+                    {%- if item.image -%}
+                      {{ item.image | image_url: width: 150 | image_tag:
+                        loading: 'lazy',
+                        class: 'cart-drawer__item-image',
+                        alt: item.image.alt | default: item.product.title
+                      }}
+                    {%- else -%}
+                      <div class="cart-drawer__item-placeholder">
+                        {{ 'product-1' | placeholder_svg_tag }}
+                      </div>
+                    {%- endif -%}
+                  </a>
+                </div>
+
+                <div class="cart-drawer__item-details">
+                  <a href="{{ item.url }}" class="cart-drawer__item-title">
+                    {{ item.product.title }}
+                  </a>
+
+                  {%- unless item.product.has_only_default_variant -%}
+                    <p class="cart-drawer__item-variant">{{ item.variant.title }}</p>
+                  {%- endunless -%}
+
+                  {%- if item.selling_plan_allocation -%}
+                    <p class="cart-drawer__item-selling-plan">
+                      {{ item.selling_plan_allocation.selling_plan.name }}
+                    </p>
+                  {%- endif -%}
+
+                  {%- if item.properties.size > 0 -%}
+                    <ul class="cart-drawer__item-properties">
+                      {%- for property in item.properties -%}
+                        {%- unless property.last == blank or property.first contains '_' -%}
+                          <li>{{ property.first }}: {{ property.last }}</li>
+                        {%- endunless -%}
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+
+                  <div class="cart-drawer__item-price">
+                    {%- if item.original_line_price != item.final_line_price -%}
+                      <span class="cart-drawer__item-price--compare">
+                        {{ item.original_line_price | money }}
+                      </span>
+                    {%- endif -%}
+                    <span class="cart-drawer__item-price--final">
+                      {{ item.final_line_price | money }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="cart-drawer__item-actions">
+                  <quantity-input class="cart-drawer__quantity">
+                    <button type="button" class="quantity-btn" data-decrease aria-label="{{ 'cart.decrease' | t }}">
+                      {% render 'icon-minus' %}
+                    </button>
+                    <input
+                      type="number"
+                      name="updates[]"
+                      value="{{ item.quantity }}"
+                      min="0"
+                      max="{{ item.variant.inventory_quantity | default: 99 }}"
+                      class="quantity-input"
+                      data-index="{{ forloop.index }}"
+                      data-key="{{ item.key }}"
+                      aria-label="{{ 'cart.quantity' | t }}"
+                    >
+                    <button type="button" class="quantity-btn" data-increase aria-label="{{ 'cart.increase' | t }}">
+                      {% render 'icon-plus' %}
+                    </button>
+                  </quantity-input>
+
+                  <button type="button" class="cart-drawer__remove" data-remove aria-label="{{ 'cart.remove' | t }}">
+                    {% render 'icon-trash' %}
+                  </button>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+        </form>
+      {%- else -%}
+        <div class="cart-drawer__empty" data-cart-empty>
+          <p>{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
+            {{ 'cart.continue_shopping' | t }}
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if cart.item_count > 0 -%}
+      <div class="cart-drawer__footer" data-cart-footer>
+        {%- if section.settings.show_cart_note -%}
+          <div class="cart-drawer__note">
+            <label for="CartNote">{{ 'cart.note' | t }}</label>
+            <textarea id="CartNote" name="note" placeholder="{{ 'cart.note_placeholder' | t }}">{{ cart.note }}</textarea>
+          </div>
+        {%- endif -%}
+
+        <div class="cart-drawer__subtotal">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span data-cart-subtotal>{{ cart.total_price | money }}</span>
+        </div>
+
+        {%- if cart.cart_level_discount_applications.size > 0 -%}
+          <ul class="cart-drawer__discounts">
+            {%- for discount in cart.cart_level_discount_applications -%}
+              <li class="cart-drawer__discount">
+                {% render 'icon-tag' %}
+                <span>{{ discount.title }}</span>
+                <span>-{{ discount.total_allocated_amount | money }}</span>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <p class="cart-drawer__taxes-note">
+          {{ 'cart.taxes_and_shipping_at_checkout' | t }}
+        </p>
+
+        <div class="cart-drawer__buttons">
+          <a href="{{ routes.cart_url }}" class="btn btn--secondary cart-drawer__view-cart">
+            {{ 'cart.view_cart' | t }}
+          </a>
+          <button type="submit" name="checkout" form="CartDrawerForm" class="btn btn--primary cart-drawer__checkout">
+            {{ 'cart.checkout' | t }}
+          </button>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</cart-drawer>
+
+<script>
+  class CartDrawerElement extends HTMLElement {
+    constructor() {
+      super();
+      this.overlay = this.querySelector('[data-cart-drawer-overlay]');
+      this.closeBtn = this.querySelector('[data-cart-drawer-close]');
+      this.contentEl = this.querySelector('[data-cart-drawer-content]');
+
+      this.bindEvents();
+      this.listenForCartUpdates();
+    }
+
+    bindEvents() {
+      this.overlay?.addEventListener('click', () => this.close());
+      this.closeBtn?.addEventListener('click', () => this.close());
+
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.classList.contains('is-open')) {
+          this.close();
+        }
+      });
+
+      // Handle quantity changes
+      this.querySelectorAll('[data-remove]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const item = e.target.closest('[data-cart-item]');
+          const key = item?.dataset.key;
+          if (key) this.updateQuantity(key, 0);
+        });
+      });
+    }
+
+    listenForCartUpdates() {
+      // Listen for cart:updated events from product forms
+      document.addEventListener('cart:updated', () => {
+        this.refresh();
+      });
+
+      // Listen for cart:open events
+      document.addEventListener('cart:open', () => {
+        this.open();
+      });
+    }
+
+    open() {
+      this.classList.add('is-open');
+      document.body.classList.add('cart-drawer-open');
+      this.querySelector('.cart-drawer__close')?.focus();
+    }
+
+    close() {
+      this.classList.remove('is-open');
+      document.body.classList.remove('cart-drawer-open');
+    }
+
+    async updateQuantity(key, quantity) {
+      try {
+        const response = await fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: key, quantity })
+        });
+
+        if (response.ok) {
+          this.refresh();
+        }
+      } catch (error) {
+        console.error('Cart update error:', error);
+      }
+    }
+
+    async refresh() {
+      try {
+        const response = await fetch(`${window.location.pathname}?section_id=cart-drawer`);
+        const html = await response.text();
+        const parsed = new DOMParser().parseFromString(html, 'text/html');
+
+        // Update content
+        const newContent = parsed.querySelector('[data-cart-drawer-content]');
+        if (newContent && this.contentEl) {
+          this.contentEl.innerHTML = newContent.innerHTML;
+        }
+
+        // Update footer
+        const newFooter = parsed.querySelector('[data-cart-footer]');
+        const currentFooter = this.querySelector('[data-cart-footer]');
+        if (newFooter) {
+          if (currentFooter) {
+            currentFooter.outerHTML = newFooter.outerHTML;
+          } else {
+            this.querySelector('.cart-drawer__panel').appendChild(newFooter.cloneNode(true));
+          }
+        } else if (currentFooter) {
+          currentFooter.remove();
+        }
+
+        // Update cart count
+        const newCount = parsed.querySelector('[data-cart-count]');
+        const currentCount = this.querySelector('[data-cart-count]');
+        if (newCount && currentCount) {
+          currentCount.textContent = newCount.textContent;
+        }
+
+        // Update header cart count badge
+        const cart = await fetch('/cart.js').then(r => r.json());
+        document.querySelectorAll('[data-cart-count-badge]').forEach(el => {
+          el.textContent = cart.item_count;
+          el.toggleAttribute('hidden', cart.item_count === 0);
+        });
+
+        // Re-bind events
+        this.bindEvents();
+
+      } catch (error) {
+        console.error('Cart refresh error:', error);
+      }
+    }
+  }
+
+  if (!customElements.get('cart-drawer')) {
+    customElements.define('cart-drawer', CartDrawerElement);
+  }
+</script>
+
+<style>
+  .cart-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .cart-drawer.is-open {
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  .cart-drawer__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .cart-drawer.is-open .cart-drawer__overlay {
+    opacity: 1;
+  }
+
+  .cart-drawer__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 400px;
+    height: 100%;
+    background: var(--color-background, #fff);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .cart-drawer.is-open .cart-drawer__panel {
+    transform: translateX(0);
+  }
+
+  .cart-drawer__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+  }
+
+  .cart-drawer__title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .cart-drawer__close {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  .cart-drawer__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+  }
+
+  .cart-drawer__items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .cart-drawer__item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1rem;
+  }
+
+  .cart-drawer__item-media {
+    aspect-ratio: 1;
+    background: var(--color-background-secondary, #f5f5f5);
+    border-radius: var(--border-radius, 4px);
+    overflow: hidden;
+  }
+
+  .cart-drawer__item-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cart-drawer__item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .cart-drawer__item-title {
+    font-weight: 500;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .cart-drawer__item-title:hover {
+    text-decoration: underline;
+  }
+
+  .cart-drawer__item-variant,
+  .cart-drawer__item-selling-plan {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+    margin: 0;
+  }
+
+  .cart-drawer__item-price--compare {
+    text-decoration: line-through;
+    color: var(--color-text-muted, #666);
+    margin-right: 0.5rem;
+  }
+
+  .cart-drawer__item-actions {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .cart-drawer__quantity {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: var(--border-radius, 4px);
+  }
+
+  .cart-drawer__quantity .quantity-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  .cart-drawer__quantity .quantity-input {
+    width: 3rem;
+    text-align: center;
+    border: none;
+    font-size: 0.875rem;
+    -moz-appearance: textfield;
+  }
+
+  .cart-drawer__quantity .quantity-input::-webkit-outer-spin-button,
+  .cart-drawer__quantity .quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  .cart-drawer__remove {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text-muted, #666);
+    line-height: 0;
+  }
+
+  .cart-drawer__remove:hover {
+    color: var(--color-error, #c41e3a);
+  }
+
+  .cart-drawer__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .cart-drawer__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-border, #e5e5e5);
+    background: var(--color-background, #fff);
+  }
+
+  .cart-drawer__note {
+    margin-bottom: 1rem;
+  }
+
+  .cart-drawer__note label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  .cart-drawer__note textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: var(--border-radius, 4px);
+    resize: vertical;
+    min-height: 60px;
+  }
+
+  .cart-drawer__subtotal {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .cart-drawer__discounts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.5rem;
+  }
+
+  .cart-drawer__discount {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-success, #2e7d32);
+  }
+
+  .cart-drawer__taxes-note {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #666);
+    margin: 0 0 1rem;
+  }
+
+  .cart-drawer__buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .cart-drawer__buttons .btn {
+    flex: 1;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "tag": "section",
+  "class": "section-cart-drawer",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_cart_note",
+      "label": "Show cart note field",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

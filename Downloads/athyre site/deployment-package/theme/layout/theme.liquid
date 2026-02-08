@@ -33,7 +33,7 @@
     {{ 'app.css' | asset_url | stylesheet_tag }}
 
     {%- comment -%} P0 Performance: Defer all non-critical JS {%- endcomment -%}
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
 
     {{ content_for_header }}
 
@@ -52,10 +52,6 @@
   <body class="font-sans antialiased text-stone-900 bg-white selection:bg-stone-900 selection:text-white">
     {%- comment -%} P0 Accessibility: Skip link must be first focusable element {%- endcomment -%}
     {% render 'skip-link' %}
-
-    <a class="skip-to-content-link screen-reader-only" href="#MainContent">
-      {{ 'accessibility.skip_to_content' | t | default: 'Skip to content' }}
-    </a>
 
     {% section 'header' %}
     

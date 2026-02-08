@@ -90,12 +90,11 @@
     </div>
   </section>
 
-  {% comment %} SECTION 4: BALANCE CHECK {% endcomment %}
+  {% comment %} SECTION 4: BALANCE INFO {% endcomment %}
   <section class="text-center max-w-md mx-auto">
-    <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-8">Check Balance</h2>
-    <div class="relative">
-      <input type="text" placeholder="ENTER CODE" class="w-full border-b border-stone-200 py-4 text-center text-[10px] tracking-[0.2em] font-bold uppercase focus:outline-none focus:border-stone-900" />
-      <button class="absolute right-0 top-1/2 -translate-y-1/2 text-[9px] uppercase tracking-widest font-black text-stone-400 hover:text-stone-900">Check</button>
-    </div>
+    <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-8">Gift Card Balance</h2>
+    <p class="text-[11px] text-stone-500 leading-loose">
+      Your gift card balance is automatically applied at checkout. Enter your gift card code during payment to redeem. For balance inquiries, please <a href="{{ pages['contact-us'].url | default: routes.root_url | append: 'pages/contact' }}" class="underline hover:text-stone-900 transition-colors">contact our team</a>.
+    </p>
   </section>
 </div>

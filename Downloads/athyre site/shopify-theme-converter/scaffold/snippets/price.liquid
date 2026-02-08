@@ -1,0 +1,176 @@
+{%- comment -%}
+  SCAFFOLD: Price Display Snippet
+
+  Full-featured price display with:
+  - Sale price highlighting
+  - Compare-at price strikethrough
+  - Sale/Sold-out badges (optional)
+  - Unit pricing (if applicable)
+  - Currency code support
+  - "From" prefix for variable prices
+
+  Required variables:
+  - product: Product object
+
+  Optional variables:
+  - use_variant: {Boolean} Use selected variant price (default: false)
+  - show_badges: {Boolean} Show sale/sold out badges (default: false)
+  - class: {String} Additional CSS classes
+
+  Usage:
+  {% render 'price', product: product, use_variant: true, show_badges: true %}
+{%- endcomment -%}
+
+{%- liquid
+  if use_variant
+    assign target = product.selected_or_first_available_variant
+  else
+    assign target = product
+  endif
+
+  assign compare_at_price = target.compare_at_price
+  assign price = target.price
+  assign available = target.available
+
+  assign money_price = price | money
+
+  if settings.currency_code_enabled
+    assign money_price = price | money_with_currency
+  endif
+
+  if target == product and product.price_varies
+    assign money_price = 'products.product.price.from_price_html' | t: price: money_price
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+-%}
+
+<div class="price{{ class | prepend: ' ' }}{% if on_sale %} price--on-sale{% endif %}{% unless available %} price--sold-out{% endunless %}" id="price-{{ section.id }}">
+  <div class="price__container">
+    {%- if on_sale -%}
+      <span class="price__compare">
+        <span class="visually-hidden">{{ 'products.product.price.regular_price' | t }}</span>
+        <s class="price__compare-value">{{ compare_at_price | money }}</s>
+      </span>
+    {%- endif -%}
+
+    <span class="price__regular{% if on_sale %} price__regular--sale{% endif %}">
+      <span class="visually-hidden">{{ 'products.product.price.sale_price' | t }}</span>
+      <span class="price__value">{{ money_price }}</span>
+    </span>
+
+    {%- if product.quantity_price_breaks_configured? -%}
+      <span class="price__volume-pricing">
+        {{ 'products.product.volume_pricing.title' | t }}
+      </span>
+    {%- endif -%}
+  </div>
+
+  {%- if show_badges -%}
+    <div class="price__badges">
+      {%- if on_sale -%}
+        {%- liquid
+          assign savings = compare_at_price | minus: price
+          assign savings_percent = savings | times: 100.0 | divided_by: compare_at_price | round
+
+          if settings.sale_badge_type == 'percentage'
+            assign badge_text = savings_percent | append: '% ' | append: 'products.product.on_sale' | t
+          else
+            assign badge_text = 'products.product.on_sale' | t
+          endif
+        -%}
+        <span class="badge badge--sale">{{ badge_text }}</span>
+      {%- endif -%}
+
+      {%- unless available -%}
+        <span class="badge badge--sold-out">{{ 'products.product.sold_out' | t }}</span>
+      {%- endunless -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{%- comment -%} Unit Pricing {%- endcomment -%}
+{%- if target.unit_price_measurement -%}
+  <div class="unit-price">
+    <span class="visually-hidden">{{ 'products.product.price.unit_price' | t }}</span>
+    <span class="unit-price__price">{{ target.unit_price | money }}</span>
+    <span class="unit-price__separator">/</span>
+    {%- if target.unit_price_measurement.reference_value != 1 -%}
+      <span class="unit-price__reference-value">{{ target.unit_price_measurement.reference_value }}</span>
+    {%- endif -%}
+    <span class="unit-price__reference-unit">{{ target.unit_price_measurement.reference_unit }}</span>
+  </div>
+{%- endif -%}
+
+<style>
+  .price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .price__container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .price__regular {
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+
+  .price__regular--sale {
+    color: var(--color-sale, #c41e3a);
+  }
+
+  .price__compare {
+    color: var(--color-text-muted, #666);
+  }
+
+  .price__compare-value {
+    text-decoration: line-through;
+  }
+
+  .price__badges {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: var(--border-radius, 4px);
+  }
+
+  .badge--sale {
+    background-color: var(--color-sale, #c41e3a);
+    color: #fff;
+  }
+
+  .badge--sold-out {
+    background-color: var(--color-text-muted, #666);
+    color: #fff;
+  }
+
+  .unit-price {
+    font-size: 0.875rem;
+    color: var(--color-text-muted, #666);
+  }
+
+  .price--sold-out .price__regular {
+    color: var(--color-text-muted, #666);
+  }
+
+  .visibility-hidden {
+    visibility: hidden;
+  }
+</style>

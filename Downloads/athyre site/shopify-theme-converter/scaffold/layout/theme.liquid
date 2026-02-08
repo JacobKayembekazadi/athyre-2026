@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {%- render 'meta-tags' -%}
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+  {%- endif -%}
+
+  {%- comment -%} Preconnect to Shopify CDN {%- endcomment -%}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+  {%- comment -%} Preload Critical Resources {%- endcomment -%}
+  {%- if settings.type_header_font -%}
+    <link rel="preload" as="font" href="{{ settings.type_header_font | font_url }}" type="font/woff2" crossorigin>
+  {%- endif -%}
+  {%- if settings.type_body_font -%}
+    <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+  {%- endif -%}
+
+  {%- comment -%} CSS - Inline critical, defer rest {%- endcomment -%}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+
+  {%- comment -%} No-JS fallback {%- endcomment -%}
+  <script>
+    document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+  </script>
+
+  {%- comment -%} Theme Settings JS Variables {%- endcomment -%}
+  <script>
+    window.Shopify = window.Shopify || {};
+    window.Shopify.routes = window.Shopify.routes || {};
+    window.Shopify.routes.root = '{{ routes.root_url }}';
+    window.Shopify.routes.cartUrl = '{{ routes.cart_url }}';
+    window.Shopify.routes.cartAddUrl = '{{ routes.cart_add_url }}';
+    window.Shopify.routes.cartChangeUrl = '{{ routes.cart_change_url }}';
+    window.Shopify.routes.cartUpdateUrl = '{{ routes.cart_update_url }}';
+    window.Shopify.routes.searchUrl = '{{ routes.search_url }}';
+
+    window.variantStrings = {
+      addToCart: {{ 'products.product.add_to_cart' | t | json }},
+      soldOut: {{ 'products.product.sold_out' | t | json }},
+      unavailable: {{ 'products.product.unavailable' | t | json }},
+      addedToCart: {{ 'products.product.added_to_cart' | t | default: 'Added!' | json }}
+    };
+  </script>
+
+  {%- comment -%} Deferred Scripts {%- endcomment -%}
+  {{ 'product-form.js' | asset_url | script_tag | replace: '<script', '<script defer' }}
+</head>
+
+<body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+
+  {%- comment -%}
+    =====================================================
+    SKIP LINK (Accessibility - Required)
+    =====================================================
+  {%- endcomment -%}
+  <a href="#MainContent" class="skip-to-content">
+    {{ 'accessibility.skip_to_content' | t }}
+  </a>
+
+  {%- comment -%}
+    =====================================================
+    ANNOUNCEMENT BAR (Optional - Enable by uncommenting)
+    =====================================================
+  {%- endcomment -%}
+  {% section 'announcement-bar' %}
+
+  {%- comment -%}
+    =====================================================
+    HEADER
+    =====================================================
+  {%- endcomment -%}
+  {% section 'header' %}
+
+  {%- comment -%}
+    =====================================================
+    CART DRAWER (ENABLED by default)
+    Important: This must be rendered for AJAX cart to work
+    =====================================================
+  {%- endcomment -%}
+  {% section 'cart-drawer' %}
+
+  {%- comment -%}
+    =====================================================
+    BREADCRUMBS (Render before main content)
+    =====================================================
+  {%- endcomment -%}
+  {%- unless template == 'index' -%}
+    <div class="breadcrumbs-wrapper">
+      {% render 'breadcrumbs' %}
+    </div>
+  {%- endunless -%}
+
+  {%- comment -%}
+    =====================================================
+    MAIN CONTENT
+    =====================================================
+  {%- endcomment -%}
+  <main id="MainContent" class="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {%- comment -%}
+    =====================================================
+    FOOTER
+    =====================================================
+  {%- endcomment -%}
+  {% section 'footer' %}
+
+  {%- comment -%}
+    =====================================================
+    COOKIE BANNER (GDPR Compliance - ENABLED by default)
+    Important: Required for GDPR/privacy compliance
+    =====================================================
+  {%- endcomment -%}
+  {% section 'cookie-banner' %}
+
+  {%- comment -%}
+    =====================================================
+    OVERLAY/MODAL CONTAINERS
+    =====================================================
+  {%- endcomment -%}
+  <div class="overlay" data-overlay hidden></div>
+
+  {%- comment -%}
+    =====================================================
+    LIVE REGIONS (Accessibility)
+    =====================================================
+  {%- endcomment -%}
+  <div
+    id="cart-notification"
+    class="cart-notification"
+    aria-live="polite"
+    aria-atomic="true"
+    role="status"
+    hidden
+  ></div>
+
+  {%- comment -%}
+    =====================================================
+    QUICK VIEW MODAL (Optional - Enable if using quick view)
+    =====================================================
+  {%- endcomment -%}
+  {%- comment -%} {% render 'quick-view-modal' %} {%- endcomment -%}
+
+</body>
+</html>
+
+<style>
+  /* Skip to content link - Required for accessibility */
+  .skip-to-content {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 9999;
+  }
+
+  .skip-to-content:focus {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    padding: 1rem 1.5rem;
+    background: var(--color-background, #fff);
+    color: var(--color-text, #000);
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    outline: 2px solid var(--color-focus, #000);
+  }
+
+  .main-content:focus {
+    outline: none;
+  }
+
+  /* Overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Cart drawer open body class */
+  body.cart-drawer-open {
+    overflow: hidden;
+  }
+
+  body.cart-drawer-open .overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Filtering state */
+  body.is-filtering {
+    cursor: wait;
+  }
+
+  body.is-filtering .collection-products-wrapper {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Breadcrumbs wrapper */
+  .breadcrumbs-wrapper {
+    max-width: var(--page-width, 1200px);
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+</style>

@@ -16,6 +16,11 @@
             "previous": "Previous",
             "of": "of"
         },
+        "localization": {
+            "language": "Language",
+            "country": "Country/Currency",
+            "update": "Update"
+        },
         "cookie": {
             "privacy_policy": "Read our Privacy Policy",
             "manage_preferences": "Manage Cookie Preferences",
@@ -89,7 +94,8 @@
             "continue_shopping": "Continue Shopping",
             "taxes_and_shipping": "Taxes and shipping calculated at checkout",
             "view_cart": "View Cart",
-            "remove": "Remove"
+            "remove": "Remove",
+            "note_placeholder": "Special instructions for your order..."
         },
         "items": {
             "product": "Product",
@@ -148,6 +154,21 @@
             "subtotal": "Subtotal",
             "shipping_address": "Shipping Address",
             "summary": "Order Summary"
+        },
+        "activate_account": {
+            "title": "Activate Account",
+            "subtext": "Create your password to activate your account.",
+            "password": "Password",
+            "password_confirm": "Confirm Password",
+            "submit": "Activate Account",
+            "cancel": "Decline Invitation"
+        },
+        "reset_password": {
+            "title": "Reset Password",
+            "subtext": "Enter a new password for your account.",
+            "password": "New Password",
+            "password_confirm": "Confirm New Password",
+            "submit": "Reset Password"
         },
         "addresses": {
             "title": "Addresses",

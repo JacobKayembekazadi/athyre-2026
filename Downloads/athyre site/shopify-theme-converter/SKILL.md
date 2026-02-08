@@ -51,7 +51,10 @@ Load relevant references before starting:
 | Resource | Contents |
 |----------|----------|
 | `scaffold/icons/` | 48+ Lucide-based icon snippets |
-| `scaffold/sections/` | Pre-built sections with presets |
+| `scaffold/sections/` | Pre-built sections with presets (main-product, main-collection, etc.) |
+| `scaffold/snippets/` | Reusable components (variant-picker, breadcrumbs, price) |
+| `scaffold/assets/` | JavaScript (product-form.js with AJAX cart) |
+| `scaffold/layout/` | theme.liquid with cart drawer, cookie banner enabled |
 | `scaffold/config/` | Base settings schema |
 
 ### Component References
@@ -80,6 +83,26 @@ Load relevant references before starting:
 | Reference | Use When |
 |-----------|----------|
 | `references/b2b-wholesale.md` | Wholesale pricing, quick order, tiered pricing |
+| `references/cart-api-complete.md` | Cart API, line item properties, cart attributes |
+| `references/checkout-extensibility.md` | Checkout UI extensions, Shopify Functions |
+| `references/subscriptions-selling-plans.md` | Recurring products, subscribe & save |
+
+### Data & Integration References
+
+| Reference | Use When |
+|-----------|----------|
+| `references/metafields-complete.md` | Full metafield/metaobject guide, custom data |
+| `references/backend-connectivity.md` | App proxy, webhooks, Storefront API |
+| `references/customer-accounts.md` | Login, registration, account dashboard |
+| `references/markets-multi-currency.md` | International selling, currency, languages |
+| `references/search-discovery.md` | Predictive search, collection filtering |
+| `references/shopify-flow-automation.md` | Workflow automation, triggers, actions |
+
+### Quality & Standards References
+
+| Reference | Use When |
+|-----------|----------|
+| `references/performance-accessibility-checklist.md` | Lighthouse scores, WCAG compliance |
 
 ### Content & Marketing References
 
@@ -159,6 +182,37 @@ node scripts/generate_template.js page.about --sections hero,rich-text,team
 
 # Write directly to theme
 node scripts/generate_template.js page.about --sections hero,rich-text --write
+```
+
+### Issue 5: Sections Not Rendered in Layout
+
+**Problem:** Some critical sections exist but don't appear because they must be manually added to `theme.liquid`.
+
+**Solution:** Understand which sections auto-render vs. need manual rendering:
+
+| Section | Auto-Rendered? | Must Add to theme.liquid |
+|---------|----------------|--------------------------|
+| header | ✓ (layout) | No |
+| footer | ✓ (layout) | No |
+| main-* | ✓ (templates) | No |
+| cart-drawer | ❌ | Yes - `{% section 'cart-drawer' %}` |
+| cookie-banner | ❌ | Yes - `{% section 'cookie-banner' %}` |
+| announcement-bar | ❌ | Yes - `{% section 'announcement-bar' %}` |
+| breadcrumbs | ❌ (snippet) | Yes - `{% render 'breadcrumbs' %}` |
+
+**The scaffold's `theme.liquid` has these ENABLED by default.** If you create theme.liquid from scratch, ensure these are included:
+
+```liquid
+{%- comment -%} In <body>, after header {%- endcomment -%}
+{% section 'cart-drawer' %}
+
+{%- comment -%} Before main content (except homepage) {%- endcomment -%}
+{%- unless template == 'index' -%}
+  {% render 'breadcrumbs' %}
+{%- endunless -%}
+
+{%- comment -%} Before </body>, after footer {%- endcomment -%}
+{% section 'cookie-banner' %}
 ```
 
 ---
@@ -573,7 +627,10 @@ node scripts/sanitize_liquid.js ./theme/ --fix
 # 2. Validate all section schemas
 node scripts/validate_schema.js ./theme/sections/
 
-# 3. Check for missing icons (manual)
+# 3. Verify commerce functionality
+node scripts/verify_theme.js ./theme/
+
+# 4. Check for missing icons (manual)
 grep -roh "render 'icon-[^']*'" ./theme/ | \
   sed "s/render 'icon-\([^']*\)'/\1/" | \
   sort -u | \
@@ -583,7 +640,7 @@ grep -roh "render 'icon-[^']*'" ./theme/ | \
     fi
   done
 
-# 4. Check for hardcoded links
+# 5. Check for hardcoded links
 grep -rn 'href="/pages/' ./theme/sections/ ./theme/snippets/
 grep -rn 'href="/collections/' ./theme/sections/ ./theme/snippets/
 grep -rn 'href="/products/' ./theme/sections/ ./theme/snippets/
@@ -597,6 +654,52 @@ grep -rn 'href="/products/' ./theme/sections/ ./theme/snippets/
 | Missing preset | Add `"presets": [{"name": "Section Name"}]` to schema |
 | Missing icon | Copy from `scaffold/icons/` or create new |
 | Hardcoded URL | Use `{{ pages.handle.url }}` or `{{ routes.* }}` |
+
+#### Commerce Readiness Checklist
+
+Before deployment, verify these critical e-commerce features work:
+
+**Product Page:**
+- [ ] Variant selection changes price, image, and availability
+- [ ] Quantity selector +/- buttons work
+- [ ] Add to Cart button triggers cart drawer OR navigates to cart
+- [ ] Sold out variants show "Sold Out" state
+- [ ] Price displays correctly (regular, compare-at, sale)
+
+**Collection Page:**
+- [ ] Collection filtering works (uses real Shopify Filter API)
+- [ ] Collection sorting works (price, date, alphabetical)
+- [ ] Pagination works
+- [ ] Product cards show correct prices
+
+**Cart:**
+- [ ] Cart drawer opens on add-to-cart
+- [ ] Quantity updates work in cart
+- [ ] Remove item works
+- [ ] Cart total updates correctly
+
+**Search:**
+- [ ] Search returns results
+- [ ] Predictive search suggestions appear
+
+**Customer:**
+- [ ] Login page works
+- [ ] Account pages load (if enabled)
+
+**Run automated verification:**
+```bash
+node scripts/verify_theme.js ./theme/
+```
+
+This script checks:
+- Cart drawer is enabled (not commented out)
+- Cookie banner renders
+- Product form JavaScript exists
+- Collection filtering uses real Filter API
+- Breadcrumbs snippet exists
+- Variant picker uses option-based selection
+- Price snippet has compare-at support
+- Skip-to-content link exists (accessibility)
 
 ---
 
@@ -811,15 +914,57 @@ When asked to convert a project, follow this sequence:
 
 0. **Initialize** → Copy scaffold icons, sections, config to theme/
 1. **Analyze** → Map all pages, components, navigation, assets
-2. **Convert** → Transform components to sections with extracted content
-3. **Template** → Create JSON templates with pre-placed sections
-4. **Navigate** → Document menu structure
-5. **Manifest** → List all assets to upload
-6. **Sanitize** → Run sanitizer + validator scripts
-7. **Package** → Assemble deployment package
-8. **Document** → Generate setup checklist
+2. **Data Architecture** → Identify custom data → metafields/metaobjects mapping
+3. **Convert** → Transform components to sections with extracted content
+4. **Commerce Logic** → Document discounts, shipping, cart customizations
+5. **Template** → Create JSON templates with pre-placed sections
+6. **Navigate** → Document menu structure
+7. **Manifest** → List all assets to upload
+8. **Integrations** → Document webhooks, app proxy needs, automations
+9. **Sanitize** → Run sanitizer + validator scripts
+10. **Package** → Assemble deployment package
+11. **Document** → Generate setup checklist
 
 **Output:** Complete deployment package, not just a theme folder.
+
+---
+
+## Pre-Conversion Questionnaire
+
+Before starting ANY conversion, clarify these areas:
+
+### Data Questions
+- [ ] What custom product data exists? (specs, ingredients, care, etc.)
+- [ ] Is there a CMS? What content types?
+- [ ] Are there customer accounts with custom data?
+- [ ] Are there order customization options (gift wrap, notes)?
+
+### Commerce Questions
+- [ ] What discount types exist? (automatic, codes, tiered)
+- [ ] Is there free shipping logic?
+- [ ] Are there subscription/recurring products?
+- [ ] What payment methods are used?
+- [ ] Is there B2B/wholesale functionality?
+
+### Integration Questions
+- [ ] What external services are integrated? (CRM, ERP, etc.)
+- [ ] What automations exist (email sequences, notifications)?
+- [ ] Is there a custom backend/API?
+- [ ] What analytics are used?
+
+### International Questions
+- [ ] Does the site sell internationally?
+- [ ] What currencies are supported?
+- [ ] What languages are supported?
+- [ ] Are there market-specific prices?
+
+### Customer Questions
+- [ ] What does the account dashboard show?
+- [ ] Is there wishlist functionality?
+- [ ] Are there loyalty/rewards features?
+- [ ] What is the customer support flow?
+
+See `SKILL-BLINDSPOTS-ANALYSIS.md` for comprehensive gap analysis.
 
 ---
 

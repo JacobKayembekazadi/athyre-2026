@@ -1,0 +1,193 @@
+{% comment %}
+  Rich Text Section
+  - Centered text block with heading, body, and optional CTA
+  - Configurable width, alignment, and spacing
+  - Includes presets for Theme Editor visibility
+{% endcomment %}
+
+<section
+  id="section-{{ section.id }}"
+  class="rich-text py-16 md:py-24 px-6 md:px-8"
+>
+  <div
+    class="rich-text__container mx-auto"
+    style="max-width: {{ section.settings.max_width }}px; text-align: {{ section.settings.alignment }};"
+  >
+    {% if section.settings.subheading != blank %}
+      <span class="rich-text__subheading block text-xs uppercase tracking-widest font-semibold mb-4"
+        style="color: {{ section.settings.subheading_color }};">
+        {{ section.settings.subheading }}
+      </span>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 class="rich-text__heading text-3xl md:text-4xl font-bold mb-6"
+        style="color: {{ section.settings.heading_color }};">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {% if section.settings.text != blank %}
+      <div class="rich-text__body prose prose-lg max-w-none mb-8"
+        style="color: {{ section.settings.text_color }};">
+        {{ section.settings.text }}
+      </div>
+    {% endif %}
+
+    {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+      <a
+        href="{{ section.settings.button_link }}"
+        class="rich-text__button inline-block px-6 py-3 text-sm font-semibold transition-all duration-300
+          {% if section.settings.button_style == 'primary' %}
+            bg-stone-900 text-white hover:bg-stone-700
+          {% elsif section.settings.button_style == 'secondary' %}
+            border-2 border-stone-900 text-stone-900 hover:bg-stone-900 hover:text-white
+          {% else %}
+            border-b-2 border-stone-900 text-stone-900 hover:opacity-70 pb-1
+          {% endif %}"
+      >
+        {{ section.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  #section-{{ section.id }} {
+    background-color: {{ section.settings.background_color }};
+  }
+
+  #section-{{ section.id }} .rich-text__body p {
+    margin-bottom: 1em;
+  }
+
+  #section-{{ section.id }} .rich-text__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  {% if section.settings.alignment == 'center' %}
+  #section-{{ section.id }} .rich-text__body {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  {% endif %}
+</style>
+
+{% schema %}
+{
+  "name": "Rich Text",
+  "tag": "section",
+  "class": "section-rich-text",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "About Us"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Story"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Share your brand story with customers. Describe your products, your mission, or what makes your business unique.</p><p>Use this section to connect with your audience and build trust through authentic storytelling.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "Learn More"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button Style",
+      "options": [
+        { "value": "primary", "label": "Primary (Filled)" },
+        { "value": "secondary", "label": "Secondary (Outlined)" },
+        { "value": "link", "label": "Link (Underlined)" }
+      ],
+      "default": "secondary"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Content Width",
+      "options": [
+        { "value": "640", "label": "Narrow (640px)" },
+        { "value": "768", "label": "Medium (768px)" },
+        { "value": "1024", "label": "Wide (1024px)" },
+        { "value": "1280", "label": "Extra Wide (1280px)" }
+      ],
+      "default": "768"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading Color",
+      "default": "#737373"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#171717"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#404040"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich Text",
+      "category": "Text"
+    }
+  ]
+}
+{% endschema %}

@@ -6,7 +6,7 @@
 {%- if product -%}
 <button
   type="button"
-  class="wishlist-btn{% if product.handle | is_in_wishlist %} is-active{% endif %}"
+  class="wishlist-btn"
   data-wishlist-toggle="{{ product.handle }}"
   aria-label="{{ 'products.product.add_to_wishlist' | t | default: 'Add to wishlist' }}"
   aria-pressed="false"

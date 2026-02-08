@@ -1,0 +1,199 @@
+{%- comment -%}
+  SCAFFOLD: Breadcrumbs Navigation with JSON-LD Schema
+
+  Displays breadcrumb navigation trail and outputs
+  structured data for SEO.
+
+  Automatically detects page type and builds appropriate breadcrumb trail.
+
+  Usage:
+  {% render 'breadcrumbs' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign show_breadcrumbs = true
+
+  # Don't show on homepage
+  if request.page_type == 'index'
+    assign show_breadcrumbs = false
+  endif
+
+  # Don't show on cart, search, or 404
+  if request.page_type == 'cart' or request.page_type == 'search' or request.page_type == '404'
+    assign show_breadcrumbs = false
+  endif
+-%}
+
+{%- if show_breadcrumbs -%}
+  <nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs.label' | t | default: 'Breadcrumbs' }}">
+    <ol class="breadcrumbs__list" itemscope itemtype="https://schema.org/BreadcrumbList">
+
+      {%- comment -%} Home {%- endcomment -%}
+      <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a href="{{ routes.root_url }}" class="breadcrumbs__link" itemprop="item">
+          <span itemprop="name">{{ 'general.breadcrumbs.home' | t | default: 'Home' }}</span>
+        </a>
+        <meta itemprop="position" content="1">
+      </li>
+
+      {%- case request.page_type -%}
+
+        {%- when 'product' -%}
+          {%- comment -%} Product: Home > Collection (if from collection) > Product {%- endcomment -%}
+          {%- if collection -%}
+            <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ collection.url }}" class="breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ collection.title }}</span>
+              </a>
+              <meta itemprop="position" content="2">
+            </li>
+            <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span itemprop="name" aria-current="page">{{ product.title }}</span>
+              <meta itemprop="position" content="3">
+            </li>
+          {%- else -%}
+            {%- comment -%} Use product's first collection as fallback {%- endcomment -%}
+            {%- if product.collections.size > 0 -%}
+              <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{{ product.collections.first.url }}" class="breadcrumbs__link" itemprop="item">
+                  <span itemprop="name">{{ product.collections.first.title }}</span>
+                </a>
+                <meta itemprop="position" content="2">
+              </li>
+              <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name" aria-current="page">{{ product.title }}</span>
+                <meta itemprop="position" content="3">
+              </li>
+            {%- else -%}
+              <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name" aria-current="page">{{ product.title }}</span>
+                <meta itemprop="position" content="2">
+              </li>
+            {%- endif -%}
+          {%- endif -%}
+
+        {%- when 'collection' -%}
+          {%- comment -%} Collection: Home > All Collections (optional) > Collection {%- endcomment -%}
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ collection.title }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- when 'list-collections' -%}
+          {%- comment -%} All Collections: Home > Collections {%- endcomment -%}
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ 'collections.general.title' | t | default: 'Collections' }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- when 'blog' -%}
+          {%- comment -%} Blog: Home > Blog {%- endcomment -%}
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ blog.title }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- when 'article' -%}
+          {%- comment -%} Article: Home > Blog > Article {%- endcomment -%}
+          <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" class="breadcrumbs__link" itemprop="item">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            <meta itemprop="position" content="2">
+          </li>
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ article.title }}</span>
+            <meta itemprop="position" content="3">
+          </li>
+
+        {%- when 'page' -%}
+          {%- comment -%} Page: Home > Page {%- endcomment -%}
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ page.title }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- when 'customers/account' -%}
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ 'customer.account.title' | t }}</span>
+            <meta itemprop="position" content="2">
+          </li>
+
+        {%- when 'customers/addresses' -%}
+          <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.account_url }}" class="breadcrumbs__link" itemprop="item">
+              <span itemprop="name">{{ 'customer.account.title' | t }}</span>
+            </a>
+            <meta itemprop="position" content="2">
+          </li>
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ 'customer.addresses.title' | t }}</span>
+            <meta itemprop="position" content="3">
+          </li>
+
+        {%- when 'customers/order' -%}
+          <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.account_url }}" class="breadcrumbs__link" itemprop="item">
+              <span itemprop="name">{{ 'customer.account.title' | t }}</span>
+            </a>
+            <meta itemprop="position" content="2">
+          </li>
+          <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" aria-current="page">{{ 'customer.order.title' | t: name: order.name }}</span>
+            <meta itemprop="position" content="3">
+          </li>
+
+      {%- endcase -%}
+
+    </ol>
+  </nav>
+{%- endif -%}
+
+<style>
+  .breadcrumbs {
+    padding: 1rem 0;
+    font-size: 0.875rem;
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .breadcrumbs__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumbs__item:not(:last-child)::after {
+    content: '/';
+    color: var(--color-text-muted, #666);
+  }
+
+  .breadcrumbs__link {
+    color: var(--color-text-muted, #666);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumbs__link:hover {
+    color: var(--color-text, #000);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs__item--current {
+    color: var(--color-text, #000);
+  }
+
+  @media (max-width: 749px) {
+    .breadcrumbs {
+      font-size: 0.75rem;
+    }
+  }
+</style>
