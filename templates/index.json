@@ -56,6 +56,51 @@
         "heading": "Join The Community",
         "subheading": "Receive early access to drops and daily intentions."
       }
+    },
+    "newsletter_popup_Gznz3F": {
+      "type": "newsletter-popup",
+      "name": "Newsletter Popup",
+      "settings": {
+        "heading": "Join The Community",
+        "subheading": "Receive early access to drops and daily intentions."
+      }
+    },
+    "rich_text_QL88bd": {
+      "type": "rich-text",
+      "name": "Rich Text",
+      "settings": {
+        "heading": "Talk about your brand",
+        "text": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>",
+        "alignment": "center",
+        "width": "max-w-3xl",
+        "button_label": "",
+        "button_link": ""
+      }
+    },
+    "featured_collection_6afped": {
+      "type": "featured-collection",
+      "name": "Featured Collection",
+      "settings": {
+        "title": "Featured Collection",
+        "collection": "rise-collection-1",
+        "products_to_show": 4
+      }
+    },
+    "vision_manifesto_G3Katg": {
+      "type": "vision-manifesto",
+      "name": "Vision Manifesto",
+      "settings": {
+        "heading": "Create <br> <span class=\"font-serif italic text-stone-400\">Sanctuary</span> <br> Through <br> Movement.",
+        "link_text": "Read The Manifesto",
+        "link_url": ""
+      }
+    },
+    "main_collection_miEgPj": {
+      "type": "main-collection",
+      "name": "Product Grid",
+      "settings": {
+        "products_per_page": 12
+      }
     }
   },
   "order": [
@@ -64,6 +109,11 @@
     "featured_products",
     "intention",
     "blog",
-    "popup"
+    "popup",
+    "newsletter_popup_Gznz3F",
+    "rich_text_QL88bd",
+    "featured_collection_6afped",
+    "vision_manifesto_G3Katg",
+    "main_collection_miEgPj"
   ]
 }
