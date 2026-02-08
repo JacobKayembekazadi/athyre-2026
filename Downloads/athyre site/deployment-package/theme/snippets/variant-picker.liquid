@@ -1,0 +1,122 @@
+{%- comment -%}
+  Variant Picker
+  Renders option-based selectors instead of flat variant list
+  
+  Arguments:
+  - product: The product object
+  - show_color_swatches: Boolean to show color swatches for Color option
+{%- endcomment -%}
+
+{%- liquid
+  assign show_color_swatches = show_color_swatches | default: true
+-%}
+
+<div class="variant-picker space-y-6">
+  {%- for option in product.options_with_values -%}
+    {%- liquid
+      assign option_index = forloop.index0
+      assign is_color = false
+      assign color_names = 'color,colour,colors,colours' | split: ','
+      assign option_name_lower = option.name | downcase
+      for color_name in color_names
+        if option_name_lower == color_name
+          assign is_color = true
+          break
+        endif
+      endfor
+    -%}
+    
+    <fieldset class="variant-picker__option" data-option-position="{{ option.position }}">
+      <legend class="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-4 flex items-center gap-2">
+        {{ option.name }}
+        <span data-selected-option="{{ option_index }}" class="font-normal text-stone-600">
+          {%- for value in option.values -%}
+            {%- if forloop.first -%}{{ value }}{%- endif -%}
+          {%- endfor -%}
+        </span>
+      </legend>
+      
+      <div class="flex flex-wrap gap-3">
+        {%- for value in option.values -%}
+          {%- liquid
+            # Check if this option combo is available
+            assign option_available = false
+            for variant in product.variants
+              if variant.options[option_index] == value
+                if variant.available
+                  assign option_available = true
+                  break
+                endif
+              endif
+            endfor
+          -%}
+          
+          {%- if is_color and show_color_swatches -%}
+            {%- comment -%} Color Swatch {%- endcomment -%}
+            <label class="relative cursor-pointer group" title="{{ value }}">
+              <input 
+                type="radio" 
+                name="option-{{ option_index }}"
+                value="{{ value | escape }}"
+                data-option-input
+                data-option-index="{{ option_index }}"
+                class="peer sr-only"
+                {% if forloop.first %}checked{% endif %}
+                {% unless option_available %}disabled{% endunless %}
+              >
+              <span 
+                class="block w-10 h-10 rounded-full border-2 border-transparent peer-checked:border-stone-900 peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-stone-500 transition-all {% unless option_available %}opacity-40 cursor-not-allowed{% endunless %}"
+                style="background-color: {{ value | handleize | replace: '-', '' }};"
+                aria-label="{{ value }}"
+              >
+                {%- unless option_available -%}
+                  <span class="absolute inset-0 flex items-center justify-center">
+                    <span class="block w-[140%] h-px bg-stone-400 rotate-45 absolute"></span>
+                  </span>
+                {%- endunless -%}
+              </span>
+            </label>
+          {%- else -%}
+            {%- comment -%} Text Button {%- endcomment -%}
+            <label class="cursor-pointer">
+              <input 
+                type="radio" 
+                name="option-{{ option_index }}"
+                value="{{ value | escape }}"
+                data-option-input
+                data-option-index="{{ option_index }}"
+                class="peer sr-only"
+                {% if forloop.first %}checked{% endif %}
+                {% unless option_available %}disabled{% endunless %}
+              >
+              <span class="inline-block min-w-[3rem] px-4 py-3 text-center text-[10px] font-bold uppercase tracking-widest border transition-all
+                peer-checked:bg-stone-900 peer-checked:text-white peer-checked:border-stone-900
+                peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-stone-500
+                {% if option_available %}
+                  border-stone-200 hover:border-stone-900
+                {% else %}
+                  border-stone-100 text-stone-300 cursor-not-allowed line-through
+                {% endif %}
+              ">
+                {{ value }}
+              </span>
+            </label>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </fieldset>
+  {%- endfor -%}
+</div>
+
+<script>
+  // Update selected option text on change
+  document.querySelectorAll('[data-option-input]').forEach(input => {
+    input.addEventListener('change', (e) => {
+      const index = e.target.dataset.optionIndex;
+      const selectedText = document.querySelector(`[data-selected-option="${index}"]`);
+      if (selectedText) {
+        selectedText.textContent = e.target.value;
+      }
+    });
+  });
+</script>

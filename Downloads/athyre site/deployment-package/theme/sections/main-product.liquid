@@ -161,77 +161,225 @@
 }
 {% endschema %}
 
-<div class="pt-24 md:pt-32 pb-16 md:pb-24 px-4 md:px-8 max-w-7xl mx-auto min-h-screen">
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+-%}
+
+{%- comment -%} Product JSON for JavaScript {%- endcomment -%}
+<script type="application/json" id="ProductJson-{{ product.id }}">
+  {{ product | json }}
+</script>
+
+<div 
+  class="pt-24 md:pt-32 pb-16 md:pb-24 px-4 md:px-8 max-w-7xl mx-auto min-h-screen"
+  data-product-form
+  data-product-id="{{ product.id }}"
+>
   <div class="grid md:grid-cols-2 gap-8 md:gap-16">
     
-    {% comment %} LEFT: GALLERY {% endcomment %}
+    {%- comment -%} LEFT: GALLERY {%- endcomment -%}
     <div class="space-y-4">
-      {% for media in product.media %}
-        <div class="aspect-[3/4] bg-stone-100 overflow-hidden rounded-[2px]">
-          {{ media | image_url: width: 1000 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+      {%- if product.media.size > 0 -%}
+        {%- for media in product.media -%}
+          <div class="aspect-[3/4] bg-stone-100 overflow-hidden rounded-[2px] {% if section.settings.enable_zoom %}cursor-zoom-in{% endif %}">
+            {%- if forloop.first -%}
+              {{ media | image_url: width: 1000 | image_tag: 
+                class: 'w-full h-full object-cover', 
+                loading: 'eager',
+                data-product-main-image: true
+              }}
+            {%- else -%}
+              {{ media | image_url: width: 1000 | image_tag: 
+                class: 'w-full h-full object-cover', 
+                loading: 'lazy'
+              }}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="aspect-[3/4] bg-stone-100 flex items-center justify-center">
+          {{ 'product-1' | placeholder_svg_tag: 'w-1/2 h-1/2 text-stone-300' }}
         </div>
-      {% endfor %}
+      {%- endif -%}
     </div>
 
-    {% comment %} RIGHT: DETAILS {% endcomment %}
+    {%- comment -%} RIGHT: DETAILS {%- endcomment -%}
     <div class="md:sticky md:top-32 md:self-start">
+      
+      {%- comment -%} Header {%- endcomment -%}
       <div class="mb-6 md:mb-8 border-b border-stone-100 pb-6 md:pb-8">
-        <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-2">{{ product.type }}</span>
+        {%- if section.settings.show_vendor and product.vendor -%}
+          <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-2">{{ product.vendor }}</span>
+        {%- else -%}
+          <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-2">{{ product.type }}</span>
+        {%- endif -%}
+        
         <h1 class="text-2xl md:text-3xl font-serif italic text-stone-900 mb-4">{{ product.title }}</h1>
-        <p class="text-xl font-light text-stone-600 mb-6">{{ product.price | money }}</p>
-        <div class="prose prose-stone text-sm text-stone-500 leading-relaxed mb-6">
+        
+        {%- comment -%} Price with compare-at {%- endcomment -%}
+        <div class="flex items-center gap-3 mb-4">
+          <span 
+            class="text-xl font-light {% if current_variant.compare_at_price > current_variant.price %}text-red-600{% else %}text-stone-600{% endif %}"
+            data-product-price
+          >
+            {{ current_variant.price | money }}
+          </span>
+          
+          {%- if current_variant.compare_at_price > current_variant.price -%}
+            <span class="text-lg text-stone-400 line-through" data-compare-price>
+              {{ current_variant.compare_at_price | money }}
+            </span>
+            <span class="text-xs uppercase tracking-widest font-bold text-red-600 bg-red-50 px-2 py-1">Sale</span>
+          {%- else -%}
+            <span class="text-lg text-stone-400 line-through hidden" data-compare-price></span>
+          {%- endif -%}
+        </div>
+        
+        {%- comment -%} Stock Status {%- endcomment -%}
+        {%- if section.settings.show_stock_level -%}
+          <div class="text-sm" data-stock-status>
+            {%- if current_variant.available -%}
+              {%- if current_variant.inventory_management and current_variant.inventory_quantity <= section.settings.low_stock_threshold and current_variant.inventory_quantity > 0 -%}
+                <span class="text-amber-600">Only {{ current_variant.inventory_quantity }} left</span>
+              {%- else -%}
+                <span class="text-green-600">In Stock</span>
+              {%- endif -%}
+            {%- else -%}
+              <span class="text-red-600">Out of Stock</span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+        
+        {%- if section.settings.show_sku and current_variant.sku -%}
+          <p class="text-xs text-stone-400 mt-2">SKU: {{ current_variant.sku }}</p>
+        {%- endif -%}
+        
+        <div class="prose prose-stone text-sm text-stone-500 leading-relaxed mt-4">
           {{ product.description }}
         </div>
       </div>
 
-      {% form 'product', product %}
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+      {%- comment -%} Product Form {%- endcomment -%}
+      {% form 'product', product, data-product-form-inner: true %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
         
-        {% comment %} VARIANTS {% endcomment %}
-        {% unless product.has_only_default_variant %}
+        {%- comment -%} Variant Picker {%- endcomment -%}
+        {%- unless product.has_only_default_variant -%}
           <div class="mb-8">
-            <label class="text-[9px] uppercase tracking-widest font-bold text-stone-400 block mb-4">Select Option</label>
-            <div class="flex flex-wrap gap-4">
-              {% for variant in product.variants %}
-                <label class="cursor-pointer">
-                  <input type="radio" name="id" value="{{ variant.id }}" class="peer sr-only" {% if forloop.first %}checked{% endif %}>
-                  <div class="border border-stone-200 px-6 py-3 text-[10px] font-bold tracking-widest hover:border-stone-900 transition-colors peer-checked:bg-stone-900 peer-checked:text-white peer-checked:border-stone-900">
-                    {{ variant.title }}
-                  </div>
-                </label>
-              {% endfor %}
+            {% render 'variant-picker', product: product %}
+          </div>
+        {%- endunless -%}
+
+        {%- comment -%} Quantity Selector {%- endcomment -%}
+        {%- if section.settings.show_quantity_selector -%}
+          <div class="mb-8">
+            <label class="text-[10px] uppercase tracking-widest font-bold text-stone-400 block mb-4">Quantity</label>
+            <div class="flex items-center gap-4 max-w-[140px]">
+              <button 
+                type="button"
+                data-quantity-minus
+                class="w-10 h-10 border border-stone-200 flex items-center justify-center hover:border-stone-900 transition-colors text-stone-500 hover:text-stone-900"
+                aria-label="Decrease quantity"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M5 12h14"/>
+                </svg>
+              </button>
+              <input 
+                type="number" 
+                name="quantity" 
+                value="1" 
+                min="1" 
+                data-quantity-input
+                class="w-12 text-center border-0 focus:ring-0 text-lg font-medium"
+                aria-label="Quantity"
+              >
+              <button 
+                type="button"
+                data-quantity-plus
+                class="w-10 h-10 border border-stone-200 flex items-center justify-center hover:border-stone-900 transition-colors text-stone-500 hover:text-stone-900"
+                aria-label="Increase quantity"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
             </div>
           </div>
-        {% endunless %}
+        {%- endif -%}
 
-        {% comment %} ACTIONS {% endcomment %}
+        {%- comment -%} Actions {%- endcomment -%}
         <div class="flex gap-4">
-          <button type="submit" class="flex-grow bg-stone-900 text-white py-4 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-stone-800 transition-colors shadow-xl" {% unless product.available %}disabled{% endunless %}>
-            {% if product.available %}Add to Sanctuary{% else %}Sold Out{% endif %}
+          <button 
+            type="submit" 
+            data-add-to-cart
+            class="flex-grow bg-stone-900 text-white py-4 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-stone-800 transition-colors shadow-xl disabled:opacity-50 disabled:cursor-not-allowed" 
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-to-cart-text>
+              {%- if current_variant.available -%}
+                Add to Cart
+              {%- else -%}
+                Sold Out
+              {%- endif -%}
+            </span>
           </button>
-          <button type="button" class="w-14 border border-stone-200 flex items-center justify-center hover:border-stone-900 transition-colors">
-            {% render 'icon-heart', class: 'w-5 h-5 text-stone-400' %}
-          </button>
+          {% render 'wishlist-button', product: product %}
         </div>
       {% endform %}
 
-      {% comment %} ACCORDION {% endcomment %}
-      <div class="mt-12 space-y-4">
-        {% for block in section.blocks %}
-          <details class="group border-b border-stone-100 pb-4">
-            <summary class="flex justify-between items-center cursor-pointer list-none py-2 text-[10px] uppercase tracking-[0.2em] font-bold text-stone-500 hover:text-stone-900 transition-colors">
-              {{ block.settings.heading }}
-              <span class="block w-4 h-4 relative">
-                <span class="absolute top-1/2 left-0 w-full h-px bg-current transition-transform group-open:rotate-180"></span>
-                <span class="absolute top-1/2 left-0 w-full h-px bg-current rotate-90 transition-transform group-open:rotate-180"></span>
-              </span>
-            </summary>
-            <div class="text-sm text-stone-500 leading-relaxed pt-4 animate-in fade-in slide-in-from-top-2">
-              {{ block.settings.content }}
-            </div>
-          </details>
-        {% endfor %}
-      </div>
+      {%- comment -%} Accordion Blocks {%- endcomment -%}
+      {%- if section.blocks.size > 0 -%}
+        <div class="mt-12 space-y-4">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'accordion' -%}
+              <details class="group border-b border-stone-100 pb-4" {{ block.shopify_attributes }}>
+                <summary class="flex justify-between items-center cursor-pointer list-none py-2 text-[10px] uppercase tracking-[0.2em] font-bold text-stone-500 hover:text-stone-900 transition-colors">
+                  {{ block.settings.heading }}
+                  <span class="block w-4 h-4 relative">
+                    <span class="absolute top-1/2 left-0 w-full h-px bg-current transition-transform group-open:rotate-180"></span>
+                    <span class="absolute top-1/2 left-0 w-full h-px bg-current rotate-90 transition-transform group-open:rotate-180"></span>
+                  </span>
+                </summary>
+                <div class="text-sm text-stone-500 leading-relaxed pt-4">
+                  {{ block.settings.content }}
+                </div>
+              </details>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+      
+      {%- comment -%} Share Buttons {%- endcomment -%}
+      {%- if section.settings.show_share_buttons -%}
+        <div class="mt-8 pt-8 border-t border-stone-100">
+          <div class="flex items-center gap-4">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-stone-400">Share</span>
+            <a href="https://www.facebook.com/sharer.php?u={{ shop.url }}{{ product.url }}" target="_blank" rel="noopener" class="text-stone-400 hover:text-stone-900 transition-colors" aria-label="Share on Facebook">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            </a>
+            <a href="https://twitter.com/intent/tweet?text={{ product.title | url_encode }}&url={{ shop.url }}{{ product.url }}" target="_blank" rel="noopener" class="text-stone-400 hover:text-stone-900 transition-colors" aria-label="Share on Twitter">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+            </a>
+            <a href="mailto:?subject={{ product.title | url_encode }}&body={{ shop.url }}{{ product.url }}" class="text-stone-400 hover:text-stone-900 transition-colors" aria-label="Share via Email">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+            </a>
+          </div>
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </div>
+
+{%- comment -%} Load Product Form JS {%- endcomment -%}
+<script src="{{ 'product-form.js' | asset_url }}" defer></script>
+
+{%- comment -%} Set AJAX cart flag for JS {%- endcomment -%}
+{%- if section.settings.enable_ajax_cart -%}
+  <script>
+    window.theme = window.theme || {};
+    window.theme.ajaxCart = true;
+    window.theme.moneyFormat = {{ shop.money_format | json }};
+  </script>
+{%- endif -%}
+

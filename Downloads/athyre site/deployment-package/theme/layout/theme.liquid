@@ -58,6 +58,9 @@
     </a>
 
     {% section 'header' %}
+    
+    {%- comment -%} Breadcrumbs Navigation {%- endcomment -%}
+    {% render 'breadcrumbs' %}
 
     <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
       {{ content_for_layout }}
@@ -65,9 +68,9 @@
 
     {% section 'footer' %}
 
-    {%- comment -%} Cart Drawer (P2: Will be implemented later) {%- endcomment -%}
+    {%- comment -%} Cart Drawer {%- endcomment -%}
     {%- if settings.cart_type == 'drawer' -%}
-      {% comment %} {% section 'cart-drawer' %} {% endcomment %}
+      {% section 'cart-drawer' %}
     {%- endif -%}
 
     <script>
@@ -80,5 +83,8 @@
         predictive_search_url: '{{ routes.predictive_search_url }}'
       };
     </script>
+    
+    {%- comment -%} Cookie Consent Banner {%- endcomment -%}
+    {% section 'cookie-banner' %}
   </body>
 </html>
