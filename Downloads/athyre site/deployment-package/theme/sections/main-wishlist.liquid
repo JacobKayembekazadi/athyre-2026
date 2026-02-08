@@ -1,0 +1,121 @@
+{% schema %}
+{
+  "name": "Wishlist Page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Wishlist"
+    },
+    {
+      "type": "richtext",
+      "id": "empty_message",
+      "label": "Empty wishlist message",
+      "default": "<p>Your wishlist is empty. Start adding items you love!</p>"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 min-h-[60vh]">
+  <div class="max-w-7xl mx-auto">
+    <header class="text-center mb-16">
+      <h1 class="text-3xl md:text-5xl font-light uppercase tracking-tight">{{ section.settings.heading }}</h1>
+      <p class="mt-4 text-stone-500">
+        <span data-wishlist-count>0</span> {{ 'products.wishlist.items' | t | default: 'items' }}
+      </p>
+    </header>
+
+    {%- comment -%} Empty state {%- endcomment -%}
+    <div class="wishlist-empty text-center py-16" data-wishlist-empty>
+      <div class="inline-block p-6 rounded-full bg-stone-100 mb-8">
+        <svg class="w-12 h-12 text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <div class="prose prose-stone max-w-md mx-auto">
+        {{ section.settings.empty_message }}
+      </div>
+      <a href="{{ routes.all_products_collection_url }}" class="inline-block mt-8 px-8 py-4 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors">
+        {{ 'products.wishlist.continue_shopping' | t | default: 'Continue Shopping' }}
+      </a>
+    </div>
+
+    {%- comment -%} Wishlist grid (populated via JS) {%- endcomment -%}
+    <div 
+      class="grid grid-cols-2 md:grid-cols-4 gap-8"
+      data-wishlist-products
+      style="display: none;"
+    >
+      {%- comment -%} Products injected via JavaScript {%- endcomment -%}
+    </div>
+  </div>
+</section>
+
+<script src="{{ 'wishlist.js' | asset_url }}" defer></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const emptyState = document.querySelector('[data-wishlist-empty]');
+    const productsGrid = document.querySelector('[data-wishlist-products]');
+    
+    async function renderWishlist() {
+      const handles = window.Wishlist?.getAll() || [];
+      
+      if (handles.length === 0) {
+        emptyState.style.display = '';
+        productsGrid.style.display = 'none';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      productsGrid.style.display = '';
+      productsGrid.innerHTML = '<div class="col-span-full text-center py-8"><div class="loading-placeholder h-48 w-full"></div></div>';
+      
+      try {
+        const responses = await Promise.all(
+          handles.map(handle => 
+            fetch(`/products/${handle}?section_id=product-card-ajax`)
+              .then(r => r.ok ? r.text() : '')
+              .catch(() => '')
+          )
+        );
+        
+        productsGrid.innerHTML = responses.filter(Boolean).join('');
+        
+        // Re-init wishlist buttons in new content
+        if (window.Wishlist) {
+          productsGrid.querySelectorAll('[data-wishlist-toggle]').forEach(btn => {
+            const handle = btn.dataset.wishlistToggle;
+            if (window.Wishlist.has(handle)) {
+              btn.classList.add('is-active');
+              btn.setAttribute('aria-pressed', 'true');
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Failed to render wishlist', e);
+        productsGrid.innerHTML = '<p class="col-span-full text-center text-stone-500">Failed to load wishlist items.</p>';
+      }
+    }
+    
+    // Initial render
+    renderWishlist();
+    
+    // Re-render on changes
+    document.addEventListener('wishlist:remove', renderWishlist);
+    document.addEventListener('wishlist:clear', renderWishlist);
+  });
+</script>

@@ -3,6 +3,17 @@
   "name": "Image Hero",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
       "type": "image_picker",
       "id": "image",
       "label": "Desktop Image"
@@ -44,7 +55,8 @@
 }
 {% endschema %}
 
-<section class="relative h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-stone-100">
+<section class="color-scheme-{{ section.settings.color_scheme }} relative h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden bg-stone-100">
+
     <div class="absolute inset-0 z-0">
         {% if section.settings.image %}
             <picture>

@@ -1,0 +1,81 @@
+root: true
+
+OffenseCountPerFile: 50
+
+SyntaxError:
+  enabled: true
+
+LiquidTag:
+  enabled: true
+  min_consecutive_statements: 5
+
+UnknownFilter:
+  enabled: true
+
+MissingRequiredTemplateFiles:
+  enabled: true
+
+TemplateLength:
+  enabled: true
+  max_length: 600
+
+NestedSnippet:
+  enabled: true
+  max_nesting_level: 3
+
+RequiredDirectories:
+  enabled: true
+
+ValidSchema:
+  enabled: true
+
+UnusedAssign:
+  enabled: true
+
+UndefinedObject:
+  enabled: true
+  exclude_snippets: true
+
+DeprecatedFilter:
+  enabled: true
+
+DeprecatedTag:
+  enabled: true
+
+DefaultLocale:
+  enabled: true
+
+TranslationKeyExists:
+  enabled: true
+
+RequiredLayoutThemeObject:
+  enabled: true
+
+ContentForHeaderModification:
+  enabled: true
+
+MissingTemplate:
+  enabled: true
+
+RemoteAsset:
+  enabled: true
+
+AssetSizeCSS:
+  enabled: true
+  threshold_in_bytes: 100000
+
+AssetSizeJavaScript:
+  enabled: true
+  threshold_in_bytes: 100000
+
+ImgWidthAndHeight:
+  enabled: true
+
+ImgLazyLoading:
+  enabled: true
+
+ParserBlockingJavaScript:
+  enabled: true
+
+ParserBlockingScriptTag:
+  enabled: true

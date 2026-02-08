@@ -1,0 +1,15 @@
+{
+    "sections": {
+        "main": {
+            "type": "main-wishlist",
+            "settings": {
+                "color_scheme": "1",
+                "heading": "Your Wishlist",
+                "empty_message": "<p>Your wishlist is empty. Browse our collections to find pieces that inspire you.</p>"
+            }
+        }
+    },
+    "order": [
+        "main"
+    ]
+}

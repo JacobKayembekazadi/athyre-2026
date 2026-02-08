@@ -3,6 +3,17 @@
   "name": "Featured Collection",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
       "type": "text",
       "id": "title",
       "label": "Heading",
@@ -31,7 +42,8 @@
 }
 {% endschema %}
 
-<section class="py-24 px-8 max-w-7xl mx-auto">
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 max-w-7xl mx-auto">
+
     {% if section.settings.title != blank %}
         <header class="text-center mb-16">
             <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black">{{ section.settings.title }}</h2>

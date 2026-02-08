@@ -1,0 +1,157 @@
+{% schema %}
+{
+  "name": "Customer Addresses",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8">
+  <div class="max-w-4xl mx-auto">
+    <header class="flex justify-between items-center mb-12">
+      <div>
+        <a href="{{ routes.account_url }}" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors mb-4 inline-block">
+          ← {{ 'customer.account.title' | t | default: 'Account' }}
+        </a>
+        <h1 class="text-3xl font-light uppercase tracking-tight">{{ 'customer.addresses.title' | t | default: 'Addresses' }}</h1>
+      </div>
+      <button 
+        type="button"
+        class="px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"
+        data-toggle-address-form
+      >
+        {{ 'customer.addresses.add_new' | t | default: 'Add Address' }}
+      </button>
+    </header>
+
+    {%- comment -%} Add New Address Form (Hidden by default) {%- endcomment -%}
+    <div class="hidden mb-12 p-6 bg-stone-50 border border-stone-100" data-new-address-form>
+      <h2 class="text-lg font-medium mb-6">{{ 'customer.addresses.add_new' | t | default: 'Add New Address' }}</h2>
+      
+      {%- form 'customer_address', customer.new_address -%}
+        {% render 'address-form-fields', form: form, address: customer.new_address %}
+        
+        <div class="flex gap-4 mt-6">
+          <button type="submit" class="px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors">
+            {{ 'customer.addresses.add' | t | default: 'Add Address' }}
+          </button>
+          <button type="button" class="px-6 py-3 border border-stone-200 text-[10px] uppercase tracking-widest font-bold hover:bg-stone-100 transition-colors" data-toggle-address-form>
+            {{ 'customer.addresses.cancel' | t | default: 'Cancel' }}
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+
+    {%- comment -%} Existing Addresses {%- endcomment -%}
+    {%- if customer.addresses.size > 0 -%}
+      <div class="grid md:grid-cols-2 gap-6">
+        {%- for address in customer.addresses -%}
+          <div class="p-6 border border-stone-100" data-address-card="{{ address.id }}">
+            {%- if address == customer.default_address -%}
+              <span class="inline-block px-2 py-1 bg-stone-900 text-white text-[9px] uppercase tracking-widest font-bold mb-4">
+                {{ 'customer.addresses.default' | t | default: 'Default' }}
+              </span>
+            {%- endif -%}
+            
+            <address class="text-sm text-stone-600 not-italic mb-6">
+              {{ address | format_address }}
+            </address>
+            
+            <div class="flex gap-4">
+              <button type="button" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors" data-edit-address="{{ address.id }}">
+                {{ 'customer.addresses.edit' | t | default: 'Edit' }}
+              </button>
+              <button 
+                type="button" 
+                class="text-[10px] uppercase tracking-widest text-red-500 hover:text-red-700 transition-colors"
+                data-confirm-delete="{{ address.id }}"
+              >
+                {{ 'customer.addresses.delete' | t | default: 'Delete' }}
+              </button>
+            </div>
+
+            {%- comment -%} Edit Form (Hidden) {%- endcomment -%}
+            <div class="hidden mt-6 pt-6 border-t border-stone-100" data-edit-form="{{ address.id }}">
+              {%- form 'customer_address', address -%}
+                {% render 'address-form-fields', form: form, address: address %}
+                
+                <div class="flex flex-wrap gap-4 mt-6">
+                  <button type="submit" class="px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors">
+                    {{ 'customer.addresses.update' | t | default: 'Update' }}
+                  </button>
+                  {%- unless address == customer.default_address -%}
+                    <button type="submit" name="address[default]" value="1" class="px-6 py-3 border border-stone-200 text-[10px] uppercase tracking-widest font-bold hover:bg-stone-100 transition-colors">
+                      {{ 'customer.addresses.set_default' | t | default: 'Set as Default' }}
+                    </button>
+                  {%- endunless -%}
+                  <button type="button" class="px-6 py-3 border border-stone-200 text-[10px] uppercase tracking-widest font-bold hover:bg-stone-100 transition-colors" data-cancel-edit="{{ address.id }}">
+                    {{ 'customer.addresses.cancel' | t | default: 'Cancel' }}
+                  </button>
+                </div>
+              {%- endform -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="text-center py-12 bg-stone-50">
+        <p class="text-stone-500">{{ 'customer.addresses.no_addresses' | t | default: 'No addresses saved yet.' }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- comment -%} Delete confirmation forms (hidden) {%- endcomment -%}
+{%- for address in customer.addresses -%}
+  {%- form 'customer_address', address, data-delete-form: address.id -%}
+    <input type="hidden" name="_method" value="delete">
+  {%- endform -%}
+{%- endfor -%}
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle new address form
+    document.querySelectorAll('[data-toggle-address-form]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector('[data-new-address-form]')?.classList.toggle('hidden');
+      });
+    });
+    
+    // Edit address
+    document.querySelectorAll('[data-edit-address]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.editAddress;
+        document.querySelector(`[data-edit-form="${id}"]`)?.classList.remove('hidden');
+      });
+    });
+    
+    // Cancel edit
+    document.querySelectorAll('[data-cancel-edit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.cancelEdit;
+        document.querySelector(`[data-edit-form="${id}"]`)?.classList.add('hidden');
+      });
+    });
+    
+    // Delete confirmation
+    document.querySelectorAll('[data-confirm-delete]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete this address?')) {
+          const id = btn.dataset.confirmDelete;
+          document.querySelector(`[data-delete-form="${id}"]`)?.submit();
+        }
+      });
+    });
+  });
+</script>

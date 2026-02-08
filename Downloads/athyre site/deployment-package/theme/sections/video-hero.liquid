@@ -3,6 +3,17 @@
   "name": "Video Hero",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
       "type": "text",
       "id": "heading",
       "label": "Heading",
@@ -51,7 +62,7 @@
 }
 {% endschema %}
 
-<section class="relative h-[100vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+<section class="color-scheme-{{ section.settings.color_scheme }} relative h-[100vh] min-h-[600px] flex items-center justify-center overflow-hidden">
   {% comment %}
     Background Logic: Hosted Video > External Video > Image
   {% endcomment %}

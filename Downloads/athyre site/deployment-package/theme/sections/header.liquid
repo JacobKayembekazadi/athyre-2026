@@ -3,9 +3,33 @@
   "name": "Header",
   "settings": [
     {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
       "type": "image_picker",
       "id": "logo",
-      "label": "Logo"
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 50,
+      "max": 200,
+      "step": 10,
+      "default": 100,
+      "unit": "px"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text (if no image)",
+      "default": "Athyre"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
     },
     {
       "type": "link_list",
@@ -14,10 +38,63 @@
       "default": "main-menu"
     },
     {
+      "type": "header",
+      "content": "Behavior"
+    },
+    {
       "type": "checkbox",
       "id": "sticky",
-      "label": "Sticky Header",
+      "label": "Sticky header",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_home",
+      "label": "Transparent on homepage",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account icon",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wishlist",
+      "label": "Show wishlist icon",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Announcement Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show announcement bar",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "Announcement text",
+      "default": "Free shipping on orders over $100"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "Announcement link"
     }
   ],
   "presets": [
@@ -27,6 +104,7 @@
   ]
 }
 {% endschema %}
+
 
 <header 
   class="fixed w-full z-50 transition-all duration-300 {% if section.settings.sticky %}border-b border-stone-100 bg-white/95 backdrop-blur-sm shadow-sm py-4{% else %}bg-transparent py-6{% endif %}"

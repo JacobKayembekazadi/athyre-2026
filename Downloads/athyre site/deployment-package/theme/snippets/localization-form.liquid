@@ -1,0 +1,71 @@
+{%- comment -%}
+  Currency/Language Selector Snippet
+  Renders localization form for currency and language selection
+  Usage: {% render 'localization-form' %}
+{%- endcomment -%}
+
+{%- if localization.available_countries.size > 1 or localization.available_languages.size > 1 -%}
+<div class="localization-form" data-localization-form>
+  {%- form 'localization', id: 'localization-form', class: 'flex flex-wrap gap-4' -%}
+    
+    {%- comment -%} Language Selector {%- endcomment -%}
+    {%- if localization.available_languages.size > 1 -%}
+      <div class="relative" data-localization-selector>
+        <label for="localization-language" class="block text-[9px] uppercase tracking-widest font-bold text-stone-400 mb-1">
+          {{ 'general.localization.language' | t | default: 'Language' }}
+        </label>
+        <div class="relative">
+          <select 
+            id="localization-language"
+            name="locale_code"
+            class="appearance-none bg-transparent border border-stone-200 px-4 py-2 pr-8 text-sm cursor-pointer hover:border-stone-400 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-900"
+            onchange="this.form.submit()"
+          >
+            {%- for language in localization.available_languages -%}
+              <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>
+                {{ language.endonym_name | capitalize }}
+              </option>
+            {%- endfor -%}
+          </select>
+          <svg class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+      </div>
+    {%- endif -%}
+    
+    {%- comment -%} Country/Currency Selector {%- endcomment -%}
+    {%- if localization.available_countries.size > 1 -%}
+      <div class="relative" data-localization-selector>
+        <label for="localization-country" class="block text-[9px] uppercase tracking-widest font-bold text-stone-400 mb-1">
+          {{ 'general.localization.country' | t | default: 'Country/Currency' }}
+        </label>
+        <div class="relative">
+          <select 
+            id="localization-country"
+            name="country_code"
+            class="appearance-none bg-transparent border border-stone-200 px-4 py-2 pr-8 text-sm cursor-pointer hover:border-stone-400 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-900"
+            onchange="this.form.submit()"
+          >
+            {%- for country in localization.available_countries -%}
+              <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>
+                {{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})
+              </option>
+            {%- endfor -%}
+          </select>
+          <svg class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none text-stone-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+      </div>
+    {%- endif -%}
+    
+    <noscript>
+      <button type="submit" class="px-4 py-2 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors">
+        {{ 'general.localization.update' | t | default: 'Update' }}
+      </button>
+    </noscript>
+    
+  {%- endform -%}
+</div>
+{%- endif -%}

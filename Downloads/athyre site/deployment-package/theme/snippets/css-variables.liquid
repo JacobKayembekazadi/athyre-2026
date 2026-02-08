@@ -1,0 +1,136 @@
+{%- comment -%}
+  CSS Variables Snippet
+  Generates CSS custom properties for color schemes, typography, spacing, borders, and shadows.
+  Include in theme.liquid head section.
+{%- endcomment -%}
+
+{%- assign font_heading = settings.font_heading -%}
+{%- assign font_body = settings.font_body -%}
+
+{{ font_heading | font_face: font_display: 'swap' }}
+{{ font_body | font_face: font_display: 'swap' }}
+
+<style>
+  :root {
+    /* Typography */
+    --font-heading-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+    --font-heading-weight: {{ font_heading.weight }};
+    --font-body-family: {{ font_body.family }}, {{ font_body.fallback_families }};
+    --font-body-weight: {{ font_body.weight }};
+    --font-body-scale: {{ settings.font_body_scale | default: 100 | divided_by: 100.0 }};
+
+    /* Spacing */
+    --spacing-sections-desktop: {{ settings.spacing_sections | default: 60 }}px;
+    --spacing-sections-mobile: {{ settings.spacing_sections | default: 60 | times: 0.6 | round }}px;
+
+    /* Borders */
+    --border-radius: {{ settings.border_radius | default: 8 }}px;
+    --border-width: {{ settings.border_width | default: 1 }}px;
+
+    /* Shadows */
+    --shadow-opacity: {{ settings.shadow_opacity | default: 10 | divided_by: 100.0 }};
+
+    /* Primary Colors */
+    --color-primary: {{ settings.colors_primary }};
+    --color-accent: {{ settings.colors_accent }};
+
+    /* Default Scheme (Scheme 1 - Light) */
+    --color-background: {{ settings.colors_scheme_1_background }};
+    --color-background-rgb: {{ settings.colors_scheme_1_background | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-text: {{ settings.colors_scheme_1_text }};
+    --color-text-rgb: {{ settings.colors_scheme_1_text | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-button: {{ settings.colors_scheme_1_button }};
+    --color-button-text: {{ settings.colors_scheme_1_button_text }};
+    --color-border: {{ settings.colors_scheme_1_border }};
+
+    /* Derived colors */
+    --color-text-muted: rgba(var(--color-text-rgb), 0.6);
+    --color-background-secondary: rgba(var(--color-text-rgb), 0.05);
+  }
+
+  /* Color Scheme 1 (Light) */
+  .color-scheme-1 {
+    --color-background: {{ settings.colors_scheme_1_background }};
+    --color-background-rgb: {{ settings.colors_scheme_1_background | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-text: {{ settings.colors_scheme_1_text }};
+    --color-text-rgb: {{ settings.colors_scheme_1_text | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-button: {{ settings.colors_scheme_1_button }};
+    --color-button-text: {{ settings.colors_scheme_1_button_text }};
+    --color-border: {{ settings.colors_scheme_1_border }};
+
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  /* Color Scheme 2 (Dark) */
+  .color-scheme-2 {
+    --color-background: {{ settings.colors_scheme_2_background }};
+    --color-background-rgb: {{ settings.colors_scheme_2_background | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-text: {{ settings.colors_scheme_2_text }};
+    --color-text-rgb: {{ settings.colors_scheme_2_text | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-button: {{ settings.colors_scheme_2_button }};
+    --color-button-text: {{ settings.colors_scheme_2_button_text }};
+    --color-border: {{ settings.colors_scheme_2_border }};
+
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  /* Color Scheme 3 (Accent) */
+  .color-scheme-3 {
+    --color-background: {{ settings.colors_scheme_3_background }};
+    --color-background-rgb: {{ settings.colors_scheme_3_background | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-text: {{ settings.colors_scheme_3_text }};
+    --color-text-rgb: {{ settings.colors_scheme_3_text | color_to_rgb | remove: 'rgb(' | remove: ')' }};
+    --color-button: {{ settings.colors_scheme_3_button }};
+    --color-button-text: {{ settings.colors_scheme_3_button_text }};
+    --color-border: {{ settings.colors_scheme_3_border }};
+
+    background-color: var(--color-background);
+    color: var(--color-text);
+  }
+
+  /* Component Styles using CSS Variables */
+  .btn {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+    border: var(--border-width) solid var(--color-button);
+    border-radius: var(--border-radius);
+    transition: opacity 0.2s ease;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+
+  .btn--secondary {
+    background-color: transparent;
+    color: var(--color-button);
+    border-color: var(--color-button);
+  }
+
+  .btn--secondary:hover {
+    background-color: var(--color-button);
+    color: var(--color-button-text);
+  }
+
+  .card {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    border: var(--border-width) solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(var(--color-text-rgb), var(--shadow-opacity));
+  }
+
+  section {
+    padding-top: var(--spacing-sections-mobile);
+    padding-bottom: var(--spacing-sections-mobile);
+  }
+
+  @media screen and (min-width: 750px) {
+    section {
+      padding-top: var(--spacing-sections-desktop);
+      padding-bottom: var(--spacing-sections-desktop);
+    }
+  }
+</style>

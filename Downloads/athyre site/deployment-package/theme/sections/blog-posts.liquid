@@ -3,6 +3,17 @@
   "name": "Blog Preview",
   "settings": [
     {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
       "type": "text",
       "id": "heading",
       "label": "Heading",
@@ -22,7 +33,7 @@
 }
 {% endschema %}
 
-<section class="py-24 px-8 max-w-7xl mx-auto border-t border-stone-100">
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 max-w-7xl mx-auto border-t border-stone-100">
   <div class="flex justify-between items-end mb-12">
     <div>
       <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-4">{{ section.settings.heading }}</span>

@@ -1,0 +1,183 @@
+{% schema %}
+{
+  "name": "Cookie Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Cookie Settings"
+    },
+    {
+      "type": "richtext",
+      "id": "message",
+      "label": "Message",
+      "default": "<p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking 'Accept All', you consent to our use of cookies.</p>"
+    },
+    {
+      "type": "text",
+      "id": "accept_button",
+      "label": "Accept button text",
+      "default": "Accept All"
+    },
+    {
+      "type": "text",
+      "id": "reject_button",
+      "label": "Reject button text",
+      "default": "Reject Non-Essential"
+    },
+    {
+      "type": "text",
+      "id": "manage_button",
+      "label": "Manage button text",
+      "default": "Manage Preferences"
+    },
+    {
+      "type": "url",
+      "id": "privacy_policy_url",
+      "label": "Privacy policy URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cookie Banner"
+    }
+  ]
+}
+{% endschema %}
+
+{%- comment -%} Cookie Banner {%- endcomment -%}
+<div 
+  class="cookie-banner fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t border-stone-100 z-50 p-6 md:p-8 transform translate-y-full transition-transform duration-300"
+  data-cookie-banner
+  role="dialog"
+  aria-label="{{ section.settings.heading }}"
+  style="display: none;"
+>
+  <div class="max-w-4xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-center gap-6">
+      <div class="flex-1">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="text-lg font-medium mb-2">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        
+        <div class="text-sm text-stone-600 prose prose-sm max-w-none">
+          {{ section.settings.message }}
+        </div>
+        
+        {%- if section.settings.privacy_policy_url -%}
+          <a href="{{ section.settings.privacy_policy_url }}" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors mt-3 inline-block">
+            {{ 'general.cookie.privacy_policy' | t | default: 'Read our Privacy Policy' }}
+          </a>
+        {%- endif -%}
+      </div>
+      
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button 
+          type="button"
+          class="px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors whitespace-nowrap"
+          data-cookie-accept
+        >
+          {{ section.settings.accept_button }}
+        </button>
+        
+        <button 
+          type="button"
+          class="px-6 py-3 border border-stone-200 text-[10px] uppercase tracking-widest font-bold hover:bg-stone-100 transition-colors whitespace-nowrap"
+          data-cookie-reject
+        >
+          {{ section.settings.reject_button }}
+        </button>
+        
+        <button 
+          type="button"
+          class="px-6 py-3 text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors whitespace-nowrap"
+          data-cookie-manage
+        >
+          {{ section.settings.manage_button }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Cookie Preferences Modal {%- endcomment -%}
+<div 
+  class="cookie-preferences fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300"
+  data-cookie-preferences
+>
+  <div class="bg-white w-full max-w-lg max-h-[80vh] overflow-y-auto p-8">
+    <h2 class="text-xl font-medium mb-6">{{ 'general.cookie.manage_preferences' | t | default: 'Manage Cookie Preferences' }}</h2>
+    
+    <div class="space-y-6">
+      {%- comment -%} Essential (always on) {%- endcomment -%}
+      <div class="flex items-start gap-4 p-4 bg-stone-50">
+        <input type="checkbox" id="cookie-essential" checked disabled class="mt-1">
+        <div>
+          <label for="cookie-essential" class="font-medium text-sm block mb-1">
+            {{ 'general.cookie.essential' | t | default: 'Essential Cookies' }}
+          </label>
+          <p class="text-xs text-stone-500">
+            {{ 'general.cookie.essential_desc' | t | default: 'These cookies are necessary for the website to function and cannot be disabled.' }}
+          </p>
+        </div>
+      </div>
+      
+      {%- comment -%} Analytics {%- endcomment -%}
+      <div class="flex items-start gap-4 p-4 border border-stone-100">
+        <input type="checkbox" id="cookie-analytics" data-cookie-analytics class="mt-1">
+        <div>
+          <label for="cookie-analytics" class="font-medium text-sm block mb-1">
+            {{ 'general.cookie.analytics' | t | default: 'Analytics Cookies' }}
+          </label>
+          <p class="text-xs text-stone-500">
+            {{ 'general.cookie.analytics_desc' | t | default: 'These cookies help us understand how visitors interact with our website.' }}
+          </p>
+        </div>
+      </div>
+      
+      {%- comment -%} Marketing {%- endcomment -%}
+      <div class="flex items-start gap-4 p-4 border border-stone-100">
+        <input type="checkbox" id="cookie-marketing" data-cookie-marketing class="mt-1">
+        <div>
+          <label for="cookie-marketing" class="font-medium text-sm block mb-1">
+            {{ 'general.cookie.marketing' | t | default: 'Marketing Cookies' }}
+          </label>
+          <p class="text-xs text-stone-500">
+            {{ 'general.cookie.marketing_desc' | t | default: 'These cookies are used to deliver relevant ads and track campaign performance.' }}
+          </p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex gap-4 mt-8">
+      <button 
+        type="button"
+        class="flex-1 px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"
+        data-cookie-save
+      >
+        {{ 'general.cookie.save_preferences' | t | default: 'Save Preferences' }}
+      </button>
+      <button 
+        type="button"
+        class="px-6 py-3 border border-stone-200 text-[10px] uppercase tracking-widest font-bold hover:bg-stone-100 transition-colors"
+        data-cookie-accept
+      >
+        {{ 'general.cookie.accept_all' | t | default: 'Accept All' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'cookie-consent.js' | asset_url }}" defer></script>
+
+<style>
+  .cookie-banner.is-visible {
+    transform: translateY(0);
+  }
+  
+  .cookie-preferences.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>

@@ -1,0 +1,99 @@
+{% schema %}
+{
+  "name": "Customer Account",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8">
+  <div class="max-w-4xl mx-auto">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-12">
+      <div>
+        <h1 class="text-3xl font-light uppercase tracking-tight">{{ 'customer.account.title' | t | default: 'My Account' }}</h1>
+        <p class="text-stone-500 mt-2">{{ 'customer.account.welcome' | t: name: customer.first_name | default: customer.first_name }}</p>
+      </div>
+      <a href="{{ routes.account_logout_url }}" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors border-b border-current pb-1">
+        {{ 'customer.account.logout' | t | default: 'Log Out' }}
+      </a>
+    </header>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      {%- comment -%} Sidebar {%- endcomment -%}
+      <aside class="md:col-span-1">
+        <nav class="space-y-4">
+          <a href="{{ routes.account_url }}" class="block py-2 text-sm font-medium text-stone-900 border-b border-stone-900">
+            {{ 'customer.account.orders' | t | default: 'Order History' }}
+          </a>
+          <a href="{{ routes.account_addresses_url }}" class="block py-2 text-sm text-stone-500 hover:text-stone-900 transition-colors">
+            {{ 'customer.account.addresses' | t | default: 'Addresses' }}
+          </a>
+        </nav>
+
+        {%- comment -%} Default Address {%- endcomment -%}
+        {%- if customer.default_address -%}
+          <div class="mt-8 pt-8 border-t border-stone-100">
+            <h3 class="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-4">
+              {{ 'customer.account.default_address' | t | default: 'Default Address' }}
+            </h3>
+            <address class="text-sm text-stone-600 not-italic">
+              {{ customer.default_address | format_address }}
+            </address>
+            <a href="{{ routes.account_addresses_url }}" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors mt-4 inline-block">
+              {{ 'customer.account.edit' | t | default: 'Edit' }}
+            </a>
+          </div>
+        {%- endif -%}
+      </aside>
+
+      {%- comment -%} Order History {%- endcomment -%}
+      <main class="md:col-span-2">
+        <h2 class="text-xl font-light uppercase tracking-tight mb-6">{{ 'customer.orders.title' | t | default: 'Order History' }}</h2>
+
+        {%- if customer.orders.size > 0 -%}
+          <div class="space-y-4">
+            {%- for order in customer.orders -%}
+              <a href="{{ order.customer_url }}" class="block p-6 border border-stone-100 hover:border-stone-300 transition-colors">
+                <div class="flex flex-wrap justify-between gap-4 mb-4">
+                  <div>
+                    <p class="text-sm font-medium">{{ order.name }}</p>
+                    <p class="text-xs text-stone-500 mt-1">{{ order.created_at | date: "%B %d, %Y" }}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="text-sm font-medium">{{ order.total_price | money }}</p>
+                    <p class="text-xs mt-1">
+                      <span class="inline-block px-2 py-1 bg-stone-100 text-stone-600 text-[9px] uppercase tracking-widest font-bold">
+                        {{ order.fulfillment_status_label }}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <p class="text-xs text-stone-500">
+                  {{ order.line_items.size }} {{ order.line_items.size | pluralize: 'item', 'items' }}
+                </p>
+              </a>
+            {%- endfor -%}
+          </div>
+        {%- else -%}
+          <div class="text-center py-12 bg-stone-50">
+            <p class="text-stone-500 mb-4">{{ 'customer.orders.none' | t | default: "You haven't placed any orders yet." }}</p>
+            <a href="{{ routes.all_products_collection_url }}" class="inline-block px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors">
+              {{ 'customer.orders.start_shopping' | t | default: 'Start Shopping' }}
+            </a>
+          </div>
+        {%- endif -%}
+      </main>
+    </div>
+  </div>
+</section>

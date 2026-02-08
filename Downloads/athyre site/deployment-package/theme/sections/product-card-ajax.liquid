@@ -1,0 +1,65 @@
+{%- comment -%}
+  Product Card AJAX Snippet
+  Used for Section Rendering API calls (Wishlist, Recently Viewed)
+  Returns a single product card that can be inserted into grids
+{%- endcomment -%}
+
+{% schema %}
+{
+  "name": "Product Card AJAX",
+  "settings": []
+}
+{% endschema %}
+
+{%- if product -%}
+<div class="product-card group cursor-pointer" data-product-handle="{{ product.handle }}">
+  <a href="{{ product.url }}" class="block">
+    <div class="aspect-[3/4] bg-stone-100 mb-6 relative overflow-hidden">
+      {%- if product.featured_image -%}
+        {{ product.featured_image | image_url: width: 600 | image_tag: 
+          class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700',
+          loading: 'lazy',
+          alt: product.title
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover opacity-50' }}
+      {%- endif -%}
+      
+      {%- comment -%} Quick actions overlay {%- endcomment -%}
+      <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+        {% render 'wishlist-button', product: product %}
+      </div>
+      
+      {%- comment -%} Sale badge {%- endcomment -%}
+      {%- if product.compare_at_price > product.price -%}
+        <span class="absolute top-4 left-4 bg-stone-900 text-white text-[9px] uppercase tracking-widest px-3 py-1 font-bold">
+          Sale
+        </span>
+      {%- endif -%}
+      
+      {%- comment -%} Sold out badge {%- endcomment -%}
+      {%- unless product.available -%}
+        <span class="absolute top-4 left-4 bg-stone-400 text-white text-[9px] uppercase tracking-widest px-3 py-1 font-bold">
+          Sold Out
+        </span>
+      {%- endunless -%}
+    </div>
+  </a>
+  
+  <div class="text-center">
+    <h3 class="text-[10px] uppercase tracking-[0.2em] font-bold mb-2">
+      <a href="{{ product.url }}" class="hover:opacity-60 transition-opacity">
+        {{ product.title }}
+      </a>
+    </h3>
+    <div class="text-[10px] text-stone-500">
+      {%- if product.compare_at_price > product.price -%}
+        <span class="line-through mr-2">{{ product.compare_at_price | money }}</span>
+        <span class="text-red-600">{{ product.price | money }}</span>
+      {%- else -%}
+        {{ product.price | money }}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+{%- endif -%}

@@ -1,0 +1,189 @@
+/**
+ * RTL Stylesheet
+ * Overrides for right-to-left language support
+ * This file is loaded conditionally when RTL language is detected
+ */
+
+/* Direction override */
+html[dir="rtl"] {
+    direction: rtl;
+}
+
+/* Text alignment */
+html[dir="rtl"] .text-left {
+    text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+    text-align: left;
+}
+
+/* Flexbox reversals */
+html[dir="rtl"] .flex-row {
+    flex-direction: row-reverse;
+}
+
+/* Margins and paddings */
+html[dir="rtl"] .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+html[dir="rtl"] .mr-auto {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+html[dir="rtl"] .pl-4 {
+    padding-left: 0;
+    padding-right: 1rem;
+}
+
+html[dir="rtl"] .pr-4 {
+    padding-right: 0;
+    padding-left: 1rem;
+}
+
+html[dir="rtl"] .ml-2 {
+    margin-left: 0;
+    margin-right: 0.5rem;
+}
+
+html[dir="rtl"] .mr-2 {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Border radiuses */
+html[dir="rtl"] .rounded-l {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: var(--tw-border-radius);
+    border-bottom-right-radius: var(--tw-border-radius);
+}
+
+html[dir="rtl"] .rounded-r {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: var(--tw-border-radius);
+    border-bottom-left-radius: var(--tw-border-radius);
+}
+
+/* Positioning */
+html[dir="rtl"] .left-0 {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .right-0 {
+    right: auto;
+    left: 0;
+}
+
+html[dir="rtl"] .left-4 {
+    left: auto;
+    right: 1rem;
+}
+
+html[dir="rtl"] .right-4 {
+    right: auto;
+    left: 1rem;
+}
+
+/* Transforms */
+html[dir="rtl"] .-translate-x-full {
+    transform: translateX(100%);
+}
+
+html[dir="rtl"] .translate-x-full {
+    transform: translateX(-100%);
+}
+
+/* Cart drawer RTL */
+html[dir="rtl"] .cart-drawer {
+    right: auto;
+    left: 0;
+    transform: translateX(-100%);
+}
+
+html[dir="rtl"] .cart-drawer.is-open {
+    transform: translateX(0);
+}
+
+/* Icon flip for directional icons */
+html[dir="rtl"] .icon-arrow-right {
+    transform: scaleX(-1);
+}
+
+html[dir="rtl"] .icon-arrow-left {
+    transform: scaleX(-1);
+}
+
+/* Slider/carousel */
+html[dir="rtl"] .slick-prev,
+html[dir="rtl"] .swiper-button-prev {
+    right: auto;
+    left: 10px;
+}
+
+html[dir="rtl"] .slick-next,
+html[dir="rtl"] .swiper-button-next {
+    left: auto;
+    right: 10px;
+}
+
+/* Form elements */
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select {
+    text-align: right;
+}
+
+html[dir="rtl"] input[type="number"] {
+    text-align: left;
+    /* Keep numbers LTR */
+}
+
+/* List markers */
+html[dir="rtl"] ul,
+html[dir="rtl"] ol {
+    padding-left: 0;
+    padding-right: 1.5em;
+}
+
+/* Breadcrumbs */
+html[dir="rtl"] .breadcrumb-separator {
+    transform: scaleX(-1);
+}
+
+/* Header logo position */
+html[dir="rtl"] .header-logo {
+    order: 2;
+}
+
+html[dir="rtl"] .header-nav {
+    order: 1;
+}
+
+/* Product grid adjustments */
+html[dir="rtl"] .product-card .wishlist-btn {
+    right: auto;
+    left: 0.75rem;
+}
+
+/* Footer social icons */
+html[dir="rtl"] .social-icons {
+    flex-direction: row-reverse;
+}
+
+/* Quantity selector */
+html[dir="rtl"] .quantity-selector {
+    flex-direction: row-reverse;
+}
+
+/* Price formatting (keep numbers/currency LTR) */
+html[dir="rtl"] .money,
+html[dir="rtl"] [data-money] {
+    direction: ltr;
+    display: inline-block;
+}

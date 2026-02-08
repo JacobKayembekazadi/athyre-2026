@@ -3,9 +3,80 @@
   "name": "Product Page",
   "settings": [
     {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Gallery layout",
+      "default": "stacked",
+      "options": [
+        { "value": "stacked", "label": "Stacked" },
+        { "value": "slider", "label": "Slider" },
+        { "value": "grid", "label": "Grid (2 columns)" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable image zoom",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Product Info"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": false
+    },
+    {
       "type": "checkbox",
       "id": "show_share_buttons",
-      "label": "Show Share Buttons",
+      "label": "Show share buttons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Inventory"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stock_level",
+      "label": "Show stock level",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "low_stock_threshold",
+      "label": "Low stock threshold",
+      "min": 1,
+      "max": 20,
+      "default": 5
+    },
+    {
+      "type": "header",
+      "content": "Actions"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_ajax_cart",
+      "label": "Add to cart without page reload",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity_selector",
+      "label": "Show quantity selector",
       "default": true
     }
   ],
@@ -24,6 +95,65 @@
           "type": "richtext",
           "id": "content",
           "label": "Content"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "none",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "box", "label": "Box (shipping)" },
+            { "value": "ruler", "label": "Ruler (sizing)" },
+            { "value": "leaf", "label": "Leaf (materials)" },
+            { "value": "heart", "label": "Heart (care)" }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "trust_badges",
+      "name": "Trust Badges",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_shipping",
+          "label": "Show free shipping badge",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_returns",
+          "label": "Show returns badge",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "show_secure",
+          "label": "Show secure checkout badge",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "related_products",
+      "name": "Related Products",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "You May Also Like"
+        },
+        {
+          "type": "range",
+          "id": "products_to_show",
+          "label": "Products to show",
+          "min": 2,
+          "max": 8,
+          "default": 4
         }
       ]
     }

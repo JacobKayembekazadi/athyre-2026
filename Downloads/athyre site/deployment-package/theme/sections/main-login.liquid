@@ -1,0 +1,162 @@
+{% schema %}
+{
+  "name": "Customer Login",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 min-h-[70vh] flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <header class="text-center mb-12">
+      <h1 class="text-3xl font-light uppercase tracking-tight">{{ 'customer.login.title' | t | default: 'Login' }}</h1>
+    </header>
+
+    {%- form 'customer_login', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="bg-red-50 border border-red-200 text-red-700 p-4 mb-6 text-sm">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="space-y-6">
+        <div>
+          <label for="CustomerEmail" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+            {{ 'customer.login.email' | t | default: 'Email' }}
+          </label>
+          <input 
+            type="email"
+            id="CustomerEmail"
+            name="customer[email]"
+            autocomplete="email"
+            autocapitalize="off"
+            autocorrect="off"
+            class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="CustomerPassword" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+            {{ 'customer.login.password' | t | default: 'Password' }}
+          </label>
+          <input 
+            type="password"
+            id="CustomerPassword"
+            name="customer[password]"
+            autocomplete="current-password"
+            class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            required
+          >
+        </div>
+
+        <div class="text-right">
+          <a href="#recover" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors" id="RecoverPassword">
+            {{ 'customer.login.forgot_password' | t | default: 'Forgot password?' }}
+          </a>
+        </div>
+
+        <button 
+          type="submit"
+          class="w-full py-4 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"
+        >
+          {{ 'customer.login.sign_in' | t | default: 'Sign In' }}
+        </button>
+      </div>
+    {%- endform -%}
+
+    <div class="mt-8 text-center">
+      <p class="text-sm text-stone-500">
+        {{ 'customer.login.no_account' | t | default: "Don't have an account?" }}
+        <a href="{{ routes.account_register_url }}" class="text-stone-900 underline underline-offset-2">
+          {{ 'customer.login.create_account' | t | default: 'Create one' }}
+        </a>
+      </p>
+    </div>
+
+    {%- comment -%} Password Recovery Form {%- endcomment -%}
+    <div id="RecoverPasswordForm" class="hidden mt-8 pt-8 border-t border-stone-100">
+      <h2 class="text-xl font-light uppercase tracking-tight text-center mb-6">
+        {{ 'customer.recover_password.title' | t | default: 'Reset Password' }}
+      </h2>
+      
+      {%- form 'recover_customer_password' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="bg-green-50 border border-green-200 text-green-700 p-4 mb-6 text-sm">
+            {{ 'customer.recover_password.success' | t | default: 'We have sent you an email with a link to reset your password.' }}
+          </p>
+        {%- endif -%}
+
+        <div class="space-y-6">
+          <div>
+            <label for="RecoverEmail" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+              {{ 'customer.recover_password.email' | t | default: 'Email' }}
+            </label>
+            <input 
+              type="email"
+              id="RecoverEmail"
+              name="email"
+              autocomplete="email"
+              autocapitalize="off"
+              autocorrect="off"
+              class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+              required
+            >
+          </div>
+
+          <button 
+            type="submit"
+            class="w-full py-4 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"
+          >
+            {{ 'customer.recover_password.submit' | t | default: 'Submit' }}
+          </button>
+
+          <button 
+            type="button"
+            class="w-full text-center text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors py-2"
+            id="HideRecoverPasswordLink"
+          >
+            {{ 'customer.recover_password.cancel' | t | default: 'Cancel' }}
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const showRecoverBtn = document.getElementById('RecoverPassword');
+    const hideRecoverBtn = document.getElementById('HideRecoverPasswordLink');
+    const recoverForm = document.getElementById('RecoverPasswordForm');
+    
+    if (showRecoverBtn && recoverForm) {
+      showRecoverBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        recoverForm.classList.remove('hidden');
+      });
+    }
+    
+    if (hideRecoverBtn && recoverForm) {
+      hideRecoverBtn.addEventListener('click', () => {
+        recoverForm.classList.add('hidden');
+      });
+    }
+    
+    // Show recover form if URL hash is #recover
+    if (window.location.hash === '#recover') {
+      recoverForm?.classList.remove('hidden');
+    }
+  });
+</script>
