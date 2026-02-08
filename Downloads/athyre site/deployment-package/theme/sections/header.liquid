@@ -107,10 +107,10 @@
 
 
 <header 
-  class="fixed w-full z-50 transition-all duration-300 {% if section.settings.sticky %}border-b border-stone-100 bg-white/95 backdrop-blur-sm shadow-sm py-4{% else %}bg-transparent py-6{% endif %}"
+  class="fixed w-full z-50 transition-all duration-300 {% if section.settings.sticky %}border-b border-stone-100 bg-white/95 backdrop-blur-sm shadow-sm py-3 md:py-4{% else %}bg-transparent py-4 md:py-6{% endif %}"
   x-data="{ mobileMenuOpen: false }"
 >
-  <div class="max-w-7xl mx-auto px-8 flex justify-between items-center">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
     
     {% comment %} MENU TRIGGER (Mobile) {% endcomment %}
     <div class="sm:hidden" @click="mobileMenuOpen = true">

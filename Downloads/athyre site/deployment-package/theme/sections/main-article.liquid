@@ -55,15 +55,15 @@
     </div>
   {%- endif -%}
 
-  <div class="py-24 px-8">
+  <div class="py-16 md:py-24 px-4 md:px-8">
     <div class="max-w-3xl mx-auto">
       {%- comment -%} Header {%- endcomment -%}
-      <header class="text-center mb-12">
+      <header class="text-center mb-8 md:mb-12">
         <a href="{{ blog.url }}" class="text-[10px] uppercase tracking-widest text-stone-400 hover:text-stone-900 transition-colors mb-4 inline-block">
           ← {{ blog.title }}
         </a>
         
-        <h1 class="text-4xl md:text-5xl font-light leading-tight mb-6">{{ article.title }}</h1>
+        <h1 class="text-2xl md:text-4xl lg:text-5xl font-light leading-tight mb-4 md:mb-6">{{ article.title }}</h1>
         
         <div class="flex items-center justify-center gap-4 text-sm text-stone-500">
           {%- if section.settings.show_author -%}
