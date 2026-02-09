@@ -45,6 +45,10 @@ Load relevant references before starting:
 | `scripts/sanitize_liquid.js` | Scan/fix JSX patterns in Liquid files |
 | `scripts/validate_schema.js` | Check sections have presets |
 | `scripts/generate_template.js` | Generate JSON templates with UUIDs |
+| `scripts/check_mandatory_files.js` | **P0** Verify ALL Shopify-required files exist (BLOCKING) |
+| `scripts/check_locale_coverage.js` | **P0** Verify every `| t` key exists in locale JSON |
+| `scripts/extract_handle_references.js` | **P0** Scan for content-code bindings (blogs, pages, collections) |
+| `scripts/check_icon_references.js` | **P1** Verify every `render 'icon-x'` has a matching snippet |
 
 ### Scaffold Resources
 
@@ -55,7 +59,18 @@ Load relevant references before starting:
 | `scaffold/snippets/` | Reusable components (variant-picker, breadcrumbs, price) |
 | `scaffold/assets/` | JavaScript (product-form.js with AJAX cart) |
 | `scaffold/layout/` | theme.liquid with cart drawer, cookie banner enabled |
+| `scaffold/locales/` | Comprehensive baseline en.default.json with ALL common keys |
+| `scaffold/templates/` | Mandatory templates (gift_card.liquid, customer account) |
 | `scaffold/config/` | Base settings schema |
+
+### Defensive Verification References
+
+| Reference | Gap It Fills |
+|-----------|-------------|
+| `references/mandatory-files.md` | Exact list of files Shopify REQUIRES — not best practices, hard requirements |
+| `references/content-code-bindings.md` | How theme code references admin content (blogs, pages, collections) |
+| `references/post-deployment-checklist.md` | Verification steps after deploying to a live store |
+| `references/critical-user-journeys.md` | The 8 customer flows every store must support |
 
 ### Component References
 
@@ -225,7 +240,7 @@ node scripts/generate_template.js page.about --sections hero,rich-text --write
 
 ```bash
 # 1. Create theme directory structure
-mkdir -p theme/{assets,config,layout,locales,sections,snippets,templates}
+mkdir -p theme/{assets,config,layout,locales,sections,snippets,templates/customers}
 
 # 2. Copy scaffold icons (prevents missing icon errors)
 cp -r scaffold/icons/* theme/snippets/
@@ -235,12 +250,27 @@ cp -r scaffold/sections/* theme/sections/
 
 # 4. Copy base config
 cp scaffold/config/settings_schema.json theme/config/
+
+# 5. MANDATORY: Copy required templates that Shopify expects
+cp scaffold/templates/gift_card.liquid theme/templates/
+cp scaffold/templates/customers/activate_account.json theme/templates/customers/
+cp scaffold/templates/customers/reset_password.json theme/templates/customers/
+
+# 6. Copy comprehensive baseline locale
+cp scaffold/locales/en.default.json theme/locales/
+
+# 7. VERIFY: Run mandatory files check (must pass before proceeding)
+node scripts/check_mandatory_files.js ./theme/
 ```
 
 This ensures:
 - All common icons are available from the start
 - Base sections have proper `presets` for Theme Editor visibility
 - Settings schema has required theme structure
+- **Gift card template exists as .liquid** (Shopify rejects .json for this)
+- **Customer activation & password reset templates exist** (without these, customers can't activate accounts or reset passwords)
+- **Baseline locale file covers all common translation keys** (prevents raw key paths showing to customers)
+- **Mandatory files check passes** before any conversion work begins
 
 ---
 
@@ -310,6 +340,61 @@ For each page, document:
 ### Phase 2: Convert Components to Sections
 
 Follow existing section conversion process (see `references/conversion-examples.md`).
+
+**Critical rules for every section:**
+
+#### Rule 1: Mobile-First Responsive Classes
+
+Every converted section MUST use responsive patterns. 65% of e-commerce traffic is mobile — desktop-only sections are unusable for the majority.
+
+```liquid
+{%- comment -%} REQUIRED responsive patterns for every section {%- endcomment -%}
+
+{%- comment -%} Padding: mobile-first, scale up {%- endcomment -%}
+<section class="px-4 md:px-8 py-8 md:py-16">
+
+{%- comment -%} Grid: single column mobile, multi-column desktop {%- endcomment -%}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
+
+{%- comment -%} Typography: readable on mobile, larger on desktop {%- endcomment -%}
+<h2 class="text-2xl md:text-4xl font-bold">
+
+{%- comment -%} Images: full width on mobile {%- endcomment -%}
+<img class="w-full h-auto object-cover">
+
+{%- comment -%} Touch targets: minimum 44x44px {%- endcomment -%}
+<button class="min-h-[44px] min-w-[44px] px-6 py-3">
+```
+
+**Lint check:** If a section has no `md:` or `lg:` responsive prefixes, it fails review.
+
+#### Rule 2: JavaScript Behavior Mapping
+
+For every interactive component in the source, document:
+1. **What the behavior IS** (client-side state? API call? animation?)
+2. **How it maps to Shopify** (JS + localStorage? Cart API? Alpine.js?)
+3. **What JS file needs to be created**
+
+| Source Pattern | Shopify Implementation |
+|---------------|----------------------|
+| React `useState` for UI toggle | Alpine.js `x-data` / `x-show` |
+| React `useState` for cart state | Shopify Cart API + `cart-drawer.js` |
+| React `useState` for wishlist | localStorage + `wishlist.js` |
+| React `useEffect` for data fetch | Shopify Liquid (server-rendered) |
+| React `onClick` event handler | Inline `onclick` or Alpine `@click` |
+| React form with `onSubmit` | Shopify `{% form %}` tags |
+| React router `<Link>` | Standard `<a href>` tags |
+
+**Do NOT leave interactive components as static HTML.** A button with no click handler is worse than no button at all.
+
+#### Rule 3: Translation Keys
+
+Use `| default: 'fallback'` for ALL `| t` filters, AND add the key to locale JSON:
+
+```liquid
+{%- comment -%} CORRECT: both default AND locale key {%- endcomment -%}
+{{ 'products.product.add_to_cart' | t | default: 'Add to Cart' }}
+```
 
 **Critical additions:**
 
@@ -618,33 +703,38 @@ All icons converted to inline SVG in snippets/icons.liquid
 
 ### Phase 6: Sanitize & Validate
 
-**Critical step before packaging.** Run automated checks to catch common issues:
+**Critical step before packaging.** Run ALL automated checks to catch issues before deployment.
 
 ```bash
-# 1. Scan and fix JSX patterns in Liquid files
+# 1. MANDATORY FILE CHECK (run first — blocks everything else)
+node scripts/check_mandatory_files.js ./theme/
+
+# 2. Scan and fix JSX patterns in Liquid files
 node scripts/sanitize_liquid.js ./theme/ --fix
 
-# 2. Validate all section schemas
+# 3. Validate all section schemas
 node scripts/validate_schema.js ./theme/sections/
 
-# 3. Verify commerce functionality
+# 4. Verify commerce functionality
 node scripts/verify_theme.js ./theme/
 
-# 4. Check for missing icons (manual)
-grep -roh "render 'icon-[^']*'" ./theme/ | \
-  sed "s/render 'icon-\([^']*\)'/\1/" | \
-  sort -u | \
-  while read icon; do
-    if [ ! -f "./theme/snippets/icon-${icon}.liquid" ]; then
-      echo "MISSING: icon-${icon}.liquid"
-    fi
-  done
+# 5. Check locale coverage (every | t key must exist in en.default.json)
+node scripts/check_locale_coverage.js ./theme/
 
-# 5. Check for hardcoded links
-grep -rn 'href="/pages/' ./theme/sections/ ./theme/snippets/
-grep -rn 'href="/collections/' ./theme/sections/ ./theme/snippets/
-grep -rn 'href="/products/' ./theme/sections/ ./theme/snippets/
+# 6. Extract content-code bindings (generates content-bindings.json)
+node scripts/extract_handle_references.js ./theme/ --json
+
+# 7. Check icon/snippet references (every render call must have a file)
+node scripts/check_icon_references.js ./theme/
 ```
+
+**Script exit codes:**
+| Script | Exit 0 | Exit 1 |
+|--------|--------|--------|
+| `check_mandatory_files.js` | All required files present | Critical files missing — **DO NOT DEPLOY** |
+| `check_locale_coverage.js` | All translation keys have locale entries | Missing keys — theme check will flag |
+| `extract_handle_references.js` | Always exits 0 (informational) | — |
+| `check_icon_references.js` | All referenced snippets exist | Missing snippets — icons won't render |
 
 **Common fixes:**
 | Issue | Fix |
@@ -811,6 +901,93 @@ For each page:
 
 ---
 
+### Phase 9: Post-Deployment Verification (NEW — REQUIRED)
+
+**This phase catches the 80% of production issues that file-level validation cannot detect.** Going from "files uploaded" to "store is production-ready" requires verifying real customer flows against live admin content.
+
+See `references/post-deployment-checklist.md` for the complete checklist.
+See `references/critical-user-journeys.md` for the 8 flows every store must support.
+
+#### Step 9.1: Deploy to Development Store
+
+Upload the theme to a Shopify development store (NOT the live store). Create sample content:
+- At least 3 products with variants and images
+- At least 1 collection with products
+- At least 1 blog with 1 article
+- All pages referenced in footer/navigation
+- Navigation menus (main + footer)
+
+#### Step 9.2: Verify Content-Code Bindings
+
+Run the binding extractor and check every handle resolves:
+
+```bash
+node scripts/extract_handle_references.js ./theme/
+```
+
+For each handle listed:
+- [ ] Blog handles match what's in Shopify admin (Settings → Blog posts)
+- [ ] Page handles match (Online Store → Pages)
+- [ ] Collection handles match (Products → Collections)
+- [ ] Menu handles match (Online Store → Navigation)
+- [ ] No hardcoded URLs that should use Liquid objects
+
+#### Step 9.3: Walk Through Critical User Journeys
+
+**All 8 journeys must pass** (see `references/critical-user-journeys.md`):
+
+1. **Browse → Buy:** Homepage → product → add to cart → checkout
+2. **Search → Find → Buy:** Search → results → product → cart
+3. **Collection Filtering:** Filters work, sort works, pagination works
+4. **Customer Account:** Register → login → account → addresses
+5. **Password Reset:** Forgot password → email → reset → login
+6. **Account Activation:** Activation link → create password → login
+7. **Gift Card:** Gift card page renders, code copyable, QR shows
+8. **Blog Reading:** Blog listing shows articles, article pages work
+
+#### Step 9.4: Test on Mobile Device
+
+Use a real device or Chrome DevTools mobile emulation:
+- [ ] Header: logo, menu icon, cart icon visible and tappable
+- [ ] Mobile menu opens/closes, all links work
+- [ ] Product page: images swipe, variant buttons tappable
+- [ ] No horizontal scroll on any page
+- [ ] Touch targets minimum 44x44px
+- [ ] Text minimum 16px (no zoom required)
+
+#### Step 9.5: Check Browser Console
+
+Open DevTools Console on every major page:
+- [ ] No `Liquid error:` messages in rendered HTML
+- [ ] No 404 errors for assets (JS, CSS, images)
+- [ ] No JavaScript errors
+- [ ] No mixed content warnings
+
+#### Step 9.6: Run Lighthouse Audit
+
+Chrome DevTools → Lighthouse → Mobile → Performance:
+- [ ] Performance score > 60 (target > 80)
+- [ ] First Contentful Paint < 2.5s
+- [ ] Largest Contentful Paint < 4s
+- [ ] Cumulative Layout Shift < 0.25
+
+#### Step 9.7: Sign-Off
+
+Only after all steps pass, the theme is production-ready. Document results:
+
+```markdown
+## Deployment Verification Results
+- Date: YYYY-MM-DD
+- Store: [store-name].myshopify.com
+- Critical Journeys: PASS / FAIL
+- Mobile: PASS / FAIL
+- Console Errors: 0
+- Lighthouse Performance: [score]
+- Ready for production: YES / NO
+```
+
+---
+
 ## Section Inventory Template
 
 Generate for each project:
@@ -912,20 +1089,21 @@ These features from the demo require additional setup:
 
 When asked to convert a project, follow this sequence:
 
-0. **Initialize** → Copy scaffold icons, sections, config to theme/
+0. **Initialize** → Copy scaffold icons, sections, config, **mandatory templates**, **baseline locale** to theme/. Run `check_mandatory_files.js` — must pass.
 1. **Analyze** → Map all pages, components, navigation, assets
 2. **Data Architecture** → Identify custom data → metafields/metaobjects mapping
-3. **Convert** → Transform components to sections with extracted content
+3. **Convert** → Transform components to sections. **Enforce mobile-first classes. Map JS behavior for every interactive component.**
 4. **Commerce Logic** → Document discounts, shipping, cart customizations
 5. **Template** → Create JSON templates with pre-placed sections
 6. **Navigate** → Document menu structure
 7. **Manifest** → List all assets to upload
 8. **Integrations** → Document webhooks, app proxy needs, automations
-9. **Sanitize** → Run sanitizer + validator scripts
+9. **Sanitize** → Run ALL verification scripts: `check_mandatory_files.js`, `sanitize_liquid.js`, `validate_schema.js`, `verify_theme.js`, `check_locale_coverage.js`, `extract_handle_references.js`, `check_icon_references.js`
 10. **Package** → Assemble deployment package
-11. **Document** → Generate setup checklist
+11. **Document** → Generate setup checklist + content-bindings manifest
+12. **Verify (Phase 9)** → Deploy to dev store → Walk Critical User Journeys → Test mobile → Check console → Run Lighthouse → Sign off
 
-**Output:** Complete deployment package, not just a theme folder.
+**Output:** Complete deployment package with verified production readiness, not just a theme folder.
 
 ---
 
@@ -973,10 +1151,17 @@ See `SKILL-BLINDSPOTS-ANALYSIS.md` for comprehensive gap analysis.
 Run before every deployment:
 
 ```bash
-# Automated checks
-node scripts/sanitize_liquid.js ./theme/           # Scan for issues
-node scripts/validate_schema.js ./theme/sections/   # Validate schemas
+# Automated checks (run ALL — any failure is a deployment blocker)
+node scripts/check_mandatory_files.js ./theme/       # Required files exist
+node scripts/sanitize_liquid.js ./theme/              # JSX pattern scan
+node scripts/validate_schema.js ./theme/sections/     # Schema validation
+node scripts/verify_theme.js ./theme/                 # Commerce readiness
+node scripts/check_locale_coverage.js ./theme/        # Translation keys
+node scripts/extract_handle_references.js ./theme/    # Content bindings
+node scripts/check_icon_references.js ./theme/        # Icon completeness
+```
 
+```bash
 # Manual verification
 - [ ] All sections appear in Theme Editor "Add section" menu
 - [ ] No visible `{/* */}` comments in rendered pages
@@ -984,6 +1169,10 @@ node scripts/validate_schema.js ./theme/sections/   # Validate schemas
 - [ ] Mobile menu works
 - [ ] All links navigate correctly
 - [ ] Forms submit successfully
+- [ ] Content-code bindings verified against Shopify admin
+- [ ] Critical User Journeys passed (see references/critical-user-journeys.md)
+- [ ] Mobile device testing passed
+- [ ] Browser console has no errors
 ```
 
 ---

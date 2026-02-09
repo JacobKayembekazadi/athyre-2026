@@ -871,3 +871,131 @@ A truly launch-ready conversion must address:
 ### B2B
 - [B2B Features Overview](https://help.shopify.com/en/manual/b2b/getting-started/features)
 - [B2B Winter 2026 Updates](https://echidna.co/blog/shopify-b2b-features-winter-2026/)
+
+---
+
+## Ralph Loop Iteration 2 — Athyre Conversion Post-Mortem
+
+**Date:** 2026-02-08
+**Source:** Production deployment of Athyre luxury fashion brand website to Shopify theme
+**Evidence:** 22 commits across 15 issue categories to reach production readiness
+
+### What Actually Broke (The Evidence)
+
+| Category | Count | Severity | Caught by Skill? |
+|----------|-------|----------|-------------------|
+| Hardcoded URLs/handles | 12+ | Critical | No |
+| Missing required templates | 8 files | Critical | No |
+| JSX syntax artifacts | 3 types | Critical | Yes (sanitize_liquid.js) |
+| Missing icon snippets | 50+ | High | No |
+| Invalid Liquid filters | 1 | Critical | No |
+| Mobile responsiveness | 9 locations | High | No |
+| Missing e-commerce JS | 5 features | High | Partial (verify_theme.js) |
+| Missing locale keys | 10+ keys | Medium | No |
+| Unpinned CDN dependencies | 2 | Medium | No |
+| Theme settings not wired | 3 areas | Medium | No |
+| Accessibility duplicates | 1 | Medium | No |
+| Blog handle mismatch | 2 | Critical | No |
+| Missing customer templates | 2 | Critical | No |
+| Non-functional UI elements | 1 | Low | No |
+| Build/asset pipeline | 3 | High | No |
+
+**Key stat: The skill's verification scripts caught only ~15% of actual production issues.**
+
+### Root Causes Identified
+
+#### 1. Theme as CONTRACT vs. Theme as FILES
+
+The skill treated theme creation as "put files in folders" rather than "satisfy a runtime contract." Shopify expects specific files (gift_card.liquid, activate_account.json, reset_password.json) and specific patterns (content_for_header, content_for_layout). Without them, entire customer flows break silently.
+
+**Resolution:** Added `check_mandatory_files.js` script and mandatory file manifest. Added scaffold templates for gift card, account activation, and password reset.
+
+#### 2. Code-Content Binding Blindness
+
+Every `blogs['journal']`, `pages['vision']`, `collections['all']` is a runtime binding. The skill had no mechanism to verify these bindings resolve against actual Shopify admin content.
+
+**Example:** Footer referenced `blogs['journal']` but blog was created as "this-is-athyre". Blog-posts section fell back to `/blogs/news`. Both silently failed.
+
+**Resolution:** Added `extract_handle_references.js` script that scans all .liquid files and generates a `content-bindings.json` manifest for verification.
+
+#### 3. Behavior Conversion vs. Structure Conversion
+
+The skill converts structure (HTML → Liquid) but doesn't translate behavior. React components with useState, useEffect, and event handlers became static HTML with no interactivity.
+
+**Examples:**
+- Wishlist button → Liquid button with invalid `is_in_wishlist` filter
+- Cart drawer with useState → empty section
+- Predictive search → static input with no JS
+
+**Resolution:** Added JS behavior mapping rules to Phase 2. Every interactive component must have a documented behavior plan.
+
+#### 4. Desktop-Only Conversion
+
+Converted sections used source site's desktop styles without responsive patterns. 65% of e-commerce traffic is mobile.
+
+**Resolution:** Added mobile-first enforcement rules to Phase 2. Every section must use responsive classes.
+
+#### 5. Locale Dependency Graph Invisible
+
+Every `| t` filter creates an implicit dependency on en.default.json. Missing keys either fail theme check or display raw key paths to customers.
+
+**Resolution:** Added `check_locale_coverage.js` script and comprehensive baseline locale file in scaffold.
+
+### System Layer Analysis
+
+```
+Layer 4: DEPLOYMENT (admin content, CDN)   ← WAS ABSENT → Now has Phase 9 + content bindings
+Layer 3: BEHAVIOR (JS, interactivity)      ← WAS WEAK → Now has behavior mapping rules
+Layer 2: STRUCTURE (templates, sections)   ← WAS STRONG → Strengthened with mandatory files
+Layer 1: CONVERSION (JSX → Liquid syntax)  ← WAS STRONG → Unchanged
+```
+
+### Changes Implemented
+
+#### New Scripts (4)
+1. `check_mandatory_files.js` — Verify ALL Shopify-required files exist (BLOCKING)
+2. `check_locale_coverage.js` — Verify every | t key exists in locale JSON
+3. `extract_handle_references.js` — Scan for content-code bindings
+4. `check_icon_references.js` — Verify icon snippet completeness
+
+#### New Scaffold Files (6)
+1. `scaffold/templates/gift_card.liquid` — Mandatory gift card template
+2. `scaffold/templates/customers/activate_account.json` — Account activation
+3. `scaffold/templates/customers/reset_password.json` — Password reset
+4. `scaffold/sections/main-activate-account.liquid` — Activation form
+5. `scaffold/sections/main-reset-password.liquid` — Reset form
+6. `scaffold/locales/en.default.json` — Comprehensive baseline locale
+
+#### New Reference Docs (4)
+1. `references/mandatory-files.md` — Exact required files list
+2. `references/content-code-bindings.md` — How code references admin content
+3. `references/post-deployment-checklist.md` — Full verification checklist
+4. `references/critical-user-journeys.md` — 8 flows every store must support
+
+#### SKILL.md Updates
+- Phase 0: Now copies mandatory templates and baseline locale
+- Phase 2: Enforces mobile-first classes and JS behavior mapping
+- Phase 6: Runs all 7 verification scripts (was 3)
+- Phase 9 (NEW): Post-deployment verification with Critical User Journeys
+
+### The Meta-Lesson
+
+**The skill optimized for the HAPPY PATH but didn't defend against FAILURE MODES.**
+
+Every reference doc said "here's how to do X well." None said "here's what breaks if you skip X." The verification scripts checked "does this pattern exist?" but not "does this reference resolve?"
+
+A complete skill needs both:
+- **Generative guidance** (how to build) — existed, was excellent
+- **Defensive verification** (what breaks if you don't) — was almost entirely missing
+
+The 4 new scripts would have caught every single Athyre issue BEFORE deployment.
+
+### Remaining Gaps (Future Iterations)
+
+| Gap | Priority | Description |
+|-----|----------|-------------|
+| CDN pinning check | P2 | Verify all external scripts use pinned versions |
+| Mobile pattern lint | P2 | Automated check for missing responsive classes |
+| Automated journey testing | P3 | Puppeteer-based automated user flow testing |
+| Theme check integration | P3 | Run Shopify CLI `theme check` as part of Phase 6 |
+| Performance budget | P3 | Fail if JS bundle > 200KB or CSS > 100KB |

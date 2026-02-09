@@ -1,0 +1,245 @@
+{% layout none %}
+<!DOCTYPE html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, user-scalable=0">
+  <meta name="theme-color" content="{{ settings.colors_accent_1 }}">
+
+  <title>{{ 'gift_cards.issued.title' | t }} - {{ shop.name }}</title>
+  <meta name="description" content="{{ 'gift_cards.issued.subtext' | t }}">
+
+  {{ content_for_header }}
+
+  <style>
+    :root {
+      --color-foreground: 0 0 0;
+      --color-background: 255 255 255;
+      --color-accent: 0 0 0;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: rgb(var(--color-background));
+      color: rgb(var(--color-foreground));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .gift-card { max-width: 400px; width: 100%; }
+    .gift-card__logo { margin-bottom: 1.5rem; }
+    .gift-card__logo img { max-height: 48px; width: auto; }
+    .gift-card__image-wrapper {
+      position: relative;
+      margin-bottom: 1.5rem;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .gift-card__image { width: 100%; height: auto; display: block; }
+    .gift-card__price {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .gift-card__title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .gift-card__text {
+      color: rgba(var(--color-foreground), 0.6);
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+    .gift-card__code-wrapper {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .gift-card__code {
+      font-family: 'Courier New', monospace;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      word-break: break-all;
+    }
+    .gift-card__code--faded { opacity: 0.5; }
+    .gift-card__qr-code {
+      margin: 1.5rem auto;
+      max-width: 120px;
+    }
+    .gift-card__qr-code img { width: 100%; height: auto; }
+    .gift-card__actions { display: flex; flex-direction: column; gap: 0.75rem; }
+    .gift-card__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      border: none;
+    }
+    .gift-card__button:hover { opacity: 0.85; }
+    .gift-card__button--primary {
+      background: rgb(var(--color-foreground));
+      color: rgb(var(--color-background));
+    }
+    .gift-card__button--secondary {
+      background: transparent;
+      border: 1px solid rgb(var(--color-foreground));
+      color: rgb(var(--color-foreground));
+    }
+    .gift-card__expiry {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: rgba(var(--color-foreground), 0.5);
+    }
+    .badge--expired {
+      display: inline-block;
+      background: #dc2626;
+      color: #fff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    @media print {
+      .gift-card__actions { display: none; }
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="gift-card">
+    {%- if shop.logo != blank -%}
+      <div class="gift-card__logo">
+        <img
+          src="{{ shop.logo | image_url: width: 200 }}"
+          alt="{{ shop.name }}"
+          width="200"
+          loading="eager"
+        >
+      </div>
+    {%- else -%}
+      <div class="gift-card__logo">
+        <h1 style="font-size: 1.5rem; font-weight: 700;">{{ shop.name }}</h1>
+      </div>
+    {%- endif -%}
+
+    <div class="gift-card__image-wrapper">
+      {%- if gift_card.image -%}
+        <img
+          class="gift-card__image"
+          src="{{ gift_card.image | image_url: width: 800 }}"
+          alt="{{ gift_card.product.title }}"
+          width="400"
+          height="auto"
+          loading="eager"
+        >
+      {%- else -%}
+        <img
+          class="gift-card__image"
+          src="{{ 'gift-card/card.jpg' | shopify_asset_url }}"
+          alt="{{ gift_card.product.title }}"
+          width="400"
+          height="auto"
+          loading="eager"
+        >
+      {%- endif -%}
+
+      <span class="gift-card__price">
+        {%- if gift_card.balance != gift_card.initial_value -%}
+          <span class="gift-card__code--faded">{{ gift_card.initial_value | money }}</span>
+          {{ gift_card.balance | money }}
+        {%- else -%}
+          {{ gift_card.initial_value | money }}
+        {%- endif -%}
+      </span>
+    </div>
+
+    <h2 class="gift-card__title">{{ 'gift_cards.issued.title' | t | default: 'Your Gift Card' }}</h2>
+    <p class="gift-card__text">{{ 'gift_cards.issued.subtext' | t | default: 'Use this code at checkout' }}</p>
+
+    <div class="gift-card__code-wrapper">
+      <span class="gift-card__code" id="GiftCardCode">
+        {{ gift_card.code | format_code }}
+      </span>
+    </div>
+
+    <div class="gift-card__qr-code" id="QrCode">
+      <img
+        src="{{ gift_card.qr_code_url }}"
+        alt="{{ 'gift_cards.issued.qr_image_alt' | t | default: 'QR code for gift card' }}"
+        width="120"
+        height="120"
+      >
+    </div>
+
+    <div class="gift-card__actions">
+      {%- if gift_card.pass_url -%}
+        <a href="{{ gift_card.pass_url }}" class="gift-card__button gift-card__button--primary">
+          {{ 'gift_cards.issued.add_to_apple_wallet' | t | default: 'Add to Apple Wallet' }}
+        </a>
+      {%- endif -%}
+
+      <button
+        class="gift-card__button gift-card__button--secondary"
+        onclick="copyCode()"
+        id="CopyButton"
+      >
+        {{ 'gift_cards.issued.copy_code' | t | default: 'Copy Code' }}
+      </button>
+
+      <a href="{{ shop.url }}" class="gift-card__button gift-card__button--secondary" target="_blank">
+        {{ 'gift_cards.issued.shop_link' | t | default: 'Continue Shopping' }}
+      </a>
+
+      <button class="gift-card__button gift-card__button--secondary" onclick="window.print()">
+        {{ 'gift_cards.issued.print_gift_card' | t | default: 'Print' }}
+      </button>
+    </div>
+
+    {%- if gift_card.expired -%}
+      <span class="badge--expired">{{ 'gift_cards.issued.expired' | t | default: 'Expired' }}</span>
+    {%- endif -%}
+
+    {%- if gift_card.expires_on -%}
+      <p class="gift-card__expiry">
+        {{ 'gift_cards.issued.expiration_notice' | t: expires_on: gift_card.expires_on | date: "%B %d, %Y" | default: 'Expires on' }}
+        {{ gift_card.expires_on | date: "%B %d, %Y" }}
+      </p>
+    {%- endif -%}
+  </div>
+
+  <script>
+    function copyCode() {
+      var code = document.getElementById('GiftCardCode').innerText.trim();
+      navigator.clipboard.writeText(code).then(function() {
+        var btn = document.getElementById('CopyButton');
+        var original = btn.innerText;
+        btn.innerText = '{{ "gift_cards.issued.copy_code_success" | t | default: "Copied!" }}';
+        setTimeout(function() { btn.innerText = original; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

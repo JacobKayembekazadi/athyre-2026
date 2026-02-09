@@ -21,6 +21,10 @@
             "country": "Country/Currency",
             "update": "Update"
         },
+        "password": {
+            "opening_soon": "Opening Soon",
+            "powered_by": "Powered by Shopify"
+        },
         "cookie": {
             "privacy_policy": "Read our Privacy Policy",
             "manage_preferences": "Manage Cookie Preferences",
@@ -95,7 +99,8 @@
             "taxes_and_shipping": "Taxes and shipping calculated at checkout",
             "view_cart": "View Cart",
             "remove": "Remove",
-            "note_placeholder": "Special instructions for your order..."
+            "note_placeholder": "Special instructions for your order...",
+            "note": "Order note"
         },
         "items": {
             "product": "Product",
@@ -200,6 +205,22 @@
         "error": "Something went wrong. Please try again."
     },
     "footer": {
-        "copyright": "© {{ year }} {{ shop_name }}. All rights reserved."
+        "copyright": "\u00a9 {{ year }} {{ shop_name }}. All rights reserved."
+    },
+    "gift_cards": {
+        "issued": {
+            "title": "Your Gift Card",
+            "subtext": "Use this code at checkout",
+            "remaining_html": "Remaining {{ balance }}",
+            "expired": "Expired",
+            "redeem": "Use this code at checkout",
+            "copy_code": "Copy Code",
+            "copy_code_success": "Copied!",
+            "add_to_apple_wallet": "Add to Apple Wallet",
+            "expiration_date": "Expires on {{ expires_on }}",
+            "print": "Print",
+            "shop_link": "Continue Shopping",
+            "qr_image_alt": "QR code for gift card"
+        }
     }
 }
