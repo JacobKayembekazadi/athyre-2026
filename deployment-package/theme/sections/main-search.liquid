@@ -214,10 +214,6 @@
           <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-12">{{ section.settings.categories_label }}</span>
         {% endif %}
         <div class="grid md:grid-cols-3 gap-8">
-          {%- if section.settings.featured_collection != blank -%}
-            {%- assign browse_collections = section.settings.featured_collection.products | map: 'collections' | uniq -%}
-          {%- endif -%}
-
           {% for collection in collections limit: section.settings.categories_count %}
             <a href="{{ collection.url }}" class="group relative aspect-video overflow-hidden">
               {% if collection.image %}

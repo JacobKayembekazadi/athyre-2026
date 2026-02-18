@@ -221,7 +221,7 @@
     {% endunless %}
 
     <div class="gift-card__qr">
-      {{ gift_card.qr_identifier | qr_code: 120 }}
+      <img src="{{ gift_card.qr_identifier | qr_code_svg }}" alt="{{ 'gift_cards.issued.qr_image_alt' | t | default: 'QR code' }}" width="120" height="120" loading="lazy">
     </div>
 
     <div class="gift-card__actions">

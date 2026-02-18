@@ -339,14 +339,14 @@
       </div>
     {% else %}
       <div class="flex gap-8">
-        {% if policies.privacy_policy.url != blank %}
-          <a href="{{ policies.privacy_policy.url }}" class="hover:text-white transition-colors">{{ policies.privacy_policy.title }}</a>
+        {% if shop.privacy_policy.url != blank %}
+          <a href="{{ shop.privacy_policy.url }}" class="hover:text-white transition-colors">{{ shop.privacy_policy.title }}</a>
         {% endif %}
-        {% if policies.terms_of_service.url != blank %}
-          <a href="{{ policies.terms_of_service.url }}" class="hover:text-white transition-colors">{{ policies.terms_of_service.title }}</a>
+        {% if shop.terms_of_service.url != blank %}
+          <a href="{{ shop.terms_of_service.url }}" class="hover:text-white transition-colors">{{ shop.terms_of_service.title }}</a>
         {% endif %}
-        {% if policies.refund_policy.url != blank %}
-          <a href="{{ policies.refund_policy.url }}" class="hover:text-white transition-colors">{{ policies.refund_policy.title }}</a>
+        {% if shop.refund_policy.url != blank %}
+          <a href="{{ shop.refund_policy.url }}" class="hover:text-white transition-colors">{{ shop.refund_policy.title }}</a>
         {% endif %}
       </div>
     {% endif %}

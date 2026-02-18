@@ -227,7 +227,7 @@
         </a>
       {% endif %}
 
-      <a href="{{ routes.cart_url }}" class="relative" aria-label="{{ 'cart.title' | t }} ({{ cart.item_count }})">
+      <a href="{{ routes.cart_url }}" class="relative" aria-label="{{ 'cart.general.title' | t }} ({{ cart.item_count }})">
         {% render 'icon-shopping-bag', class: 'w-4 h-4 cursor-pointer' %}
         {% if cart.item_count > 0 %}
           <span class="absolute -top-2 -right-2 bg-stone-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center" aria-hidden="true">{{ cart.item_count }}</span>
