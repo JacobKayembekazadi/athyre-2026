@@ -202,7 +202,6 @@
       <span class="badge--expired">{{ 'gift_cards.issued.expired' | t | default: 'Expired' }}</span>
     {% endif %}
 
-    {% comment %}theme-check-disable UnknownFilter{% endcomment %}
     <p class="gift-card__label">{{ 'gift_cards.issued.redeem' | t | default: 'Your code' }}</p>
     <div class="gift-card__code" id="GiftCardCode">{{ gift_card.code | format_code }}</div>
     <p class="gift-card__code-note">{{ 'gift_cards.issued.copy_code' | t | default: 'Click to select code' }}</p>
@@ -225,7 +224,6 @@
     <div class="gift-card__qr">
       {{ gift_card.qr_identifier | qr_code: 120 }}
     </div>
-    {% comment %}theme-check-enable UnknownFilter{% endcomment %}
 
     <div class="gift-card__actions">
       <button class="gift-card__btn" onclick="window.print();">
