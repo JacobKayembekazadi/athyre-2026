@@ -1,0 +1,91 @@
+{% schema %}
+{
+  "name": "Predictive Search Results",
+  "settings": []
+}
+{% endschema %}
+
+{%- comment -%}
+  This section is used by the Section Rendering API for predictive search.
+  It should not be added to templates directly.
+{%- endcomment -%}
+
+{%- if predictive_search.performed -%}
+  {%- if predictive_search.resources.products.size > 0 or predictive_search.resources.collections.size > 0 or predictive_search.resources.articles.size > 0 or predictive_search.resources.pages.size > 0 -%}
+    
+    <div class="predictive-search-results divide-y divide-stone-100">
+      
+      {%- comment -%} Products {%- endcomment -%}
+      {%- if predictive_search.resources.products.size > 0 -%}
+        <div class="p-4">
+          <h3 class="text-[9px] uppercase tracking-widest font-bold text-stone-400 mb-4">Products</h3>
+          <ul class="space-y-3">
+            {%- for product in predictive_search.resources.products -%}
+              <li>
+                <a href="{{ product.url }}" class="flex items-center gap-4 group">
+                  <div class="w-12 h-12 bg-stone-100 flex-shrink-0 overflow-hidden">
+                    {%- if product.featured_image -%}
+                      {{ product.featured_image | image_url: width: 100 | image_tag: class: 'w-full h-full object-cover' }}
+                    {%- endif -%}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-stone-900 truncate group-hover:underline">{{ product.title }}</p>
+                    <p class="text-xs text-stone-500">{{ product.price | money }}</p>
+                  </div>
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      
+      {%- comment -%} Collections {%- endcomment -%}
+      {%- if predictive_search.resources.collections.size > 0 -%}
+        <div class="p-4">
+          <h3 class="text-[9px] uppercase tracking-widest font-bold text-stone-400 mb-4">Collections</h3>
+          <ul class="space-y-2">
+            {%- for collection in predictive_search.resources.collections -%}
+              <li>
+                <a href="{{ collection.url }}" class="text-sm text-stone-900 hover:underline block py-1">
+                  {{ collection.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      
+      {%- comment -%} Articles {%- endcomment -%}
+      {%- if predictive_search.resources.articles.size > 0 -%}
+        <div class="p-4">
+          <h3 class="text-[9px] uppercase tracking-widest font-bold text-stone-400 mb-4">Articles</h3>
+          <ul class="space-y-2">
+            {%- for article in predictive_search.resources.articles -%}
+              <li>
+                <a href="{{ article.url }}" class="text-sm text-stone-900 hover:underline block py-1">
+                  {{ article.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+      
+      {%- comment -%} View all link {%- endcomment -%}
+      <div class="p-4 text-center">
+        <a href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}" class="text-[10px] uppercase tracking-widest font-bold text-stone-900 hover:opacity-60 border-b border-stone-900 pb-1">
+          View all results
+        </a>
+      </div>
+      
+    </div>
+    
+  {%- else -%}
+    <div class="p-6 text-center">
+      <p class="text-stone-500 text-sm">No results found for "{{ predictive_search.terms }}"</p>
+      <a href="{{ routes.all_products_collection_url }}" class="text-[10px] uppercase tracking-widest font-bold text-stone-900 hover:opacity-60 mt-4 inline-block">
+        Browse all products
+      </a>
+    </div>
+  {%- endif -%}
+{%- endif -%}

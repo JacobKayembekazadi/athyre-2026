@@ -1,0 +1,112 @@
+{% schema %}
+{
+  "name": "Email Signup",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Newsletter"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join The Inner Circle"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>First access to new drops, exclusive offers, and stories from the sanctuary.</p>"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "YOUR EMAIL"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Welcome to the inner circle."
+    },
+    {
+      "type": "text",
+      "id": "disclaimer",
+      "label": "Disclaimer text",
+      "default": "By subscribing, you agree to our Privacy Policy."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Email Signup"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="color-scheme-{{ section.settings.color_scheme }} py-16 md:py-24 px-4 md:px-8">
+  <div class="max-w-xl mx-auto text-center">
+
+    {% if section.settings.label != blank %}
+      <p class="text-[10px] uppercase tracking-[0.3em] opacity-60 mb-4">{{ section.settings.label }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 class="text-2xl md:text-4xl font-black tracking-tight uppercase mb-4">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <div class="text-sm opacity-70 mb-8 leading-relaxed">{{ section.settings.description }}</div>
+    {% endif %}
+
+    {% form 'customer' %}
+      {% if form.posted_successfully? %}
+        <p class="text-sm font-bold uppercase tracking-wider mb-4">{{ section.settings.success_message }}</p>
+      {% else %}
+        {% if form.errors %}
+          <p class="text-red-500 text-xs mb-4">{{ form.errors | default_errors }}</p>
+        {% endif %}
+        <div class="flex max-w-md mx-auto">
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <input
+            type="email"
+            name="contact[email]"
+            placeholder="{{ section.settings.placeholder }}"
+            required
+            class="flex-1 bg-transparent border border-current/20 px-4 py-3 text-[10px] uppercase tracking-widest focus:outline-none focus:border-current/60"
+            aria-label="{{ section.settings.heading }}"
+          />
+          <button type="submit" class="border border-current px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-bold hover:opacity-70 transition-opacity -ml-px">
+            {{ section.settings.button_label }}
+          </button>
+        </div>
+        {% if section.settings.disclaimer != blank %}
+          <p class="text-[9px] uppercase tracking-wider opacity-40 mt-4">{{ section.settings.disclaimer }}</p>
+        {% endif %}
+      {% endif %}
+    {% endform %}
+
+  </div>
+</div>

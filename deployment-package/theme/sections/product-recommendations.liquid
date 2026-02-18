@@ -1,0 +1,116 @@
+{% schema %}
+{
+  "name": "Product Recommendations",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You May Also Like"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Products per row",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Recommendations"
+    }
+  ]
+}
+{% endschema %}
+
+<div
+  class="color-scheme-{{ section.settings.color_scheme }} py-16 md:py-24 px-4 md:px-8"
+  data-product-recommendations
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.products_to_show }}"
+>
+  <div class="max-w-7xl mx-auto">
+
+    {% if recommendations.performed %}
+      {% if recommendations.products_count > 0 %}
+        {% if section.settings.heading != blank %}
+          <h2 class="text-[10px] uppercase tracking-[0.3em] opacity-60 mb-10 text-center">{{ section.settings.heading }}</h2>
+        {% endif %}
+
+        <div class="grid grid-cols-2 md:grid-cols-{{ section.settings.columns }} gap-4 md:gap-8">
+          {% for product in recommendations.products limit: section.settings.products_to_show %}
+            {% render 'product-card', product: product %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      {%- comment -%} Placeholder for lazy-loading via JS {%- endcomment -%}
+      {% if section.settings.heading != blank %}
+        <h2 class="text-[10px] uppercase tracking-[0.3em] opacity-60 mb-10 text-center">{{ section.settings.heading }}</h2>
+      {% endif %}
+      <div class="grid grid-cols-2 md:grid-cols-{{ section.settings.columns }} gap-4 md:gap-8">
+        {% for i in (1..section.settings.products_to_show) %}
+          <div class="animate-pulse">
+            <div class="bg-stone-100 aspect-[3/4] mb-4"></div>
+            <div class="bg-stone-100 h-4 w-3/4 mb-2"></div>
+            <div class="bg-stone-100 h-4 w-1/4"></div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const el = document.querySelector('[data-product-recommendations]');
+    if (!el || !el.dataset.url) return;
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          observer.unobserve(el);
+          fetch(el.dataset.url)
+            .then(function(response) { return response.text(); })
+            .then(function(text) {
+              const html = new DOMParser().parseFromString(text, 'text/html');
+              const recs = html.querySelector('[data-product-recommendations]');
+              if (recs && recs.innerHTML.trim()) {
+                el.innerHTML = recs.innerHTML;
+              }
+            })
+            .catch(function(err) { console.error('Recommendations error:', err); });
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    observer.observe(el);
+  });
+</script>

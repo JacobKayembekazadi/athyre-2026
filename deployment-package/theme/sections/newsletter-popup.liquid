@@ -1,0 +1,128 @@
+{% schema %}
+{
+  "name": "Newsletter Popup",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Join The Community"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Receive early access to drops and daily intentions."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "EMAIL ADDRESS"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Join"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Success message",
+      "default": "Welcome to the community."
+    },
+    {
+      "type": "range",
+      "id": "delay",
+      "label": "Delay before showing (seconds)",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 5,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_once",
+      "label": "Only show once per visitor",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter Popup"
+    }
+  ]
+}
+{% endschema %}
+
+<div
+  id="newsletter-popup-{{ section.id }}"
+  class="fixed bottom-0 left-0 right-0 md:bottom-8 md:right-8 md:left-auto z-50 p-4 md:p-0"
+  style="display: none;"
+>
+  <div class="bg-stone-900 text-white p-8 max-w-lg mx-auto md:max-w-sm shadow-2xl relative w-full">
+    <button
+      type="button"
+      class="absolute right-4 top-4 text-stone-500 hover:text-white transition-colors"
+      aria-label="Close popup"
+      data-close-popup
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+
+    {% if section.settings.heading != blank %}
+      <span class="text-[9px] uppercase tracking-widest text-stone-400 block mb-4">{{ section.settings.heading }}</span>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <h3 class="text-xl font-serif italic mb-6 text-stone-200">
+        "{{ section.settings.subheading }}"
+      </h3>
+    {% endif %}
+
+    {% form 'customer' %}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <div class="flex border-b border-stone-700 pb-2">
+        <input
+          type="email"
+          name="contact[email]"
+          placeholder="{{ section.settings.placeholder }}"
+          class="bg-transparent border-none text-[10px] uppercase tracking-widest text-white placeholder:text-stone-600 focus:ring-0 w-full focus:outline-none"
+          required
+        />
+        <button type="submit" class="text-[9px] uppercase font-bold text-stone-400 hover:text-white transition-colors whitespace-nowrap">{{ section.settings.button_text }}</button>
+      </div>
+      {% if form.posted_successfully? %}
+        <p class="text-[10px] text-green-400 mt-2">{{ section.settings.success_message }}</p>
+      {% endif %}
+    {% endform %}
+  </div>
+</div>
+
+<script>
+  (function() {
+    var popup = document.getElementById('newsletter-popup-{{ section.id }}');
+    if (!popup) return;
+
+    var storageKey = 'newsletter_popup_dismissed_{{ section.id }}';
+    var showOnce = {{ section.settings.show_once }};
+    var delay = {{ section.settings.delay | times: 1000 }};
+
+    if (showOnce && localStorage.getItem(storageKey)) return;
+
+    setTimeout(function() {
+      popup.style.display = 'block';
+    }, delay);
+
+    var closeBtn = popup.querySelector('[data-close-popup]');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        popup.style.display = 'none';
+        if (showOnce) localStorage.setItem(storageKey, '1');
+      });
+    }
+  })();
+</script>

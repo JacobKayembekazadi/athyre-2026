@@ -1,0 +1,65 @@
+{%- comment -%}
+  Hero Preload Snippet
+  Preloads hero images for faster LCP.
+  Include in theme.liquid head section.
+  
+  Usage: {% render 'preload-hero', image: section.settings.image %}
+{%- endcomment -%}
+
+{%- if image != blank -%}
+  {%- comment -%} Preload mobile hero (smaller image for faster mobile LCP) {%- endcomment -%}
+  <link
+    rel="preload"
+    as="image"
+    href="{{ image | image_url: width: 800 }}"
+    media="(max-width: 749px)"
+    fetchpriority="high"
+  >
+  
+  {%- comment -%} Preload desktop hero {%- endcomment -%}
+  <link
+    rel="preload"
+    as="image"
+    href="{{ image | image_url: width: 1920 }}"
+    media="(min-width: 750px)"
+    fetchpriority="high"
+  >
+{%- endif -%}
+
+{%- comment -%}
+  Template-specific preloading
+  Automatically preloads hero images based on template type
+{%- endcomment -%}
+{%- if template.name == 'product' and product.featured_image -%}
+  <link
+    rel="preload"
+    as="image"
+    href="{{ product.featured_image | image_url: width: 600 }}"
+    media="(max-width: 749px)"
+    fetchpriority="high"
+  >
+  <link
+    rel="preload"
+    as="image"
+    href="{{ product.featured_image | image_url: width: 1000 }}"
+    media="(min-width: 750px)"
+    fetchpriority="high"
+  >
+{%- endif -%}
+
+{%- if template.name == 'collection' and collection.image -%}
+  <link
+    rel="preload"
+    as="image"
+    href="{{ collection.image | image_url: width: 800 }}"
+    media="(max-width: 749px)"
+    fetchpriority="high"
+  >
+  <link
+    rel="preload"
+    as="image"
+    href="{{ collection.image | image_url: width: 1920 }}"
+    media="(min-width: 750px)"
+    fetchpriority="high"
+  >
+{%- endif -%}

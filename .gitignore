@@ -1,0 +1,24 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Claude Code
+.claude/
+
+# Node (old athyre-web prototype)
+node_modules/
+athyre-web/
+
+# System Architect tool (not part of theme)
+system-architect-v2026/
+
+# Misc
+*.log
+*.tmp

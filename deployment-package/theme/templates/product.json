@@ -1,0 +1,50 @@
+{
+    "sections": {
+        "main": {
+            "type": "main-product",
+            "settings": {
+                "show_share_buttons": true
+            },
+            "blocks": {
+                "details": {
+                    "type": "accordion",
+                    "settings": {
+                        "heading": "Details",
+                        "content": "<p>High-compression performance fabric. Moisture-wicking and breathable.</p>"
+                    }
+                },
+                "care": {
+                    "type": "accordion",
+                    "settings": {
+                        "heading": "Fabric & Care",
+                        "content": "<p>Wash cold with like colors. Tumble dry low.</p>"
+                    }
+                },
+                "shipping": {
+                    "type": "accordion",
+                    "settings": {
+                        "heading": "Shipping & Returns",
+                        "content": "<p>Free shipping on orders over $150. Returns accepted within 30 days.</p>"
+                    }
+                }
+            },
+            "block_order": [
+                "details",
+                "care",
+                "shipping"
+            ]
+        },
+        "recommendations": {
+            "type": "featured-collection",
+            "settings": {
+                "title": "Complete The Set",
+                "collection": "all",
+                "products_to_show": 4
+            }
+        }
+    },
+    "order": [
+        "main",
+        "recommendations"
+    ]
+}

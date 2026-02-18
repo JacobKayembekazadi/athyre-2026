@@ -1,0 +1,69 @@
+{
+  "sections": {
+    "hero": {
+      "type": "video-hero",
+      "settings": {
+        "heading": "Move With Purpose",
+        "subheading": "Athyre",
+        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
+        "button_text": "Enter Sanctuary",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "intro": {
+      "type": "collection-intro",
+      "settings": {
+        "small_text": "The Rise Collection",
+        "main_text": "Armor for the spirit. Designed to move with you through every season of the soul."
+      }
+    },
+    "featured_products": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "New Arrivals",
+        "collection": "frontpage",
+        "products_to_show": 4
+      }
+    },
+    "intention": {
+      "type": "intention-setter",
+      "settings": {
+        "color_scheme": "2",
+        "heading": "Set Your Intention",
+        "initial_text": "Click to Receive",
+        "intentions": "I am enough., I move with purpose., I honor my temple., Peace begins within., Strength flows through me., I create my own path.",
+        "show_pattern": true
+      }
+    },
+    "blog": {
+      "type": "blog-posts",
+      "settings": {
+        "label": "The Journal",
+        "heading": "Words for the Journey",
+        "link_text": "Read All",
+        "blog": "news",
+        "post_count": 3
+      }
+    },
+    "popup": {
+      "type": "newsletter-popup",
+      "settings": {
+        "heading": "Join The Community",
+        "subheading": "Receive early access to drops and daily intentions.",
+        "placeholder": "EMAIL ADDRESS",
+        "button_text": "Join",
+        "success_message": "Welcome to the community.",
+        "delay": 5,
+        "show_once": true
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "intro",
+    "featured_products",
+    "intention",
+    "blog",
+    "popup"
+  ]
+}

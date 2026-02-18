@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "main": {
+      "type": "returns-template",
+      "settings": {
+        "color_scheme": "1",
+        "label": "Policy",
+        "heading": "Returns & Exchanges",
+        "description": "<p>We accept returns within 30 days of receipt. Items must be unworn, unwashed, and in original condition with tags attached.</p>",
+        "button_label": "Start Return",
+        "footer_text": "<p>For questions about returns or exchanges, please contact our team.</p>",
+        "footer_contact_text": "Contact Support"
+      },
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": { "title": "Request", "description": "Initiate return via our portal." }
+        },
+        "s2": {
+          "type": "step",
+          "settings": { "title": "Prepare", "description": "Pack items in original condition with tags attached." }
+        },
+        "s3": {
+          "type": "step",
+          "settings": { "title": "Refund", "description": "Processed within 5-7 business days of receipt." }
+        }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    }
+  },
+  "order": ["main"]
+}

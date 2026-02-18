@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "main": {
+      "type": "shipping-template",
+      "settings": {
+        "color_scheme": "1",
+        "label": "Logistics",
+        "heading": "Shipping Rituals",
+        "description": "Each offering is prepared with intention and dispatched from our sanctuary.",
+        "methods_heading": "Shipping Methods",
+        "timeline_heading": "Order Timeline"
+      },
+      "blocks": {
+        "standard": {
+          "type": "method",
+          "settings": { "title": "Standard", "time": "3-5 Business Days", "price": "Complimentary" }
+        },
+        "expedited": {
+          "type": "method",
+          "settings": { "title": "Expedited", "time": "2 Business Days", "price": "$25.00" }
+        },
+        "global": {
+          "type": "method",
+          "settings": { "title": "Global", "time": "7-14 Business Days", "price": "Calculated at Checkout" }
+        },
+        "step1": {
+          "type": "step",
+          "settings": { "title": "Order Received", "description": "We confirm your order via email immediately." }
+        },
+        "step2": {
+          "type": "step",
+          "settings": { "title": "Preparation", "description": "Your items are inspected and wrapped in our signature packaging." }
+        },
+        "step3": {
+          "type": "step",
+          "settings": { "title": "Departure", "description": "Carrier collects the package. Tracking number is sent to you." }
+        }
+      },
+      "block_order": ["standard", "expedited", "global", "step1", "step2", "step3"]
+    }
+  },
+  "order": ["main"]
+}

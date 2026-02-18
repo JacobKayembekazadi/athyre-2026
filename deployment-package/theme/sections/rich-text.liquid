@@ -1,0 +1,84 @@
+{% schema %}
+{
+  "name": "Rich Text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Talk about your brand"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Share information about your brand with your customers. Describe a product, make announcements, or welcome customers to your store.</p>"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+        "type": "select",
+        "id": "width",
+        "label": "Section Width",
+        "options": [
+            { "value": "max-w-3xl", "label": "Narrow" },
+            { "value": "max-w-5xl", "label": "Medium" },
+            { "value": "max-w-7xl", "label": "Wide" }
+        ],
+        "default": "max-w-3xl"
+    },
+    {
+        "type": "text",
+        "id": "button_label",
+        "label": "Button Label"
+    },
+    {
+        "type": "url",
+        "id": "button_link",
+        "label": "Button Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rich Text"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 {{ section.settings.width }} mx-auto text-{{ section.settings.alignment }}">
+
+    {% if section.settings.heading != blank %}
+        <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-8">{{ section.settings.heading }}</h2>
+    {% endif %}
+    
+    <div class="prose prose-stone max-w-none text-xl md:text-2xl font-serif italic text-stone-900 mb-12 leading-relaxed">
+        {{ section.settings.text }}
+    </div>
+
+    {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+        <a href="{{ section.settings.button_link }}" class="inline-block border-b border-stone-900 pb-1 text-[9px] uppercase tracking-widest font-bold hover:opacity-60 transition-opacity">
+            {{ section.settings.button_label }}
+        </a>
+    {% endif %}
+</section>

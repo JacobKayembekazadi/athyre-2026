@@ -1,0 +1,109 @@
+{% schema %}
+{
+  "name": "Customer Register",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 min-h-[70vh] flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <header class="text-center mb-12">
+      <h1 class="text-3xl font-light uppercase tracking-tight">{{ 'customer.register.title' | t | default: 'Create Account' }}</h1>
+    </header>
+
+    {%- form 'create_customer', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}
+        <div class="bg-red-50 border border-red-200 text-red-700 p-4 mb-6 text-sm">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="FirstName" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+              {{ 'customer.register.first_name' | t | default: 'First Name' }}
+            </label>
+            <input 
+              type="text"
+              id="FirstName"
+              name="customer[first_name]"
+              autocomplete="given-name"
+              class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            >
+          </div>
+          <div>
+            <label for="LastName" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+              {{ 'customer.register.last_name' | t | default: 'Last Name' }}
+            </label>
+            <input 
+              type="text"
+              id="LastName"
+              name="customer[last_name]"
+              autocomplete="family-name"
+              class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label for="Email" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+            {{ 'customer.register.email' | t | default: 'Email' }}
+          </label>
+          <input 
+            type="email"
+            id="Email"
+            name="customer[email]"
+            autocomplete="email"
+            autocapitalize="off"
+            autocorrect="off"
+            class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="Password" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+            {{ 'customer.register.password' | t | default: 'Password' }}
+          </label>
+          <input 
+            type="password"
+            id="Password"
+            name="customer[password]"
+            autocomplete="new-password"
+            class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            required
+          >
+        </div>
+
+        <button 
+          type="submit"
+          class="w-full py-4 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"
+        >
+          {{ 'customer.register.submit' | t | default: 'Create Account' }}
+        </button>
+      </div>
+    {%- endform -%}
+
+    <div class="mt-8 text-center">
+      <p class="text-sm text-stone-500">
+        {{ 'customer.register.have_account' | t | default: 'Already have an account?' }}
+        <a href="{{ routes.account_login_url }}" class="text-stone-900 underline underline-offset-2">
+          {{ 'customer.register.login' | t | default: 'Log in' }}
+        </a>
+      </p>
+    </div>
+  </div>
+</section>

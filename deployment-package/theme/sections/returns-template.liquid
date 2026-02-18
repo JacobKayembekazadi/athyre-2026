@@ -1,0 +1,173 @@
+{% schema %}
+{
+  "name": "Returns Page",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Policy"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Returns & Exchanges"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>We accept returns within 30 days of receipt. Items must be unworn, unwashed, and in original condition with tags attached.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Start Return"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Additional Info"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_text",
+      "label": "Footer text",
+      "default": "<p>For questions about returns or exchanges, please contact our team.</p>"
+    },
+    {
+      "type": "text",
+      "id": "footer_contact_text",
+      "label": "Contact link text",
+      "default": "Contact Support"
+    },
+    {
+      "type": "url",
+      "id": "footer_contact_url",
+      "label": "Contact link URL",
+      "info": "Link to your contact page"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Return Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Request"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Initiate return via our portal."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Returns Page",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": { "title": "Request", "description": "Initiate return via our portal." }
+        },
+        {
+          "type": "step",
+          "settings": { "title": "Prepare", "description": "Pack items in original condition with tags attached." }
+        },
+        {
+          "type": "step",
+          "settings": { "title": "Refund", "description": "Processed within 5-7 business days of receipt." }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="color-scheme-{{ section.settings.color_scheme }} pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
+
+  {%- comment -%} HERO {%- endcomment -%}
+  <section class="text-center mb-24">
+    {% if section.settings.label != blank %}
+      <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-4">{{ section.settings.label }}</span>
+    {% endif %}
+    {% if section.settings.heading != blank %}
+      <h1 class="text-4xl md:text-5xl font-light tracking-tight uppercase mb-8">{{ section.settings.heading }}</h1>
+    {% endif %}
+    {% if section.settings.description != blank %}
+      <div class="text-stone-500 text-sm leading-loose max-w-2xl mx-auto">{{ section.settings.description }}</div>
+    {% endif %}
+  </section>
+
+  {%- comment -%} STEPS {%- endcomment -%}
+  {% if section.blocks.size > 0 %}
+    <section class="grid md:grid-cols-{{ section.blocks.size | at_most: 4 }} gap-12 max-w-5xl mx-auto mb-32">
+      {% for block in section.blocks %}
+        <div class="text-center" {{ block.shopify_attributes }}>
+          <div class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6 text-stone-300 font-serif italic text-2xl">{{ forloop.index }}</div>
+          {% if block.settings.title != blank %}
+            <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">{{ block.settings.title }}</h3>
+          {% endif %}
+          {% if block.settings.description != blank %}
+            <p class="text-[11px] text-stone-500">{{ block.settings.description }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+  {%- comment -%} CTA BUTTON {%- endcomment -%}
+  {% if section.settings.button_label != blank %}
+    <section class="text-center mb-16">
+      <a href="{{ section.settings.button_link | default: routes.root_url }}" class="inline-block bg-stone-900 text-white py-4 px-12 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-stone-800 transition-colors shadow-xl">
+        {{ section.settings.button_label }}
+      </a>
+    </section>
+  {% endif %}
+
+  {%- comment -%} FOOTER TEXT {%- endcomment -%}
+  {% if section.settings.footer_text != blank or section.settings.footer_contact_text != blank %}
+    <section class="text-center max-w-xl mx-auto">
+      {% if section.settings.footer_text != blank %}
+        <div class="text-[11px] text-stone-500 leading-loose">{{ section.settings.footer_text }}</div>
+      {% endif %}
+      {% if section.settings.footer_contact_text != blank and section.settings.footer_contact_url != blank %}
+        <p class="text-[11px] text-stone-500 leading-loose mt-4">
+          <a href="{{ section.settings.footer_contact_url }}" class="underline hover:text-stone-900 transition-colors">{{ section.settings.footer_contact_text }}</a>
+        </p>
+      {% elsif section.settings.footer_contact_text != blank %}
+        <p class="text-[11px] text-stone-500 leading-loose mt-4">{{ section.settings.footer_contact_text }}</p>
+      {% endif %}
+    </section>
+  {% endif %}
+
+</div>

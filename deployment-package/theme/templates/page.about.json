@@ -1,0 +1,59 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-about",
+      "settings": {
+        "color_scheme": "1",
+        "label": "Our Story",
+        "heading": "Built For Those Who Move With Purpose",
+        "hero_text": "<p>Athyre was born from the belief that what we wear shapes how we move, think, and show up in the world.</p>",
+        "story_heading": "The Beginning",
+        "story_text": "<p>We started with a simple question: why can't activewear be beautiful, sustainable, and high-performing all at once? That question became our mission.</p><p>Every piece is designed in-house, tested in the real world, and crafted from materials that honor both your body and the planet.</p>",
+        "story_image_position": "right",
+        "show_founder": true,
+        "founder_name": "Founder Name",
+        "founder_title": "Founder & Creative Director",
+        "founder_quote": "<p>We build for the ones who refuse to choose between looking good and doing good.</p>"
+      },
+      "blocks": {
+        "v1": {
+          "type": "value",
+          "settings": {
+            "title": "Performance",
+            "text": "Every fabric is tested in motion. If it doesn't perform, it doesn't ship."
+          }
+        },
+        "v2": {
+          "type": "value",
+          "settings": {
+            "title": "Sustainability",
+            "text": "Mindful sourcing, responsible production, minimal waste."
+          }
+        },
+        "v3": {
+          "type": "value",
+          "settings": {
+            "title": "Community",
+            "text": "Built by and for people who move with intention."
+          }
+        },
+        "v4": {
+          "type": "value",
+          "settings": {
+            "title": "Design",
+            "text": "Clean aesthetics that transition from studio to street."
+          }
+        }
+      },
+      "block_order": ["v1", "v2", "v3", "v4"]
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "color_scheme": "2",
+        "heading": "Words From The Collective"
+      }
+    }
+  },
+  "order": ["main", "testimonials"]
+}

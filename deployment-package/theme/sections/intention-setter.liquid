@@ -1,0 +1,89 @@
+{% schema %}
+{
+  "name": "Intention Setter",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Set Your Intention"
+    },
+    {
+      "type": "text",
+      "id": "initial_text",
+      "label": "Initial display text",
+      "default": "Click to Receive"
+    },
+    {
+      "type": "textarea",
+      "id": "intentions",
+      "label": "Intentions (comma separated)",
+      "default": "I am enough., I move with purpose., I honor my temple., Peace begins within., Strength flows through me., I create my own path."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pattern",
+      "label": "Show background pattern",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Intention Setter"
+    }
+  ]
+}
+{% endschema %}
+
+<section
+  class="color-scheme-{{ section.settings.color_scheme }} py-32 text-center cursor-pointer group relative overflow-hidden"
+  id="intention-section-{{ section.id }}"
+>
+  {% if section.settings.show_pattern %}
+    <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%); background-size: 20px 20px;"></div>
+  {% endif %}
+
+  <div class="relative z-10 transition-transform duration-700 group-hover:scale-105 px-8">
+    {% if section.settings.heading != blank %}
+      <span class="text-[10px] uppercase tracking-[0.4em] opacity-50 font-bold block mb-8">{{ section.settings.heading }}</span>
+    {% endif %}
+    <h2 id="intention-text-{{ section.id }}" class="text-4xl md:text-6xl font-serif italic opacity-80">
+      {{ section.settings.initial_text }}
+    </h2>
+  </div>
+</section>
+
+<script>
+  (function() {
+    var section = document.getElementById('intention-section-{{ section.id }}');
+    var textEl = document.getElementById('intention-text-{{ section.id }}');
+    if (!section || !textEl) return;
+
+    var raw = {{ section.settings.intentions | json }};
+    var intentions = raw.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 0; });
+
+    section.addEventListener('click', function() {
+      if (intentions.length === 0) return;
+      var random = intentions[Math.floor(Math.random() * intentions.length)];
+      textEl.style.opacity = '0';
+      textEl.style.transition = 'opacity 0.3s';
+      setTimeout(function() {
+        textEl.textContent = random;
+        textEl.style.opacity = '1';
+      }, 300);
+    });
+  })();
+</script>

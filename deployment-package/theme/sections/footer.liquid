@@ -1,0 +1,354 @@
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Branding"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Footer logo"
+    },
+    {
+      "type": "richtext",
+      "id": "brand_description",
+      "label": "Brand description",
+      "default": "<p>Performance sanctuary wear designed to honor the body in motion and rest.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show newsletter signup",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Join The Inner Circle"
+    },
+    {
+      "type": "richtext",
+      "id": "newsletter_description",
+      "label": "Newsletter description"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Email placeholder",
+      "default": "EMAIL ADDRESS"
+    },
+    {
+      "type": "header",
+      "content": "Social Media"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show social media icons",
+      "default": true,
+      "info": "Configure social links in Theme Settings > Social Media"
+    },
+    {
+      "type": "header",
+      "content": "Bottom Bar"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "bottom_menu",
+      "label": "Bottom links menu",
+      "info": "Create a menu with Privacy Policy, Terms, etc."
+    },
+    {
+      "type": "header",
+      "content": "Localization"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "Show country/currency selector",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_language_selector",
+      "label": "Show language selector",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Menu Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Quick Links"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text Column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "link_list",
+          "settings": {
+            "heading": "Shop"
+          }
+        },
+        {
+          "type": "link_list",
+          "settings": {
+            "heading": "Support"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<footer class="bg-stone-900 text-stone-400 py-16 md:py-32 px-4 md:px-8 border-t border-stone-800">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8">
+
+    {% comment %} COL 1: BRAND {% endcomment %}
+    <div class="md:col-span-1">
+      {% if section.settings.logo %}
+        {{ section.settings.logo | image_url: width: 200 | image_tag: class: 'h-8 w-auto mb-6', alt: shop.name }}
+      {% else %}
+        <h2 class="text-2xl text-white font-black tracking-[0.2em] uppercase mb-6">{{ shop.name }}</h2>
+      {% endif %}
+      {% if section.settings.brand_description != blank %}
+        <div class="text-xs leading-loose mb-8 max-w-xs">
+          {{ section.settings.brand_description }}
+        </div>
+      {% endif %}
+      {% if section.settings.show_social %}
+        <div class="flex gap-4">
+          {% if settings.social_instagram_link != blank %}
+            <a href="{{ settings.social_instagram_link }}" class="hover:text-white transition-colors" aria-label="Instagram" target="_blank" rel="noopener">{% render 'icon-instagram', class: 'w-5 h-5' %}</a>
+          {% endif %}
+          {% if settings.social_facebook_link != blank %}
+            <a href="{{ settings.social_facebook_link }}" class="hover:text-white transition-colors" aria-label="Facebook" target="_blank" rel="noopener">{% render 'icon-facebook', class: 'w-5 h-5' %}</a>
+          {% endif %}
+          {% if settings.social_twitter_link != blank %}
+            <a href="{{ settings.social_twitter_link }}" class="hover:text-white transition-colors" aria-label="X (Twitter)" target="_blank" rel="noopener">{% render 'icon-twitter', class: 'w-5 h-5' %}</a>
+          {% endif %}
+          {% if settings.social_tiktok_link != blank %}
+            <a href="{{ settings.social_tiktok_link }}" class="hover:text-white transition-colors" aria-label="TikTok" target="_blank" rel="noopener">{% render 'icon-tiktok', class: 'w-5 h-5' %}</a>
+          {% endif %}
+          {% if settings.social_youtube_link != blank %}
+            <a href="{{ settings.social_youtube_link }}" class="hover:text-white transition-colors" aria-label="YouTube" target="_blank" rel="noopener">{% render 'icon-youtube', class: 'w-5 h-5' %}</a>
+          {% endif %}
+          {% if settings.social_pinterest_link != blank %}
+            <a href="{{ settings.social_pinterest_link }}" class="hover:text-white transition-colors" aria-label="Pinterest" target="_blank" rel="noopener">
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 20l4-9"/><path d="M10.7 14c.437 1.263 1.43 2 2.55 2 2.071 0 3.75-1.554 3.75-4a5 5 0 1 0-9.7 1.7"/><circle cx="12" cy="12" r="10"/></svg>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} DYNAMIC BLOCK COLUMNS {% endcomment %}
+    {% for block in section.blocks %}
+      <div {{ block.shopify_attributes }}>
+        {% case block.type %}
+          {% when 'link_list' %}
+            <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">{{ block.settings.heading }}</h3>
+            {% if block.settings.menu != blank %}
+              <ul class="space-y-4 text-xs tracking-widest uppercase">
+                {% for link in linklists[block.settings.menu].links %}
+                  <li class="hover:text-white transition-colors"><a href="{{ link.url }}">{{ link.title }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          {% when 'text' %}
+            {% if block.settings.heading != blank %}
+              <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">{{ block.settings.heading }}</h3>
+            {% endif %}
+            {% if block.settings.content != blank %}
+              <div class="text-xs leading-loose max-w-xs">{{ block.settings.content }}</div>
+            {% endif %}
+        {% endcase %}
+      </div>
+    {% endfor %}
+
+    {% comment %} NEWSLETTER {% endcomment %}
+    {% if section.settings.show_newsletter %}
+      <div class="md:col-span-1">
+        <h3 class="text-[10px] text-white uppercase tracking-[0.2em] font-bold mb-8">{{ section.settings.newsletter_heading }}</h3>
+        {% if section.settings.newsletter_description != blank %}
+          <div class="text-xs leading-loose mb-4 max-w-xs">{{ section.settings.newsletter_description }}</div>
+        {% endif %}
+        {% form 'customer' %}
+          {% if form.posted_successfully? %}
+            <p class="text-white text-xs mb-4">{{ 'newsletter.success' | t | default: 'Thanks for subscribing!' }}</p>
+          {% endif %}
+          {% if form.errors %}
+            <p class="text-red-400 text-xs mb-4">{{ form.errors | default_errors }}</p>
+          {% endif %}
+          <div class="flex border-b border-stone-700 pb-2">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <input
+              type="email"
+              name="contact[email]"
+              placeholder="{{ section.settings.newsletter_placeholder }}"
+              required
+              class="bg-transparent border-none text-[10px] uppercase tracking-widest text-white placeholder:text-stone-600 focus:ring-0 w-full"
+              aria-label="{{ section.settings.newsletter_heading }}"
+            />
+            <button type="submit" class="text-white hover:opacity-70" aria-label="{{ 'newsletter.subscribe' | t | default: 'Subscribe' }}">
+              {% render 'icon-arrow-right', class: 'w-4 h-4' %}
+            </button>
+          </div>
+        {% endform %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  {%- comment -%} FOOTER BOTTOM {%- endcomment -%}
+  <div class="max-w-7xl mx-auto mt-24 pt-8 border-t border-stone-800 flex flex-col md:flex-row justify-between items-center gap-6 text-[9px] uppercase tracking-widest opacity-60">
+    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. {{ 'footer.copyright' | t | default: 'All rights reserved.' }}</p>
+
+    {%- comment -%} Payment Icons {%- endcomment -%}
+    {%- if section.settings.show_payment_icons -%}
+      <div class="flex items-center gap-2">
+        {% for type in shop.enabled_payment_types %}
+          {{ type | payment_type_svg_tag: class: 'h-6 w-auto' }}
+        {% endfor %}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Localization Form (Currency/Language) {%- endcomment -%}
+    {%- if section.settings.show_country_selector or section.settings.show_language_selector -%}
+      <div class="flex items-center gap-4">
+        {%- form 'localization', id: 'FooterLocalizationForm', class: 'flex items-center gap-4' -%}
+          {%- if section.settings.show_language_selector and localization.available_languages.size > 1 -%}
+            <div class="relative" x-data="{ open: false }">
+              <button
+                type="button"
+                @click="open = !open"
+                @click.away="open = false"
+                class="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                {{ localization.language.endonym_name | capitalize }}
+                <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <ul
+                x-show="open"
+                x-transition
+                x-cloak
+                class="absolute bottom-full mb-2 left-0 bg-stone-800 border border-stone-700 py-2 min-w-[120px]"
+              >
+                {%- for language in localization.available_languages -%}
+                  <li>
+                    <button
+                      type="submit"
+                      name="locale_code"
+                      value="{{ language.iso_code }}"
+                      class="block w-full px-4 py-1 text-left hover:bg-stone-700 transition-colors {% if language.iso_code == localization.language.iso_code %}text-white{% endif %}"
+                    >
+                      {{ language.endonym_name | capitalize }}
+                    </button>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+
+          {%- if section.settings.show_country_selector and localization.available_countries.size > 1 -%}
+            <div class="relative" x-data="{ open: false }">
+              <button
+                type="button"
+                @click="open = !open"
+                @click.away="open = false"
+                class="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                {{ localization.country.name }} ({{ localization.country.currency.symbol }})
+                <svg class="w-3 h-3 transition-transform" :class="{ 'rotate-180': open }" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <ul
+                x-show="open"
+                x-transition
+                x-cloak
+                class="absolute bottom-full mb-2 right-0 bg-stone-800 border border-stone-700 py-2 min-w-[180px] max-h-60 overflow-y-auto"
+              >
+                {%- for country in localization.available_countries -%}
+                  <li>
+                    <button
+                      type="submit"
+                      name="country_code"
+                      value="{{ country.iso_code }}"
+                      class="block w-full px-4 py-1 text-left hover:bg-stone-700 transition-colors {% if country.iso_code == localization.country.iso_code %}text-white{% endif %}"
+                    >
+                      {{ country.name }} ({{ country.currency.symbol }})
+                    </button>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Bottom Links (from editable menu) {%- endcomment -%}
+    {% if section.settings.bottom_menu != blank %}
+      <div class="flex gap-8">
+        {% for link in linklists[section.settings.bottom_menu].links %}
+          <a href="{{ link.url }}" class="hover:text-white transition-colors">{{ link.title }}</a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="flex gap-8">
+        {% if policies.privacy_policy.url != blank %}
+          <a href="{{ policies.privacy_policy.url }}" class="hover:text-white transition-colors">{{ policies.privacy_policy.title }}</a>
+        {% endif %}
+        {% if policies.terms_of_service.url != blank %}
+          <a href="{{ policies.terms_of_service.url }}" class="hover:text-white transition-colors">{{ policies.terms_of_service.title }}</a>
+        {% endif %}
+        {% if policies.refund_policy.url != blank %}
+          <a href="{{ policies.refund_policy.url }}" class="hover:text-white transition-colors">{{ policies.refund_policy.title }}</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</footer>

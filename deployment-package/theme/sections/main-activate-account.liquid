@@ -1,0 +1,79 @@
+{% schema %}
+{
+  "name": "Activate Account",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 min-h-[70vh] flex items-center justify-center">
+  <div class="w-full max-w-md">
+    <header class="text-center mb-12">
+      <h1 class="text-3xl font-light uppercase tracking-tight">{{ 'customer.activate_account.title' | t | default: 'Activate Account' }}</h1>
+      <p class="text-sm text-stone-500 mt-4">{{ 'customer.activate_account.subtext' | t | default: 'Create your password to activate your account.' }}</p>
+    </header>
+
+    {%- form 'activate_customer_password' -%}
+      {%- if form.errors -%}
+        <div class="bg-red-50 border border-red-200 text-red-700 p-4 mb-6 text-sm">
+          {{ form.errors | default_errors }}
+        </div>
+      {%- endif -%}
+
+      <div class="space-y-6">
+        <div>
+          <label for="CustomerPassword" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+            {{ 'customer.activate_account.password' | t | default: 'Password' }}
+          </label>
+          <input
+            type="password"
+            id="CustomerPassword"
+            name="customer[password]"
+            autocomplete="new-password"
+            class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            required
+          >
+        </div>
+
+        <div>
+          <label for="CustomerPasswordConfirmation" class="block text-[10px] uppercase tracking-widest font-bold text-stone-500 mb-2">
+            {{ 'customer.activate_account.password_confirm' | t | default: 'Confirm Password' }}
+          </label>
+          <input
+            type="password"
+            id="CustomerPasswordConfirmation"
+            name="customer[password_confirmation]"
+            autocomplete="new-password"
+            class="w-full px-4 py-3 border border-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-900 focus:border-transparent transition-all"
+            required
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-4 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"
+        >
+          {{ 'customer.activate_account.submit' | t | default: 'Activate Account' }}
+        </button>
+
+        <a
+          href="{{ routes.account_login_url }}"
+          class="block w-full text-center text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors py-2"
+        >
+          {{ 'customer.activate_account.cancel' | t | default: 'Decline Invitation' }}
+        </a>
+      </div>
+    {%- endform -%}
+  </div>
+</section>

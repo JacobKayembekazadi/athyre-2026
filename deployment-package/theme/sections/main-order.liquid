@@ -1,0 +1,123 @@
+{% schema %}
+{
+  "name": "Customer Order",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8">
+  <div class="max-w-4xl mx-auto">
+    <header class="mb-12">
+      <a href="{{ routes.account_url }}" class="text-[10px] uppercase tracking-widest text-stone-500 hover:text-stone-900 transition-colors mb-4 inline-block">
+        ← {{ 'customer.account.title' | t | default: 'Account' }}
+      </a>
+      <h1 class="text-3xl font-light uppercase tracking-tight">{{ 'customer.order.title' | t | default: 'Order' }} {{ order.name }}</h1>
+      <p class="text-stone-500 mt-2">{{ 'customer.order.date' | t | default: 'Placed on' }} {{ order.created_at | date: "%B %d, %Y at %I:%M %p" }}</p>
+    </header>
+
+    {%- comment -%} Order Status {%- endcomment -%}
+    <div class="flex flex-wrap gap-4 mb-8">
+      <span class="inline-block px-3 py-1 bg-stone-100 text-stone-600 text-[9px] uppercase tracking-widest font-bold">
+        {{ order.financial_status_label }}
+      </span>
+      <span class="inline-block px-3 py-1 bg-stone-100 text-stone-600 text-[9px] uppercase tracking-widest font-bold">
+        {{ order.fulfillment_status_label }}
+      </span>
+    </div>
+
+    {%- comment -%} Order Items {%- endcomment -%}
+    <div class="border border-stone-100 mb-8">
+      <table class="w-full">
+        <thead class="bg-stone-50 border-b border-stone-100">
+          <tr>
+            <th class="text-left p-4 text-[10px] uppercase tracking-widest font-bold text-stone-500">{{ 'customer.order.product' | t | default: 'Product' }}</th>
+            <th class="text-center p-4 text-[10px] uppercase tracking-widest font-bold text-stone-500">{{ 'customer.order.quantity' | t | default: 'Qty' }}</th>
+            <th class="text-right p-4 text-[10px] uppercase tracking-widest font-bold text-stone-500">{{ 'customer.order.total' | t | default: 'Total' }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-stone-100">
+          {%- for line_item in order.line_items -%}
+            <tr>
+              <td class="p-4">
+                <div class="flex items-center gap-4">
+                  {%- if line_item.image -%}
+                    <div class="w-16 h-20 bg-stone-100 flex-shrink-0">
+                      {{ line_item.image | image_url: width: 100 | image_tag: class: 'w-full h-full object-cover' }}
+                    </div>
+                  {%- endif -%}
+                  <div>
+                    <a href="{{ line_item.product.url }}" class="text-sm font-medium hover:underline">{{ line_item.title }}</a>
+                    {%- if line_item.variant.title != 'Default Title' -%}
+                      <p class="text-xs text-stone-500 mt-1">{{ line_item.variant.title }}</p>
+                    {%- endif -%}
+                    <p class="text-xs text-stone-500 mt-1">{{ line_item.original_price | money }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="p-4 text-center text-sm">{{ line_item.quantity }}</td>
+              <td class="p-4 text-right text-sm font-medium">{{ line_item.final_line_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+
+    {%- comment -%} Order Summary {%- endcomment -%}
+    <div class="grid md:grid-cols-2 gap-8">
+      <div>
+        <h3 class="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-4">{{ 'customer.order.shipping_address' | t | default: 'Shipping Address' }}</h3>
+        <address class="text-sm text-stone-600 not-italic">
+          {{ order.shipping_address | format_address }}
+        </address>
+      </div>
+      
+      <div>
+        <h3 class="text-[10px] uppercase tracking-widest font-bold text-stone-400 mb-4">{{ 'customer.order.summary' | t | default: 'Order Summary' }}</h3>
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-stone-500">{{ 'customer.order.subtotal' | t | default: 'Subtotal' }}</span>
+            <span>{{ order.line_items_subtotal_price | money }}</span>
+          </div>
+          
+          {%- for discount in order.discounts -%}
+            <div class="flex justify-between text-green-600">
+              <span>{{ discount.code }}</span>
+              <span>-{{ discount.savings | money }}</span>
+            </div>
+          {%- endfor -%}
+          
+          {%- for shipping_method in order.shipping_methods -%}
+            <div class="flex justify-between">
+              <span class="text-stone-500">{{ shipping_method.title }}</span>
+              <span>{{ shipping_method.price | money }}</span>
+            </div>
+          {%- endfor -%}
+          
+          {%- for tax_line in order.tax_lines -%}
+            <div class="flex justify-between">
+              <span class="text-stone-500">{{ tax_line.title }}</span>
+              <span>{{ tax_line.price | money }}</span>
+            </div>
+          {%- endfor -%}
+          
+          <div class="flex justify-between pt-4 border-t border-stone-100 font-medium text-base">
+            <span>{{ 'customer.order.total' | t | default: 'Total' }}</span>
+            <span>{{ order.total_price | money }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

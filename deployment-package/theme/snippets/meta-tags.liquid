@@ -1,0 +1,94 @@
+{%- comment -%}
+  SEO Meta Tags: Open Graph, Twitter Cards, Favicon
+  Rendered in <head> via theme.liquid
+{%- endcomment -%}
+
+{%- if settings.favicon != blank -%}
+  <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+{%- endif -%}
+
+{%- comment -%} Open Graph Tags {%- endcomment -%}
+<meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:url" content="{{ canonical_url }}">
+
+{%- if request.page_type == 'index' -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  {%- if page_description != blank -%}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+{%- elsif request.page_type == 'product' -%}
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="{{ product.title | escape }}">
+  {%- if product.description != blank -%}
+    <meta property="og:description" content="{{ product.description | strip_html | truncate: 200 | escape }}">
+  {%- endif -%}
+  {%- if product.featured_image -%}
+    <meta property="og:image" content="https:{{ product.featured_image | image_url: width: 1200 }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="{{ 1200 | divided_by: product.featured_image.aspect_ratio | round }}">
+    <meta property="og:image:alt" content="{{ product.featured_image.alt | escape }}">
+  {%- endif -%}
+  <meta property="product:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+  <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  {%- if product.available -%}
+    <meta property="product:availability" content="in stock">
+  {%- else -%}
+    <meta property="product:availability" content="out of stock">
+  {%- endif -%}
+
+{%- elsif request.page_type == 'collection' -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ collection.title | escape }}">
+  {%- if collection.description != blank -%}
+    <meta property="og:description" content="{{ collection.description | strip_html | truncate: 200 | escape }}">
+  {%- endif -%}
+  {%- if collection.image -%}
+    <meta property="og:image" content="https:{{ collection.image | image_url: width: 1200 }}">
+  {%- endif -%}
+
+{%- elsif request.page_type == 'article' -%}
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ article.title | escape }}">
+  {%- if article.excerpt != blank -%}
+    <meta property="og:description" content="{{ article.excerpt | strip_html | truncate: 200 | escape }}">
+  {%- elsif article.content != blank -%}
+    <meta property="og:description" content="{{ article.content | strip_html | truncate: 200 | escape }}">
+  {%- endif -%}
+  {%- if article.image -%}
+    <meta property="og:image" content="https:{{ article.image | image_url: width: 1200 }}">
+  {%- endif -%}
+  <meta property="article:published_time" content="{{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' }}">
+  <meta property="article:author" content="{{ article.author }}">
+
+{%- elsif request.page_type == 'blog' -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ blog.title | escape }}">
+
+{%- elsif request.page_type == 'password' -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ shop.name | escape }}">
+
+{%- else -%}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  {%- if page_description != blank -%}
+    <meta property="og:description" content="{{ page_description | escape }}">
+  {%- endif -%}
+{%- endif -%}
+
+{%- comment -%} Twitter Card Tags {%- endcomment -%}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ page_title | escape }}">
+{%- if page_description != blank -%}
+  <meta name="twitter:description" content="{{ page_description | truncate: 200 | escape }}">
+{%- endif -%}
+
+{%- if request.page_type == 'product' and product.featured_image -%}
+  <meta name="twitter:image" content="https:{{ product.featured_image | image_url: width: 1200 }}">
+{%- elsif request.page_type == 'article' and article.image -%}
+  <meta name="twitter:image" content="https:{{ article.image | image_url: width: 1200 }}">
+{%- elsif request.page_type == 'collection' and collection.image -%}
+  <meta name="twitter:image" content="https:{{ collection.image | image_url: width: 1200 }}">
+{%- endif -%}

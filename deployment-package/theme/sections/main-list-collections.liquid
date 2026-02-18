@@ -1,0 +1,81 @@
+{% schema %}
+{
+  "name": "Collections List",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Collections"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "default": "3",
+      "options": [
+        { "value": "2", "label": "2 columns" },
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "sort_order",
+      "label": "Sort order",
+      "default": "alphabetical",
+      "options": [
+        { "value": "alphabetical", "label": "Alphabetical" },
+        { "value": "products_high", "label": "Product count (high to low)" },
+        { "value": "products_low", "label": "Product count (low to high)" },
+        { "value": "date", "label": "Date (newest first)" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-16 md:py-24 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-2xl md:text-4xl font-light uppercase tracking-tight text-center mb-10 md:mb-16">{{ section.settings.heading }}</h1>
+
+    <div class="grid grid-cols-2 md:grid-cols-{{ section.settings.columns }} gap-4 md:gap-8">
+      {%- for collection in collections -%}
+        {%- if collection.handle != 'all' -%}
+          <a href="{{ collection.url }}" class="group block">
+            <div class="aspect-square bg-stone-100 overflow-hidden mb-4">
+              {%- if collection.image -%}
+                {{ collection.image | image_url: width: 800 | image_tag: class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700' }}
+              {%- elsif collection.products.first and collection.products.first.featured_image -%}
+                {{ collection.products.first.featured_image | image_url: width: 800 | image_tag: class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-700' }}
+              {%- else -%}
+                {{ 'collection-1' | placeholder_svg_tag: 'w-full h-full object-cover opacity-20' }}
+              {%- endif -%}
+            </div>
+            <h2 class="text-lg font-medium group-hover:opacity-60 transition-opacity">{{ collection.title }}</h2>
+            {%- if section.settings.show_product_count -%}
+              <p class="text-sm text-stone-500">{{ collection.all_products_count }} {{ collection.all_products_count | pluralize: 'product', 'products' }}</p>
+            {%- endif -%}
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>

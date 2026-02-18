@@ -1,0 +1,160 @@
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Community"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Words From The Collective"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Quote",
+          "default": "<p>This brand understands that what you wear shapes how you move through the world.</p>"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author name",
+          "default": "Alex M."
+        },
+        {
+          "type": "text",
+          "id": "role",
+          "label": "Title / Role",
+          "default": "Yoga Instructor"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Author photo",
+          "info": "Optional. 80x80px recommended."
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5,
+          "info": "Set to 0 to hide stars"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "<p>The quality and intention behind every piece is something you can feel the moment you put it on.</p>",
+            "author": "Maya R.",
+            "role": "Marathon Runner",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "<p>Finally, activewear that looks as good in the studio as it does at brunch. Elevated basics done right.</p>",
+            "author": "Jordan K.",
+            "role": "Pilates Instructor",
+            "rating": 5
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "quote": "<p>The sustainability commitment is real. These fabrics perform beautifully and I feel good wearing them.</p>",
+            "author": "Sam T.",
+            "role": "Personal Trainer",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="color-scheme-{{ section.settings.color_scheme }} py-16 md:py-24 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+
+    {% if section.settings.label != blank %}
+      <p class="text-[10px] uppercase tracking-[0.3em] opacity-60 mb-4 text-center">{{ section.settings.label }}</p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h2 class="text-2xl md:text-4xl font-black tracking-tight uppercase text-center mb-12 md:mb-16">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    {% if section.blocks.size > 0 %}
+      <div class="grid grid-cols-1 md:grid-cols-{{ section.blocks.size | at_most: 3 }} gap-8 md:gap-12">
+        {% for block in section.blocks %}
+          <div class="text-center" {{ block.shopify_attributes }}>
+
+            {% if block.settings.rating > 0 %}
+              <div class="flex justify-center gap-1 mb-6">
+                {% for i in (1..block.settings.rating) %}
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            {% if block.settings.quote != blank %}
+              <blockquote class="text-sm md:text-base leading-relaxed italic opacity-80 mb-6 max-w-md mx-auto">
+                {{ block.settings.quote }}
+              </blockquote>
+            {% endif %}
+
+            <div class="flex items-center justify-center gap-3">
+              {% if block.settings.avatar %}
+                {{ block.settings.avatar | image_url: width: 80 | image_tag: class: 'w-10 h-10 rounded-full object-cover' }}
+              {% endif %}
+              <div class="text-left">
+                {% if block.settings.author != blank %}
+                  <p class="text-xs font-bold uppercase tracking-wider">{{ block.settings.author }}</p>
+                {% endif %}
+                {% if block.settings.role != blank %}
+                  <p class="text-[10px] uppercase tracking-wider opacity-50">{{ block.settings.role }}</p>
+                {% endif %}
+              </div>
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</div>

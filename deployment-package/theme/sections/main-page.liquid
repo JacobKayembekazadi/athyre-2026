@@ -1,0 +1,18 @@
+<div class="pt-32 pb-24 px-8 max-w-4xl mx-auto min-h-screen">
+  <h1 class="text-4xl md:text-5xl font-light tracking-tight uppercase mb-12 text-center">{{ page.title }}</h1>
+  <div class="prose prose-stone max-w-none text-sm leading-loose text-stone-600">
+    {{ page.content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Page"
+    }
+  ]
+}
+{% endschema %}

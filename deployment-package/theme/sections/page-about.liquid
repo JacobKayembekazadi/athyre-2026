@@ -1,0 +1,240 @@
+{% schema %}
+{
+  "name": "About Page",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "default": "Our Story"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built For Those Who Move With Purpose"
+    },
+    {
+      "type": "richtext",
+      "id": "hero_text",
+      "label": "Hero text",
+      "default": "<p>Athyre was born from the belief that what we wear shapes how we move, think, and show up in the world.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Story Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "story_image",
+      "label": "Story image"
+    },
+    {
+      "type": "text",
+      "id": "story_heading",
+      "label": "Story heading",
+      "default": "The Beginning"
+    },
+    {
+      "type": "richtext",
+      "id": "story_text",
+      "label": "Story text",
+      "default": "<p>We started with a simple question: why can't activewear be beautiful, sustainable, and high-performing all at once? That question became our mission.</p><p>Every piece is designed in-house, tested in the real world, and crafted from materials that honor both your body and the planet.</p>"
+    },
+    {
+      "type": "select",
+      "id": "story_image_position",
+      "label": "Story image position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "header",
+      "content": "Founder"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_founder",
+      "label": "Show founder section",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "founder_image",
+      "label": "Founder photo"
+    },
+    {
+      "type": "text",
+      "id": "founder_name",
+      "label": "Founder name",
+      "default": "Founder Name"
+    },
+    {
+      "type": "text",
+      "id": "founder_title",
+      "label": "Founder title",
+      "default": "Founder & Creative Director"
+    },
+    {
+      "type": "richtext",
+      "id": "founder_quote",
+      "label": "Founder quote",
+      "default": "<p>We build for the ones who refuse to choose between looking good and doing good.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value / Mission Point",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Quality"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "We never compromise on materials or craftsmanship."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Page",
+      "blocks": [
+        {
+          "type": "value",
+          "settings": {
+            "title": "Performance",
+            "text": "Every fabric is tested in motion. If it doesn't perform, it doesn't ship."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Sustainability",
+            "text": "Mindful sourcing, responsible production, minimal waste."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Community",
+            "text": "Built by and for people who move with intention."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "title": "Design",
+            "text": "Clean aesthetics that transition from studio to street."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="color-scheme-{{ section.settings.color_scheme }}">
+
+  {%- comment -%} HERO {%- endcomment -%}
+  <div class="py-16 md:py-24 px-4 md:px-8 text-center">
+    <div class="max-w-3xl mx-auto">
+      {% if section.settings.label != blank %}
+        <p class="text-[10px] uppercase tracking-[0.3em] opacity-60 mb-4">{{ section.settings.label }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h1 class="text-3xl md:text-5xl font-black tracking-tight uppercase mb-6">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.hero_text != blank %}
+        <div class="text-sm md:text-base opacity-70 leading-relaxed max-w-xl mx-auto">{{ section.settings.hero_text }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  {%- comment -%} STORY (Image + Text) {%- endcomment -%}
+  {% if section.settings.story_heading != blank or section.settings.story_text != blank %}
+    <div class="py-16 md:py-24 px-4 md:px-8">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-center">
+        {% if section.settings.story_image %}
+          <div class="{% if section.settings.story_image_position == 'right' %}md:order-2{% endif %}">
+            {{ section.settings.story_image | image_url: width: 800 | image_tag: class: 'w-full', loading: 'lazy' }}
+          </div>
+        {% endif %}
+        <div>
+          {% if section.settings.story_heading != blank %}
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight uppercase mb-6">{{ section.settings.story_heading }}</h2>
+          {% endif %}
+          {% if section.settings.story_text != blank %}
+            <div class="text-sm leading-relaxed opacity-70 space-y-4">{{ section.settings.story_text }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {%- comment -%} FOUNDER {%- endcomment -%}
+  {% if section.settings.show_founder %}
+    <div class="py-16 md:py-24 px-4 md:px-8 bg-stone-50">
+      <div class="max-w-3xl mx-auto text-center">
+        {% if section.settings.founder_image %}
+          <div class="mb-8">
+            {{ section.settings.founder_image | image_url: width: 200 | image_tag: class: 'w-24 h-24 rounded-full object-cover mx-auto' }}
+          </div>
+        {% endif %}
+        {% if section.settings.founder_quote != blank %}
+          <blockquote class="text-lg md:text-xl italic leading-relaxed mb-6 max-w-xl mx-auto">{{ section.settings.founder_quote }}</blockquote>
+        {% endif %}
+        {% if section.settings.founder_name != blank %}
+          <p class="text-xs font-bold uppercase tracking-[0.15em]">{{ section.settings.founder_name }}</p>
+        {% endif %}
+        {% if section.settings.founder_title != blank %}
+          <p class="text-[10px] uppercase tracking-wider opacity-50 mt-1">{{ section.settings.founder_title }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  {%- comment -%} VALUES {%- endcomment -%}
+  {% if section.blocks.size > 0 %}
+    <div class="py-16 md:py-24 px-4 md:px-8">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-[10px] uppercase tracking-[0.3em] opacity-60 mb-12 text-center">Our Values</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-{{ section.blocks.size | at_most: 4 }} gap-8 md:gap-12">
+          {% for block in section.blocks %}
+            <div class="text-center" {{ block.shopify_attributes }}>
+              <h3 class="text-sm font-bold uppercase tracking-[0.15em] mb-3">{{ block.settings.title }}</h3>
+              <p class="text-xs opacity-60 leading-relaxed">{{ block.settings.text }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+</div>

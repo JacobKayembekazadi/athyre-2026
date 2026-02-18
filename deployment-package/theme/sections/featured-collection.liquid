@@ -1,0 +1,75 @@
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "1",
+      "options": [
+        { "value": "1", "label": "Scheme 1 (Light)" },
+        { "value": "2", "label": "Scheme 2 (Dark)" },
+        { "value": "3", "label": "Scheme 3 (Accent)" }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Featured Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 12,
+      "step": 4,
+      "default": 4,
+      "label": "Products to show"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="color-scheme-{{ section.settings.color_scheme }} py-24 px-8 max-w-7xl mx-auto">
+
+    {% if section.settings.title != blank %}
+        <header class="text-center mb-16">
+            <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black">{{ section.settings.title }}</h2>
+        </header>
+    {% endif %}
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {% assign collection = collections[section.settings.collection] %}
+        {% for product in collection.products limit: section.settings.products_to_show %}
+            {% render 'product-card', product: product %}
+        {% else %}
+            {% for i in (1..4) %}
+                <div class="group cursor-pointer">
+                    <div class="aspect-[3/4] bg-stone-100 mb-6 relative overflow-hidden">
+                        {{ 'product-' | append: i | placeholder_svg_tag: 'w-full h-full object-cover opacity-50' }}
+                    </div>
+                    <h3 class="text-[10px] uppercase tracking-[0.2em] font-bold mb-2">Example Product</h3>
+                    <span class="text-[10px] text-stone-500">$120.00</span>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    {% if section.settings.collection != blank %}
+        <div class="text-center mt-16">
+            <a href="{{ collection.url }}" class="inline-block text-[9px] uppercase tracking-widest border-b border-stone-900 pb-1 hover:opacity-60 transition-opacity">View All</a>
+        </div>
+    {% endif %}
+</section>

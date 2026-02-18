@@ -1,0 +1,63 @@
+name: Theme Check
+
+on:
+  push:
+    paths:
+      - 'deployment-package/theme/**'
+  pull_request:
+    paths:
+      - 'deployment-package/theme/**'
+
+jobs:
+  theme-check:
+    runs-on: ubuntu-latest
+    name: Run Theme Check
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+          
+      - name: Install Theme Check
+        run: gem install theme-check
+        
+      - name: Run Theme Check
+        run: |
+          cd deployment-package/theme
+          theme-check --fail-level error
+          
+      - name: Upload Theme Check Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: theme-check-report
+          path: deployment-package/theme/.theme-check-report.json
+          
+  lighthouse:
+    runs-on: ubuntu-latest
+    name: Lighthouse CI
+    needs: theme-check
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.13.x
+        
+      - name: Run Lighthouse CI
+        run: |
+          lhci autorun --config=.lighthouserc.json || true
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

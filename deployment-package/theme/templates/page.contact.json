@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-contact",
+      "settings": {
+        "color_scheme": "1",
+        "label": "Support",
+        "heading": "Connect With Council",
+        "description": "Our team is here to support your journey.",
+        "faq_heading": "Common Questions",
+        "form_heading": "Send a Message",
+        "form_success": "Message sent successfully.",
+        "form_button": "Send Message"
+      },
+      "blocks": {
+        "c1": {
+          "type": "contact_card",
+          "settings": { "title": "Order Support", "description": "For help with current orders.", "contact_info": "support@athyre.com" }
+        },
+        "c2": {
+          "type": "contact_card",
+          "settings": { "title": "Wholesale", "description": "Partner with us.", "contact_info": "partners@athyre.com" }
+        },
+        "c3": {
+          "type": "contact_card",
+          "settings": { "title": "Press", "description": "Share our story.", "contact_info": "press@athyre.com" }
+        },
+        "q1": {
+          "type": "faq",
+          "settings": { "question": "Where is my order?", "answer": "Check your email for tracking info, or visit your account page for order updates." }
+        },
+        "q2": {
+          "type": "faq",
+          "settings": { "question": "What is your return policy?", "answer": "We accept returns within 30 days of purchase. Items must be unworn with tags attached." }
+        }
+      },
+      "block_order": ["c1", "c2", "c3", "q1", "q2"]
+    }
+  },
+  "order": ["main"]
+}

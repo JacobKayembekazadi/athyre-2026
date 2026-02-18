@@ -1,0 +1,78 @@
+{% schema %}
+{
+  "name": "Vision Stats",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Stewardship In Action"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Value",
+          "default": "100%"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Ethical Production"
+        },
+        {
+            "type": "select",
+            "id": "icon",
+            "label": "Icon",
+            "options": [
+                { "value": "leaf", "label": "Leaf" },
+                { "value": "heart", "label": "Heart" },
+                { "value": "globe", "label": "Globe" }
+            ],
+            "default": "leaf"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vision Stats",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "100%", "label": "Ethical Production", "icon": "leaf" } },
+        { "type": "stat", "settings": { "value": "$50k", "label": "Donated to Mental Health", "icon": "heart" } },
+        { "type": "stat", "settings": { "value": "50+", "label": "Countries Served", "icon": "globe" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<section class="bg-stone-900 text-white rounded-[2px] p-24 text-center">
+  {% if section.settings.heading != blank %}
+    <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-20">{{ section.settings.heading }}</h2>
+  {% endif %}
+  <div class="grid md:grid-cols-3 gap-20">
+    {% for block in section.blocks %}
+      <div class="flex flex-col items-center">
+        <div class="w-12 h-12 mb-8 text-stone-500">
+            {% case block.settings.icon %}
+                {% when 'leaf' %}
+                    {% render 'icon-leaf' %}
+                {% when 'heart' %}
+                    {% render 'icon-heart' %}
+                {% when 'globe' %}
+                    {% render 'icon-globe' %}
+            {% endcase %}
+        </div>
+        <span class="text-5xl font-light mb-4 block">{{ block.settings.value }}</span>
+        <span class="text-[9px] uppercase tracking-[0.2em] text-stone-400">{{ block.settings.label }}</span>
+      </div>
+    {% endfor %}
+  </div>
+</section>

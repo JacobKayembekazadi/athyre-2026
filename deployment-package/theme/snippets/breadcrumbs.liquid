@@ -1,0 +1,120 @@
+{%- comment -%}
+  Breadcrumbs Navigation
+  Renders breadcrumb navigation for improved UX and SEO
+{%- endcomment -%}
+
+{%- unless template.name == 'index' -%}
+<nav aria-label="Breadcrumb" class="py-4 px-4 md:px-8">
+  <ol class="flex flex-wrap items-center gap-2 text-xs text-stone-400 max-w-7xl mx-auto" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a href="{{ routes.root_url }}" itemprop="item" class="hover:text-stone-900 transition-colors">
+        <span itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content="1">
+    </li>
+    
+    {%- case template.name -%}
+      {%- when 'product' -%}
+        {%- if product.collections.size > 0 -%}
+          <li class="flex items-center gap-2">
+            <span class="text-stone-300">/</span>
+            <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ product.collections.first.url }}" itemprop="item" class="hover:text-stone-900 transition-colors">
+                <span itemprop="name">{{ product.collections.first.title }}</span>
+              </a>
+              <meta itemprop="position" content="2">
+            </span>
+          </li>
+        {%- endif -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">{{ product.title }}</span>
+            <meta itemprop="position" content="3">
+          </span>
+        </li>
+      
+      {%- when 'collection' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ routes.collections_url }}" itemprop="item" class="hover:text-stone-900 transition-colors">
+              <span itemprop="name">Collections</span>
+            </a>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">{{ collection.title }}</span>
+            <meta itemprop="position" content="3">
+          </span>
+        </li>
+      
+      {%- when 'blog' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">{{ blog.title }}</span>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+      
+      {%- when 'article' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href="{{ blog.url }}" itemprop="item" class="hover:text-stone-900 transition-colors">
+              <span itemprop="name">{{ blog.title }}</span>
+            </a>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">{{ article.title | truncate: 40 }}</span>
+            <meta itemprop="position" content="3">
+          </span>
+        </li>
+      
+      {%- when 'page' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">{{ page.title }}</span>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+      
+      {%- when 'cart' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">Cart</span>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+      
+      {%- when 'search' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">Search</span>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+      
+      {%- when 'list-collections' -%}
+        <li class="flex items-center gap-2">
+          <span class="text-stone-300">/</span>
+          <span itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span itemprop="name" class="text-stone-900">Collections</span>
+            <meta itemprop="position" content="2">
+          </span>
+        </li>
+    {%- endcase -%}
+  </ol>
+</nav>
+{%- endunless -%}

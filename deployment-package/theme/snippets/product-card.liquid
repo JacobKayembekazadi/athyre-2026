@@ -1,0 +1,50 @@
+{% comment %}
+  Snippet: product-card.liquid
+  Usage: {% render 'product-card', product: product %}
+{% endcomment %}
+<div class="group block" data-product-handle="{{ product.handle }}">
+  <a href="{{ product.url }}" class="block">
+    <div class="aspect-[3/4] bg-stone-50 mb-4 overflow-hidden rounded-[2px] relative">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-105', loading: 'lazy' }}
+        
+        {%- comment -%} Secondary image on hover {%- endcomment -%}
+        {%- if product.media.size > 1 and show_secondary_image -%}
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            {{ product.media[1] | image_url: width: 600 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+          </div>
+        {%- endif -%}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover opacity-20' }}
+      {% endif %}
+      
+      {%- comment -%} Sale Badge {%- endcomment -%}
+      {%- if product.compare_at_price > product.price -%}
+        {%- assign savings_percent = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+        <span class="absolute top-3 left-3 bg-red-600 text-white text-[8px] uppercase tracking-widest font-bold px-2 py-1">
+          Save {{ savings_percent }}%
+        </span>
+      {%- endif -%}
+      
+      {%- comment -%} Wishlist button {%- endcomment -%}
+      <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+        {% render 'wishlist-button', product: product %}
+      </div>
+      
+      {% unless product.available %}
+        <div class="absolute inset-0 bg-white/50 flex items-center justify-center">
+          <span class="text-[9px] uppercase tracking-widest font-black text-stone-900 border border-stone-900 px-3 py-1">Sold Out</span>
+        </div>
+      {% endunless %}
+    </div>
+  </a>
+
+  <h3 class="text-[10px] font-bold tracking-widest uppercase text-stone-900">{{ product.title }}</h3>
+  <div class="flex gap-2">
+    <p class="text-stone-400 text-[10px]">{{ product.price | money }}</p>
+    {% if product.compare_at_price > product.price %}
+      <p class="text-stone-300 text-[10px] line-through">{{ product.compare_at_price | money }}</p>
+    {% endif %}
+  </div>
+</div>
+

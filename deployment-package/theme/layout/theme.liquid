@@ -1,0 +1,89 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {% render 'meta-tags' %}
+
+    {%- comment -%} P0 Performance: Critical CSS inlined first {%- endcomment -%}
+    {% render 'critical-css' %}
+
+    {%- comment -%} P0 Performance: Preload hero images {%- endcomment -%}
+    {% render 'preload-hero' %}
+
+    {%- comment -%} P0: CSS Variables for color schemes {%- endcomment -%}
+    {% render 'css-variables' %}
+
+    {%- comment -%} External stylesheets loaded after critical CSS {%- endcomment -%}
+    {{ 'app.css' | asset_url | stylesheet_tag }}
+
+    {%- comment -%} P0 Performance: Defer all non-critical JS {%- endcomment -%}
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
+
+    {{ content_for_header }}
+
+    {%- comment -%} P0 SEO: JSON-LD structured data {%- endcomment -%}
+    {% render 'json-ld' %}
+
+    <style>
+      [x-cloak] { display: none !important; }
+      .snap-x { scroll-snap-type: x mandatory; }
+      .snap-start { scroll-snap-align: start; }
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+  </head>
+
+  <body class="font-sans antialiased text-stone-900 bg-white selection:bg-stone-900 selection:text-white">
+    {%- comment -%} P0 Accessibility: Skip link must be first focusable element {%- endcomment -%}
+    {% render 'skip-link' %}
+
+    {% section 'header' %}
+    
+    {%- comment -%} Breadcrumbs Navigation {%- endcomment -%}
+    {% render 'breadcrumbs' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    {%- comment -%} Cart Drawer {%- endcomment -%}
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    <script>
+      window.shopUrl = '{{ request.origin }}';
+      window.routes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_update_url: '{{ routes.cart_update_url }}',
+        cart_url: '{{ routes.cart_url }}',
+        predictive_search_url: '{{ routes.predictive_search_url }}'
+      };
+    </script>
+    
+    {%- comment -%} Cookie Consent Banner {%- endcomment -%}
+    {% section 'cookie-banner' %}
+
+    {%- comment -%} Analytics & Tracking (gated by cookie consent) {%- endcomment -%}
+    {% render 'tracking-scripts' %}
+  </body>
+</html>

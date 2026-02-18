@@ -1,0 +1,18 @@
+{
+    "sections": {
+        "manifesto": {
+            "type": "vision-manifesto"
+        },
+        "timeline": {
+            "type": "vision-timeline"
+        },
+        "stats": {
+            "type": "vision-stats"
+        }
+    },
+    "order": [
+        "manifesto",
+        "timeline",
+        "stats"
+    ]
+}

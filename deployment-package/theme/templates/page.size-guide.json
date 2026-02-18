@@ -1,0 +1,57 @@
+{
+  "sections": {
+    "main": {
+      "type": "size-guide",
+      "settings": {
+        "color_scheme": "1",
+        "label": "Fit Philosophy",
+        "heading": "Engineered for the Temple",
+        "philosophy": "Our garments are designed to honor the body in motion and rest. We use high-compression performance fabrics for our 'Rise' collection, and draped, relaxed fits for our 'Sanctuary' pieces.",
+        "chart_heading": "Body Measurements (Inches)",
+        "measure_heading": "How To Measure",
+        "card1_title": "Chat with Stylist",
+        "card1_text": "Real-time guidance from our fit experts.",
+        "card1_button": "Start Chat",
+        "card2_title": "Email Support",
+        "card2_text": "Response within 24 hours.",
+        "card2_button": "Contact Us"
+      },
+      "blocks": {
+        "row_xs": {
+          "type": "size_row",
+          "settings": { "size_label": "XS", "us_size": "0-2", "bust": "30-32", "waist": "23-25", "hip": "33-35" }
+        },
+        "row_s": {
+          "type": "size_row",
+          "settings": { "size_label": "S", "us_size": "4-6", "bust": "33-35", "waist": "26-28", "hip": "36-38" }
+        },
+        "row_m": {
+          "type": "size_row",
+          "settings": { "size_label": "M", "us_size": "8-10", "bust": "36-38", "waist": "29-31", "hip": "39-41" }
+        },
+        "row_l": {
+          "type": "size_row",
+          "settings": { "size_label": "L", "us_size": "12-14", "bust": "39-41", "waist": "32-34", "hip": "42-44" }
+        },
+        "row_xl": {
+          "type": "size_row",
+          "settings": { "size_label": "XL", "us_size": "16-18", "bust": "42-44", "waist": "35-37", "hip": "45-47" }
+        },
+        "m_bust": {
+          "type": "measurement",
+          "settings": { "title": "Bust", "description": "Measure under your arms at the fullest part of your bust. Keep the tape level." }
+        },
+        "m_waist": {
+          "type": "measurement",
+          "settings": { "title": "Waist", "description": "Measure around your natural waistline, keeping the tape comfortably loose." }
+        },
+        "m_hip": {
+          "type": "measurement",
+          "settings": { "title": "Hip", "description": "Stand with your feet together and measure around the fullest part of your hips." }
+        }
+      },
+      "block_order": ["row_xs", "row_s", "row_m", "row_l", "row_xl", "m_bust", "m_waist", "m_hip"]
+    }
+  },
+  "order": ["main"]
+}

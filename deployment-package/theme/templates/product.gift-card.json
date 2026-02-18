@@ -1,0 +1,36 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-gift-card-product",
+      "settings": {
+        "color_scheme": "1",
+        "hero_label": "Digital Offering",
+        "hero_heading": "The Gift of Stewardship",
+        "hero_text": "Invite your loved ones into the sanctuary. A digital offering that allows them to choose their own armor for the journey.",
+        "delivery_note": "Delivered via Email immediately",
+        "image_overlay_text": "Athyre",
+        "form_heading": "Choose Your Offering",
+        "submit_button": "Add to Sanctuary",
+        "balance_heading": "Gift Card Balance",
+        "balance_text": "<p>Your gift card balance is automatically applied at checkout. Enter your gift card code during payment to redeem.</p>",
+        "balance_contact_text": "For balance inquiries, contact our team."
+      },
+      "blocks": {
+        "r1": {
+          "type": "step",
+          "settings": { "title": "Select", "description": "Choose the value of your offering above." }
+        },
+        "r2": {
+          "type": "step",
+          "settings": { "title": "Receive", "description": "The code arrives instantly via email." }
+        },
+        "r3": {
+          "type": "step",
+          "settings": { "title": "Redeem", "description": "Enter code at checkout to apply offering." }
+        }
+      },
+      "block_order": ["r1", "r2", "r3"]
+    }
+  },
+  "order": ["main"]
+}

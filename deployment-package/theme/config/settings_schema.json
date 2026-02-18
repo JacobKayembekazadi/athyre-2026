@@ -1,0 +1,323 @@
+[
+    {
+        "name": "theme_info",
+        "theme_name": "Athyre Sanctuary",
+        "theme_author": "Gemini Agent",
+        "theme_version": "2.0.0",
+        "theme_documentation_url": "https://athyre.com",
+        "theme_support_url": "https://athyre.com/contact"
+    },
+    {
+        "name": "Colors",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Primary Brand Colors"
+            },
+            {
+                "type": "color",
+                "id": "colors_primary",
+                "label": "Primary",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "colors_accent",
+                "label": "Accent",
+                "default": "#78716c"
+            }
+        ]
+    },
+    {
+        "name": "Color Schemes",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Scheme 1 (Light)"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_1_background",
+                "label": "Background",
+                "default": "#ffffff"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_1_text",
+                "label": "Text",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_1_button",
+                "label": "Button",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_1_button_text",
+                "label": "Button text",
+                "default": "#ffffff"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_1_border",
+                "label": "Border",
+                "default": "#e7e5e4"
+            },
+            {
+                "type": "header",
+                "content": "Scheme 2 (Dark)"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_2_background",
+                "label": "Background",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_2_text",
+                "label": "Text",
+                "default": "#ffffff"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_2_button",
+                "label": "Button",
+                "default": "#ffffff"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_2_button_text",
+                "label": "Button text",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_2_border",
+                "label": "Border",
+                "default": "#44403c"
+            },
+            {
+                "type": "header",
+                "content": "Scheme 3 (Accent)"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_3_background",
+                "label": "Background",
+                "default": "#f5f5f4"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_3_text",
+                "label": "Text",
+                "default": "#1c1917"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_3_button",
+                "label": "Button",
+                "default": "#78716c"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_3_button_text",
+                "label": "Button text",
+                "default": "#ffffff"
+            },
+            {
+                "type": "color",
+                "id": "colors_scheme_3_border",
+                "label": "Border",
+                "default": "#d6d3d1"
+            }
+        ]
+    },
+    {
+        "name": "Typography",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Fonts"
+            },
+            {
+                "type": "font_picker",
+                "id": "font_heading",
+                "label": "Heading Font",
+                "default": "helvetica_n4"
+            },
+            {
+                "type": "font_picker",
+                "id": "font_body",
+                "label": "Body Font",
+                "default": "helvetica_n4"
+            },
+            {
+                "type": "range",
+                "id": "font_body_scale",
+                "label": "Base font size scale",
+                "min": 80,
+                "max": 120,
+                "step": 5,
+                "default": 100,
+                "unit": "%"
+            }
+        ]
+    },
+    {
+        "name": "Layout",
+        "settings": [
+            {
+                "type": "header",
+                "content": "Spacing"
+            },
+            {
+                "type": "range",
+                "id": "spacing_sections",
+                "label": "Section spacing",
+                "min": 20,
+                "max": 100,
+                "step": 4,
+                "default": 60,
+                "unit": "px"
+            },
+            {
+                "type": "header",
+                "content": "Borders"
+            },
+            {
+                "type": "range",
+                "id": "border_radius",
+                "label": "Border radius",
+                "min": 0,
+                "max": 24,
+                "step": 2,
+                "default": 8,
+                "unit": "px"
+            },
+            {
+                "type": "range",
+                "id": "border_width",
+                "label": "Border width",
+                "min": 0,
+                "max": 3,
+                "step": 1,
+                "default": 1,
+                "unit": "px"
+            },
+            {
+                "type": "header",
+                "content": "Shadows"
+            },
+            {
+                "type": "range",
+                "id": "shadow_opacity",
+                "label": "Shadow opacity",
+                "min": 0,
+                "max": 30,
+                "step": 5,
+                "default": 10,
+                "unit": "%"
+            }
+        ]
+    },
+    {
+        "name": "Social Media",
+        "settings": [
+            {
+                "type": "text",
+                "id": "social_instagram_link",
+                "label": "Instagram",
+                "info": "https://instagram.com/athyre"
+            },
+            {
+                "type": "text",
+                "id": "social_facebook_link",
+                "label": "Facebook"
+            },
+            {
+                "type": "text",
+                "id": "social_twitter_link",
+                "label": "Twitter/X"
+            },
+            {
+                "type": "text",
+                "id": "social_tiktok_link",
+                "label": "TikTok"
+            },
+            {
+                "type": "text",
+                "id": "social_youtube_link",
+                "label": "YouTube"
+            },
+            {
+                "type": "text",
+                "id": "social_pinterest_link",
+                "label": "Pinterest"
+            }
+        ]
+    },
+    {
+        "name": "Cart",
+        "settings": [
+            {
+                "type": "select",
+                "id": "cart_type",
+                "label": "Cart type",
+                "default": "drawer",
+                "options": [
+                    {
+                        "value": "page",
+                        "label": "Page"
+                    },
+                    {
+                        "value": "drawer",
+                        "label": "Drawer"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Analytics & Tracking",
+        "settings": [
+            {
+                "type": "header",
+                "content": "These scripts load only after user consent"
+            },
+            {
+                "type": "text",
+                "id": "google_analytics_id",
+                "label": "Google Analytics 4 ID",
+                "info": "G-XXXXXXXXXX format"
+            },
+            {
+                "type": "text",
+                "id": "facebook_pixel_id",
+                "label": "Facebook Pixel ID"
+            },
+            {
+                "type": "text",
+                "id": "tiktok_pixel_id",
+                "label": "TikTok Pixel ID"
+            },
+            {
+                "type": "text",
+                "id": "klaviyo_public_api_key",
+                "label": "Klaviyo Public API Key"
+            },
+            {
+                "type": "text",
+                "id": "pinterest_tag_id",
+                "label": "Pinterest Tag ID"
+            },
+            {
+                "type": "text",
+                "id": "hotjar_site_id",
+                "label": "Hotjar Site ID"
+            }
+        ]
+    }
+]

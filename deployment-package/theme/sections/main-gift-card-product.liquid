@@ -1,0 +1,238 @@
+{% schema %}
+{
+  "name": "Gift Card Product",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "1", "label": "Light" },
+        { "value": "2", "label": "Dark" },
+        { "value": "3", "label": "Accent" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "hero_label",
+      "label": "Hero label",
+      "default": "Digital Offering"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Hero heading",
+      "default": "The Gift of Stewardship"
+    },
+    {
+      "type": "textarea",
+      "id": "hero_text",
+      "label": "Hero text",
+      "default": "Invite your loved ones into the sanctuary. A digital offering that allows them to choose their own armor for the journey."
+    },
+    {
+      "type": "text",
+      "id": "delivery_note",
+      "label": "Delivery note",
+      "default": "Delivered via Email immediately"
+    },
+    {
+      "type": "text",
+      "id": "image_overlay_text",
+      "label": "Image overlay text",
+      "default": "Athyre"
+    },
+    {
+      "type": "header",
+      "content": "Form"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Choose Your Offering"
+    },
+    {
+      "type": "text",
+      "id": "submit_button",
+      "label": "Submit button text",
+      "default": "Add to Sanctuary"
+    },
+    {
+      "type": "header",
+      "content": "Balance Section"
+    },
+    {
+      "type": "text",
+      "id": "balance_heading",
+      "label": "Balance heading",
+      "default": "Gift Card Balance"
+    },
+    {
+      "type": "richtext",
+      "id": "balance_text",
+      "label": "Balance text",
+      "default": "<p>Your gift card balance is automatically applied at checkout. Enter your gift card code during payment to redeem.</p>"
+    },
+    {
+      "type": "text",
+      "id": "balance_contact_text",
+      "label": "Balance contact link text",
+      "default": "For balance inquiries, contact our team."
+    },
+    {
+      "type": "url",
+      "id": "balance_contact_url",
+      "label": "Balance contact link URL",
+      "info": "Link to your contact page for balance inquiries"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Redemption Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Select"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Choose the value of your offering above."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Card Product",
+      "blocks": [
+        {
+          "type": "step",
+          "settings": { "title": "Select", "description": "Choose the value of your offering above." }
+        },
+        {
+          "type": "step",
+          "settings": { "title": "Receive", "description": "The code arrives instantly via email." }
+        },
+        {
+          "type": "step",
+          "settings": { "title": "Redeem", "description": "Enter code at checkout to apply offering." }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+<div class="color-scheme-{{ section.settings.color_scheme }} pt-32 pb-24 px-8 max-w-7xl mx-auto min-h-screen">
+
+  {%- comment -%} HERO {%- endcomment -%}
+  <section class="grid md:grid-cols-2 gap-16 items-center mb-32">
+    <div class="aspect-[4/5] bg-stone-100 relative overflow-hidden">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 800 | image_tag: class: 'w-full h-full object-cover grayscale' }}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover grayscale opacity-50' }}
+      {% endif %}
+      {% if section.settings.image_overlay_text != blank %}
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="text-stone-900 border border-stone-900 px-8 py-4 text-[10px] uppercase tracking-[0.4em] font-bold bg-white/80 backdrop-blur-sm">{{ section.settings.image_overlay_text }}</span>
+        </div>
+      {% endif %}
+    </div>
+    <div>
+      {% if section.settings.hero_label != blank %}
+        <span class="text-[10px] uppercase tracking-[0.4em] text-stone-400 font-bold block mb-6">{{ section.settings.hero_label }}</span>
+      {% endif %}
+      {% if section.settings.hero_heading != blank %}
+        <h1 class="text-4xl md:text-5xl font-light tracking-tight uppercase mb-8">{{ section.settings.hero_heading }}</h1>
+      {% endif %}
+      {% if section.settings.hero_text != blank %}
+        <p class="text-stone-500 text-sm leading-loose mb-12">{{ section.settings.hero_text }}</p>
+      {% endif %}
+      {% if section.settings.delivery_note != blank %}
+        <div class="flex gap-4 items-center">
+          {% render 'icon-gift', class: 'w-6 h-6 text-stone-300' %}
+          <span class="text-[10px] uppercase tracking-widest text-stone-400">{{ section.settings.delivery_note }}</span>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  {%- comment -%} VARIANT SELECTION FORM {%- endcomment -%}
+  <section class="mb-32 max-w-2xl mx-auto text-center">
+    {% if section.settings.form_heading != blank %}
+      <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-12">{{ section.settings.form_heading }}</h2>
+    {% endif %}
+
+    {% form 'product', product %}
+      <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        {% for variant in product.variants %}
+          <label class="cursor-pointer">
+            <input type="radio" name="id" value="{{ variant.id }}" class="peer sr-only" {% if forloop.first %}checked{% endif %}>
+            <div class="border border-stone-200 py-6 text-[11px] font-bold tracking-widest hover:border-stone-900 transition-colors peer-checked:bg-stone-900 peer-checked:text-white peer-checked:border-stone-900">
+              {{ variant.price | money_without_trailing_zeros }}
+            </div>
+          </label>
+        {% endfor %}
+      </div>
+
+      <button type="submit" class="w-full bg-stone-900 text-white py-4 text-[10px] tracking-[0.4em] font-black uppercase hover:bg-stone-800 transition-colors shadow-xl">
+        {{ section.settings.submit_button | default: 'Add to Cart' }}
+      </button>
+    {% endform %}
+  </section>
+
+  {%- comment -%} REDEMPTION STEPS {%- endcomment -%}
+  {% if section.blocks.size > 0 %}
+    <section class="mb-32 bg-stone-50 p-16 md:p-24 rounded-[2px]">
+      <div class="grid md:grid-cols-{{ section.blocks.size | at_most: 4 }} gap-12 text-center">
+        {% for block in section.blocks %}
+          <div {{ block.shopify_attributes }}>
+            <span class="text-4xl font-light text-stone-300 mb-6 block">{{ forloop.index | prepend: '00' | slice: -2, 2 }}</span>
+            {% if block.settings.title != blank %}
+              <h3 class="text-[10px] uppercase tracking-[0.3em] font-black mb-4">{{ block.settings.title }}</h3>
+            {% endif %}
+            {% if block.settings.description != blank %}
+              <p class="text-[11px] text-stone-500">{{ block.settings.description }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {%- comment -%} BALANCE INFO {%- endcomment -%}
+  {% if section.settings.balance_heading != blank or section.settings.balance_text != blank %}
+    <section class="text-center max-w-md mx-auto">
+      {% if section.settings.balance_heading != blank %}
+        <h2 class="text-[11px] uppercase tracking-[0.6em] text-stone-400 font-black mb-8">{{ section.settings.balance_heading }}</h2>
+      {% endif %}
+      {% if section.settings.balance_text != blank %}
+        <div class="text-[11px] text-stone-500 leading-loose">{{ section.settings.balance_text }}</div>
+      {% endif %}
+      {% if section.settings.balance_contact_text != blank and section.settings.balance_contact_url != blank %}
+        <p class="text-[11px] text-stone-500 leading-loose mt-4">
+          <a href="{{ section.settings.balance_contact_url }}" class="underline hover:text-stone-900 transition-colors">{{ section.settings.balance_contact_text }}</a>
+        </p>
+      {% elsif section.settings.balance_contact_text != blank %}
+        <p class="text-[11px] text-stone-500 leading-loose mt-4">{{ section.settings.balance_contact_text }}</p>
+      {% endif %}
+    </section>
+  {% endif %}
+
+</div>

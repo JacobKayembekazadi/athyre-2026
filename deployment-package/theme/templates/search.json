@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-search",
+      "settings": {
+        "color_scheme": "1",
+        "heading": "WHAT ARE YOU SEEKING?",
+        "results_label": "Search Results",
+        "no_results_text": "No results found for",
+        "trending_label": "Rising Now",
+        "categories_label": "Browse by Category",
+        "categories_count": 3
+      },
+      "blocks": {
+        "t1": {
+          "type": "trending_term",
+          "settings": { "term": "Oversized Web" }
+        },
+        "t2": {
+          "type": "trending_term",
+          "settings": { "term": "Ribbed Leggings" }
+        },
+        "t3": {
+          "type": "trending_term",
+          "settings": { "term": "Yoga Mats" }
+        },
+        "t4": {
+          "type": "trending_term",
+          "settings": { "term": "Gift Cards" }
+        },
+        "t5": {
+          "type": "trending_term",
+          "settings": { "term": "Essential Crew" }
+        }
+      },
+      "block_order": ["t1", "t2", "t3", "t4", "t5"]
+    }
+  },
+  "order": ["main"]
+}
