@@ -16,9 +16,9 @@
       "id": "logo_width",
       "label": "Logo max width",
       "min": 50,
-      "max": 250,
+      "max": 400,
       "step": 10,
-      "default": 120,
+      "default": 150,
       "unit": "px"
     },
     {
@@ -26,9 +26,9 @@
       "id": "logo_max_height",
       "label": "Logo max height",
       "min": 20,
-      "max": 80,
+      "max": 120,
       "step": 4,
-      "default": 40,
+      "default": 60,
       "unit": "px"
     },
     {
@@ -188,10 +188,15 @@
       {%- if request.page_type != 'index' -%}
         {%- assign logo_heading_tag = 'div' -%}
       {%- endif -%}
-      <{{ logo_heading_tag }} class="text-2xl font-black tracking-[0.2em] uppercase m-0 leading-none">
+      <{{ logo_heading_tag }} class="text-2xl font-black tracking-[0.2em] uppercase m-0 leading-none flex items-center justify-center">
         {% if section.settings.logo %}
-          {%- assign logo_style = 'width: auto; max-width: ' | append: section.settings.logo_width | append: 'px; max-height: ' | append: section.settings.logo_max_height | append: 'px' -%}
-          {{ section.settings.logo | image_url: width: section.settings.logo_width | image_tag: style: logo_style, alt: shop.name }}
+          {%- assign logo_width_2x = section.settings.logo_width | times: 2 -%}
+          <img
+            src="{{ section.settings.logo | image_url: width: logo_width_2x }}"
+            alt="{{ shop.name }}"
+            loading="eager"
+            style="width: auto; height: auto; max-width: {{ section.settings.logo_width }}px; max-height: {{ section.settings.logo_max_height }}px; object-fit: contain;"
+          >
         {% else %}
           {{ section.settings.logo_text }}
         {% endif %}
@@ -227,10 +232,10 @@
         </a>
       {% endif %}
 
-      <a href="{{ routes.cart_url }}" class="relative" aria-label="{{ 'cart.general.title' | t }} ({{ cart.item_count }})">
+      <a href="{{ routes.cart_url }}" class="relative" aria-label="{{ 'cart.general.title' | t }} ({{ cart.item_count }})" data-cart-drawer-toggle>
         {% render 'icon-shopping-bag', class: 'w-4 h-4 cursor-pointer' %}
         {% if cart.item_count > 0 %}
-          <span class="absolute -top-2 -right-2 bg-stone-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center" aria-hidden="true">{{ cart.item_count }}</span>
+          <span class="absolute -top-2 -right-2 bg-stone-900 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center" data-cart-count>{{ cart.item_count }}</span>
         {% endif %}
       </a>
     </div>
