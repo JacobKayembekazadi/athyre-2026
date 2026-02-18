@@ -158,7 +158,7 @@
       {%- comment -%} Comments {%- endcomment -%}
       {%- if section.settings.show_comments and blog.comments_enabled? -%}
         <div class="mt-12" id="comments">
-          <h3 class="text-xl font-medium mb-8">{{ article.comments_count }} {{ article.comments_count | pluralize: 'Comment', 'Comments' }}</h3>
+          <h3 class="text-xl font-medium mb-8">{{ article.comments_count }} {% if article.comments_count == 1 %}Comment{% else %}Comments{% endif %}</h3>
 
           {%- paginate article.comments by 20 -%}
             {%- if article.comments.size > 0 -%}

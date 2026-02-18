@@ -80,7 +80,7 @@
                   </div>
                 </div>
                 <p class="text-xs text-stone-500">
-                  {{ order.line_items.size }} {{ order.line_items.size | pluralize: 'item', 'items' }}
+                  {{ order.line_items.size }} {% if order.line_items.size == 1 %}item{% else %}items{% endif %}
                 </p>
               </a>
             {%- endfor -%}

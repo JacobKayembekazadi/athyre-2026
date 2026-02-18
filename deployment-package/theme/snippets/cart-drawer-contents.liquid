@@ -12,7 +12,7 @@
         <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/>
       </svg>
     </div>
-    <p class="text-stone-500 mb-6">{{ section.settings.empty_message | default: 'Your cart is empty' }}</p>
+    <p class="text-stone-500 mb-6">{{ 'cart.general.empty' | t | default: 'Your cart is empty' }}</p>
     <a 
       href="{{ routes.all_products_collection_url }}" 
       class="px-6 py-3 bg-stone-900 text-white text-[10px] uppercase tracking-widest font-bold hover:bg-stone-800 transition-colors"

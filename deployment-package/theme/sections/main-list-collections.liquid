@@ -71,7 +71,7 @@
             </div>
             <h2 class="text-lg font-medium group-hover:opacity-60 transition-opacity">{{ collection.title }}</h2>
             {%- if section.settings.show_product_count -%}
-              <p class="text-sm text-stone-500">{{ collection.all_products_count }} {{ collection.all_products_count | pluralize: 'product', 'products' }}</p>
+              <p class="text-sm text-stone-500">{{ collection.all_products_count }} {% if collection.all_products_count == 1 %}product{% else %}products{% endif %}</p>
             {%- endif -%}
           </a>
         {%- endif -%}

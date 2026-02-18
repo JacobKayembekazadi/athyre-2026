@@ -208,7 +208,7 @@
         "error": "Something went wrong. Please try again."
     },
     "footer": {
-        "copyright": "\u00a9 {{ year }} {{ shop_name }}. All rights reserved."
+        "copyright": "All rights reserved."
     },
     "gift_cards": {
         "issued": {

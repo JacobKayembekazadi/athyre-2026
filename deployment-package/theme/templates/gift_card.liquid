@@ -192,7 +192,8 @@
     <h1 class="gift-card__heading">{{ 'gift_cards.issued.title' | t | default: 'Gift Card' }}</h1>
 
     {% if gift_card.initial_value != gift_card.balance %}
-      <p class="gift-card__price">{{ gift_card.balance | money }} <span style="font-size:14px;color:var(--color-muted);">({{ 'gift_cards.issued.remaining_html' | t: balance: gift_card.balance | money | default: 'remaining' }})</span></p>
+      {%- assign formatted_balance = gift_card.balance | money -%}
+      <p class="gift-card__price">{{ formatted_balance }} <span style="font-size:14px;color:var(--color-muted);">({{ 'gift_cards.issued.remaining_html' | t: balance: formatted_balance | default: 'remaining' }})</span></p>
     {% else %}
       <p class="gift-card__price">{{ gift_card.initial_value | money }}</p>
     {% endif %}
@@ -201,6 +202,7 @@
       <span class="badge--expired">{{ 'gift_cards.issued.expired' | t | default: 'Expired' }}</span>
     {% endif %}
 
+    {% comment %}theme-check-disable UnknownFilter{% endcomment %}
     <p class="gift-card__label">{{ 'gift_cards.issued.redeem' | t | default: 'Your code' }}</p>
     <div class="gift-card__code" id="GiftCardCode">{{ gift_card.code | format_code }}</div>
     <p class="gift-card__code-note">{{ 'gift_cards.issued.copy_code' | t | default: 'Click to select code' }}</p>
@@ -220,7 +222,6 @@
       {% endif %}
     {% endunless %}
 
-    {% comment %}theme-check-disable UnknownFilter{% endcomment %}
     <div class="gift-card__qr">
       {{ gift_card.qr_identifier | qr_code: 120 }}
     </div>
