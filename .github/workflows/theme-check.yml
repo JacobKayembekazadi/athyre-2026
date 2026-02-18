@@ -24,7 +24,7 @@ jobs:
           bundler-cache: true
 
       - name: Install Theme Check
-        run: gem install theme-check -v '~> 1.16'
+        run: gem install theme-check -v 1.15.0
 
       - name: Run Theme Check
         run: |
