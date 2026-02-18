@@ -1,59 +1,83 @@
 {
-    "general.skip_to_content": {
-        "label": "Skip to content text"
+  "general": {
+    "skip_to_content": {
+      "label": "Skip to content text"
     },
-    "general.search.search": {
+    "search": {
+      "search": {
         "label": "Search button text"
-    },
-    "general.search.placeholder": {
+      },
+      "placeholder": {
         "label": "Search placeholder text"
+      }
     },
-    "general.cookie.essential": {
+    "cookie": {
+      "essential": {
         "label": "Essential cookies label"
-    },
-    "general.cookie.analytics": {
+      },
+      "analytics": {
         "label": "Analytics cookies label"
-    },
-    "general.cookie.marketing": {
+      },
+      "marketing": {
         "label": "Marketing cookies label"
-    },
-    "products.product.add_to_cart": {
-        "label": "Add to cart button text"
-    },
-    "products.product.sold_out": {
-        "label": "Sold out badge text"
-    },
-    "products.product.add_to_wishlist": {
-        "label": "Add to wishlist button text"
-    },
-    "cart.general.title": {
-        "label": "Cart title"
-    },
-    "cart.general.checkout": {
-        "label": "Checkout button text"
-    },
-    "cart.general.empty": {
-        "label": "Empty cart message"
-    },
-    "customer.login.title": {
-        "label": "Login page title"
-    },
-    "customer.login.sign_in": {
-        "label": "Sign in button text"
-    },
-    "customer.register.title": {
-        "label": "Register page title"
-    },
-    "customer.register.submit": {
-        "label": "Create account button text"
-    },
-    "customer.account.title": {
-        "label": "Account page title"
-    },
-    "customer.account.logout": {
-        "label": "Logout button text"
-    },
-    "newsletter.subscribe": {
-        "label": "Newsletter subscribe button text"
+      }
     }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": {
+        "label": "Add to cart button text"
+      },
+      "sold_out": {
+        "label": "Sold out badge text"
+      },
+      "add_to_wishlist": {
+        "label": "Add to wishlist button text"
+      }
+    }
+  },
+  "cart": {
+    "general": {
+      "title": {
+        "label": "Cart title"
+      },
+      "checkout": {
+        "label": "Checkout button text"
+      },
+      "empty": {
+        "label": "Empty cart message"
+      }
+    }
+  },
+  "customer": {
+    "login": {
+      "title": {
+        "label": "Login page title"
+      },
+      "sign_in": {
+        "label": "Sign in button text"
+      }
+    },
+    "register": {
+      "title": {
+        "label": "Register page title"
+      },
+      "submit": {
+        "label": "Create account button text"
+      }
+    },
+    "account": {
+      "title": {
+        "label": "Account page title"
+      },
+      "logout": {
+        "label": "Logout button text"
+      }
+    }
+  },
+  "newsletter": {
+    "subscribe": {
+      "label": "Newsletter subscribe button text"
+    }
+  }
 }
