@@ -1,0 +1,78 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "current": {
+    "font_heading": "helvetica_n4",
+    "font_body": "helvetica_n4",
+    "color_bg": "#ffffff",
+    "color_text": "#1c1917",
+    "color_accent": "#1c1917",
+    "color_border": "#e7e5e4",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo": "shopify://shop_images/Athyre_name_logo_no_bkgd_8985c4df-19a1-403f-b3ac-b3bb8a1a7294.png",
+          "logo_width": 260,
+          "logo_max_height": 52,
+          "logo_text": "Athyre",
+          "tagline": "Spirit • Soul • Body",
+          "menu": "main-menu",
+          "left_nav_count": 3,
+          "sticky": true,
+          "transparent_home": false,
+          "show_search": false,
+          "show_account": false,
+          "show_wishlist": false,
+          "wishlist_url": "",
+          "show_announcement": true,
+          "announcement_text": "Free shipping on orders over $100",
+          "announcement_link": "",
+          "announcement_bg": "#1c1917",
+          "announcement_text_color": "#ffffff"
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "brand_description": "<p>Performance sanctuary wear designed to honor the body in motion and rest.</p>",
+          "show_newsletter": true,
+          "newsletter_heading": "Join The Inner Circle",
+          "newsletter_description": "",
+          "newsletter_placeholder": "EMAIL ADDRESS",
+          "show_social": true,
+          "show_payment_icons": true,
+          "bottom_menu": "",
+          "show_country_selector": false,
+          "show_language_selector": false
+        }
+      },
+      "cart-drawer": {
+        "type": "cart-drawer",
+        "settings": {
+          "empty_message": "Your cart is empty",
+          "show_vendor": false
+        }
+      },
+      "cookie-banner": {
+        "type": "cookie-banner",
+        "settings": {
+          "heading": "Cookie Settings",
+          "message": "<p>We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking 'Accept All', you consent to our use of cookies.</p>",
+          "accept_button": "Accept All",
+          "reject_button": "Reject Non-Essential",
+          "manage_button": "Manage Preferences",
+          "privacy_policy_url": ""
+        }
+      }
+    },
+    "content_for_index": []
+  }
+}
