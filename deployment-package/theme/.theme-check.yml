@@ -9,8 +9,6 @@ LiquidTag:
 
 UnknownFilter:
   enabled: true
-  exclude:
-    - templates/gift_card.liquid
 
 MissingRequiredTemplateFiles:
   enabled: true

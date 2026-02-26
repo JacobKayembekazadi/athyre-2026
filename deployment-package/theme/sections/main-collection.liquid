@@ -9,9 +9,18 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "options": [
-        { "value": "1", "label": "Light" },
-        { "value": "2", "label": "Dark" },
-        { "value": "3", "label": "Accent" }
+        {
+          "value": "1",
+          "label": "Light"
+        },
+        {
+          "value": "2",
+          "label": "Dark"
+        },
+        {
+          "value": "3",
+          "label": "Accent"
+        }
       ],
       "default": "1"
     },
@@ -25,9 +34,18 @@
       "label": "Columns on desktop",
       "default": "4",
       "options": [
-        { "value": "3", "label": "3 columns" },
-        { "value": "4", "label": "4 columns" },
-        { "value": "5", "label": "5 columns" }
+        {
+          "value": "3",
+          "label": "3 columns"
+        },
+        {
+          "value": "4",
+          "label": "4 columns"
+        },
+        {
+          "value": "5",
+          "label": "5 columns"
+        }
       ]
     },
     {
@@ -36,8 +54,14 @@
       "label": "Columns on mobile",
       "default": "2",
       "options": [
-        { "value": "1", "label": "1 column" },
-        { "value": "2", "label": "2 columns" }
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
       ]
     },
     {
@@ -99,8 +123,14 @@
       "label": "Filter style",
       "default": "drawer",
       "options": [
-        { "value": "drawer", "label": "Side drawer" },
-        { "value": "inline", "label": "Inline (above products)" }
+        {
+          "value": "drawer",
+          "label": "Side drawer"
+        },
+        {
+          "value": "inline",
+          "label": "Inline (above products)"
+        }
       ]
     },
     {
@@ -333,13 +363,15 @@
             </details>
           {%- endfor -%}
 
-          {%- assign has_active = false -%}
-          {%- for filter in collection.filters -%}
-            {%- if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value -%}
-              {%- assign has_active = true -%}
-              {%- break -%}
-            {%- endif -%}
-          {%- endfor -%}
+          {%- liquid
+            assign has_active = false
+            for filter in collection.filters
+              if filter.active_values.size > 0 or filter.min_value.value or filter.max_value.value
+                assign has_active = true
+                break
+              endif
+            endfor
+          -%}
           {%- if has_active -%}
             <a
               href="{{ collection.url }}?sort_by={{ sort_by }}"
@@ -364,13 +396,15 @@
     {%- comment -%} PRODUCT GRID {%- endcomment -%}
     <div class="flex-1">
       {%- comment -%} Active Filters Pills {%- endcomment -%}
-      {%- assign has_active_filters = false -%}
-      {%- for filter in collection.filters -%}
-        {%- if filter.active_values.size > 0 -%}
-          {%- assign has_active_filters = true -%}
-          {%- break -%}
-        {%- endif -%}
-      {%- endfor -%}
+      {%- liquid
+        assign has_active_filters = false
+        for filter in collection.filters
+          if filter.active_values.size > 0
+            assign has_active_filters = true
+            break
+          endif
+        endfor
+      -%}
 
       {%- if has_active_filters -%}
         <div class="flex flex-wrap gap-2 mb-6">

@@ -222,7 +222,9 @@
     {% endunless %}
 
     <div class="gift-card__qr">
+      {% comment %}theme-check-disable UnknownFilter{% endcomment %}
       {{ gift_card.qr_identifier | qr_code: 120 }}
+      {% comment %}theme-check-enable UnknownFilter{% endcomment %}
     </div>
 
     <div class="gift-card__actions">
