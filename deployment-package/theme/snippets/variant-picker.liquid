@@ -52,10 +52,131 @@
           -%}
           
           {%- if is_color and show_color_swatches -%}
-            {%- comment -%} Color Swatch {%- endcomment -%}
+            {%- comment -%} Color Swatch — map common fashion color names to hex {%- endcomment -%}
+            {%- liquid
+              assign swatch_color = ''
+              assign swatch_image = ''
+              assign color_lower = value | downcase | strip
+
+              case color_lower
+                when 'black'
+                  assign swatch_color = '#000000'
+                when 'white'
+                  assign swatch_color = '#ffffff'
+                when 'red'
+                  assign swatch_color = '#dc2626'
+                when 'blue'
+                  assign swatch_color = '#2563eb'
+                when 'navy', 'navy blue'
+                  assign swatch_color = '#1e3a5f'
+                when 'green'
+                  assign swatch_color = '#16a34a'
+                when 'olive'
+                  assign swatch_color = '#65a30d'
+                when 'sage'
+                  assign swatch_color = '#9caf88'
+                when 'forest', 'forest green'
+                  assign swatch_color = '#1a4314'
+                when 'yellow'
+                  assign swatch_color = '#eab308'
+                when 'gold'
+                  assign swatch_color = '#b8860b'
+                when 'orange'
+                  assign swatch_color = '#ea580c'
+                when 'pink'
+                  assign swatch_color = '#ec4899'
+                when 'blush'
+                  assign swatch_color = '#e8b4b8'
+                when 'rose'
+                  assign swatch_color = '#be123c'
+                when 'purple'
+                  assign swatch_color = '#9333ea'
+                when 'lavender'
+                  assign swatch_color = '#c4b5fd'
+                when 'brown'
+                  assign swatch_color = '#78350f'
+                when 'tan'
+                  assign swatch_color = '#d2b48c'
+                when 'camel'
+                  assign swatch_color = '#c19a6b'
+                when 'beige'
+                  assign swatch_color = '#d4c5a9'
+                when 'cream'
+                  assign swatch_color = '#fffdd0'
+                when 'ivory'
+                  assign swatch_color = '#fffff0'
+                when 'oat', 'oatmeal'
+                  assign swatch_color = '#d3c4a5'
+                when 'mushroom'
+                  assign swatch_color = '#b5a08e'
+                when 'taupe'
+                  assign swatch_color = '#8b7d6b'
+                when 'charcoal'
+                  assign swatch_color = '#36454f'
+                when 'grey', 'gray'
+                  assign swatch_color = '#6b7280'
+                when 'light grey', 'light gray'
+                  assign swatch_color = '#d1d5db'
+                when 'silver'
+                  assign swatch_color = '#c0c0c0'
+                when 'stone'
+                  assign swatch_color = '#78716c'
+                when 'sand'
+                  assign swatch_color = '#c2b280'
+                when 'khaki'
+                  assign swatch_color = '#c3b091'
+                when 'burgundy', 'wine'
+                  assign swatch_color = '#722f37'
+                when 'maroon'
+                  assign swatch_color = '#800000'
+                when 'rust'
+                  assign swatch_color = '#b7410e'
+                when 'coral'
+                  assign swatch_color = '#ff6f61'
+                when 'teal'
+                  assign swatch_color = '#0d9488'
+                when 'mint'
+                  assign swatch_color = '#98f5e1'
+                when 'sky', 'sky blue'
+                  assign swatch_color = '#38bdf8'
+                when 'cobalt'
+                  assign swatch_color = '#0047ab'
+                when 'indigo'
+                  assign swatch_color = '#4f46e5'
+                when 'espresso'
+                  assign swatch_color = '#3c1414'
+                when 'chocolate'
+                  assign swatch_color = '#7b3f00'
+                when 'cognac'
+                  assign swatch_color = '#9a463d'
+                when 'natural'
+                  assign swatch_color = '#e8dcc8'
+                when 'bone'
+                  assign swatch_color = '#e3dac9'
+                when 'linen'
+                  assign swatch_color = '#faf0e6'
+                when 'denim'
+                  assign swatch_color = '#1560bd'
+              endcase
+
+              # Fall back to variant's featured image as swatch
+              if swatch_color == ''
+                for variant in product.variants
+                  if variant.options[option_index] == value and variant.featured_image
+                    assign swatch_image = variant.featured_image | image_url: width: 80, height: 80, crop: 'center'
+                    break
+                  endif
+                endfor
+              endif
+
+              # Final fallback: use handleized value as CSS color name
+              if swatch_color == '' and swatch_image == ''
+                assign swatch_color = value | handleize | replace: '-', ''
+              endif
+            -%}
             <label class="relative cursor-pointer group" title="{{ value }}">
-              <input 
-                type="radio" 
+              <input
+                type="radio"
                 name="option-{{ option_index }}"
                 value="{{ value | escape }}"
                 data-option-input
@@ -64,9 +185,13 @@
                 {% if forloop.first %}checked{% endif %}
                 {% unless option_available %}disabled{% endunless %}
               >
-              <span 
-                class="block w-10 h-10 rounded-full border-2 border-transparent peer-checked:border-stone-900 peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-stone-500 transition-all {% unless option_available %}opacity-40 cursor-not-allowed{% endunless %}"
-                style="background-color: {{ value | handleize | replace: '-', '' }};"
+              <span
+                class="block w-10 h-10 rounded-full border-2 {% if color_lower == 'white' or color_lower == 'cream' or color_lower == 'ivory' or color_lower == 'natural' or color_lower == 'bone' or color_lower == 'linen' %}border-stone-200{% else %}border-transparent{% endif %} peer-checked:border-stone-900 peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-stone-500 transition-all overflow-hidden {% unless option_available %}opacity-40 cursor-not-allowed{% endunless %}"
+                {% if swatch_image != '' %}
+                  style="background-image: url('{{ swatch_image }}'); background-size: cover; background-position: center;"
+                {% else %}
+                  style="background-color: {{ swatch_color }};"
+                {% endif %}
                 aria-label="{{ value }}"
               >
                 {%- unless option_available -%}

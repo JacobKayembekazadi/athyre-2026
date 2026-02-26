@@ -168,22 +168,22 @@
   class="fixed w-full z-50 transition-all duration-300 {% if section.settings.sticky %}border-b border-stone-100 bg-white/95 backdrop-blur-sm shadow-sm py-3 md:py-4{% else %}bg-transparent py-4 md:py-6{% endif %}{% if section.settings.transparent_home and request.page_type == 'index' %} header--transparent{% endif %}"
   x-data="{ mobileMenuOpen: false }"
 >
-  <div class="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 items-center" style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center;">
 
-    {% comment %} MENU TRIGGER (Mobile) {% endcomment %}
-    <button class="sm:hidden" @click="mobileMenuOpen = true" aria-label="{{ 'accessibility.menu' | t }}">
-      {% render 'icon-menu', class: 'w-6 h-6 cursor-pointer text-stone-900' %}
-    </button>
-
-    {% comment %} LEFT NAV (Desktop) {% endcomment %}
-    <nav class="hidden sm:flex items-center gap-8" aria-label="Main navigation">
-      {% for link in linklists[section.settings.menu].links limit: section.settings.left_nav_count %}
-        <a href="{{ link.url }}" class="text-[10px] tracking-[0.2em] font-bold uppercase transition-opacity hover:opacity-60">{{ link.title }}</a>
-      {% endfor %}
-    </nav>
+    {% comment %} LEFT: Mobile menu trigger + Desktop nav {% endcomment %}
+    <div class="flex items-center">
+      <button class="sm:hidden" @click="mobileMenuOpen = true" aria-label="{{ 'accessibility.menu' | t }}">
+        {% render 'icon-menu', class: 'w-6 h-6 cursor-pointer text-stone-900' %}
+      </button>
+      <nav class="hidden sm:flex items-center gap-8" aria-label="Main navigation">
+        {% for link in linklists[section.settings.menu].links limit: section.settings.left_nav_count %}
+          <a href="{{ link.url }}" class="text-[10px] tracking-[0.2em] font-bold uppercase transition-opacity hover:opacity-60">{{ link.title }}</a>
+        {% endfor %}
+      </nav>
+    </div>
 
     {% comment %} LOGO (Center) {% endcomment %}
-    <a href="{{ routes.root_url }}" class="absolute left-1/2 -translate-x-1/2 text-center group">
+    <a href="{{ routes.root_url }}" class="text-center group">
       {%- assign logo_heading_tag = 'h1' -%}
       {%- if request.page_type != 'index' -%}
         {%- assign logo_heading_tag = 'div' -%}
@@ -207,7 +207,7 @@
     </a>
 
     {% comment %} RIGHT NAV (Icons) {% endcomment %}
-    <div class="flex items-center gap-6">
+    <div class="flex items-center gap-6" style="justify-self: end;">
       <nav class="hidden sm:flex items-center gap-8 mr-8">
         {% for link in linklists[section.settings.menu].links offset: section.settings.left_nav_count %}
           <a href="{{ link.url }}" class="text-[10px] tracking-[0.2em] font-bold uppercase transition-opacity hover:opacity-60">{{ link.title }}</a>

@@ -104,6 +104,11 @@
     100% { background-position: -200% 0; }
   }
 
+  /* Product add-to-cart hover (uses CSS variable colors) */
+  [data-add-to-cart]:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
   /* Focus styles for accessibility */
   :focus-visible {
     outline: 3px solid var(--color-accent, #78716c);
