@@ -9,19 +9,14 @@
  */
 {
   "current": {
-    "colors_primary": "#8a4f66",
-    "colors_accent": "#ffffff",
-    "colors_scheme_1_background": "{{ shop.brand.colors.primary[0].foreground }}",
-    "colors_scheme_1_text": "{{ shop.brand.colors.secondary[0].foreground }}",
     "colors_scheme_1_button": "{{ shop.brand.colors.primary[0].background }}",
-    "colors_scheme_1_button_text": "{{ shop.brand.colors.primary[0].foreground }}",
     "colors_scheme_1_border": "{{ shop.brand.colors.secondary[1].background }}",
-    "colors_scheme_2_background": "{{ shop.brand.colors.secondary[0].background }}",
-    "colors_scheme_2_text": "{{ shop.brand.colors.primary[0].foreground }}",
-    "colors_scheme_2_button_text": "{{ shop.brand.colors.secondary[1].background }}",
-    "colors_scheme_2_border": "{{ shop.brand.colors.primary[0].background }}",
-    "colors_scheme_3_button": "{{ shop.brand.colors.primary[0].background }}",
-    "colors_scheme_3_border": "{{ shop.brand.colors.primary[0].foreground }}",
+    "colors_scheme_2_background": "{{ shop.brand.colors.primary[0].foreground }}",
+    "colors_scheme_2_text": "{{ shop.brand.colors.primary[0].background }}",
+    "colors_scheme_2_border": "{{ shop.brand.colors.secondary[0].background }}",
+    "colors_scheme_3_text": "{{ shop.brand.colors.primary[0].background }}",
+    "colors_scheme_3_button": "{{ shop.brand.colors.secondary[0].background }}",
+    "colors_scheme_3_border": "{{ shop.brand.colors.secondary[1].background }}",
     "font_heading": "helvetica_n4",
     "font_body": "helvetica_n4",
     "color_bg": "#ffffff",
@@ -32,11 +27,10 @@
       "header": {
         "type": "header",
         "settings": {
-          "logo": "shopify://shop_images/Athyre_name_logo_no_bkgd_8985c4df-19a1-403f-b3ac-b3bb8a1a7294.png",
           "logo_width": 150,
           "logo_max_height": 60,
-          "logo_text": "ATHŸRE",
-          "tagline": "",
+          "logo_text": "Athyre",
+          "tagline": "Spirit • Soul • Body",
           "menu": "main-menu",
           "left_nav_count": 3,
           "sticky": true,
@@ -45,10 +39,10 @@
           "show_account": true,
           "show_wishlist": false,
           "wishlist_url": "",
-          "show_announcement": true,
-          "announcement_text": "10% off orders over $120",
+          "show_announcement": false,
+          "announcement_text": "Free shipping on orders over $100",
           "announcement_link": "",
-          "announcement_bg": "#8a4f66",
+          "announcement_bg": "#1c1917",
           "announcement_text_color": "#ffffff"
         }
       },
