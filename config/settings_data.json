@@ -27,10 +27,11 @@
       "header": {
         "type": "header",
         "settings": {
+          "logo": "shopify://shop_images/Athyre_name_logo_no_bkgd_8985c4df-19a1-403f-b3ac-b3bb8a1a7294.png",
           "logo_width": 150,
           "logo_max_height": 60,
-          "logo_text": "Athyre",
-          "tagline": "Spirit • Soul • Body",
+          "logo_text": "",
+          "tagline": "",
           "menu": "main-menu",
           "left_nav_count": 3,
           "sticky": true,
@@ -39,7 +40,7 @@
           "show_account": true,
           "show_wishlist": false,
           "wishlist_url": "",
-          "show_announcement": false,
+          "show_announcement": true,
           "announcement_text": "Free shipping on orders over $100",
           "announcement_link": "",
           "announcement_bg": "#1c1917",
