@@ -9,6 +9,13 @@
  */
 {
   "current": {
+    "colors_primary": "#8a4f66",
+    "colors_accent": "#ffffff",
+    "colors_scheme_1_background": "{{ shop.brand.colors.secondary[0].foreground }}",
+    "colors_scheme_1_text": "{{ shop.brand.colors.primary[0].foreground }}",
+    "colors_scheme_1_button": "{{ shop.brand.colors.primary[0].background }}",
+    "colors_scheme_1_button_text": "{{ shop.brand.colors.primary[0].foreground }}",
+    "colors_scheme_1_border": "{{ shop.brand.colors.secondary[1].background }}",
     "font_heading": "helvetica_n4",
     "font_body": "helvetica_n4",
     "color_bg": "#ffffff",
