@@ -12,11 +12,10 @@
     "hero": {
       "type": "video-hero",
       "settings": {
-        "color_scheme": "3",
-        "heading": "",
-        "subheading": "",
-        "video_hosted": "shopify://files/videos/Dark Brown and White Bold Modern Coffee Shop Launch Soon Video.mp4",
-        "video_url": "",
+        "color_scheme": "1",
+        "heading": "Move With Purpose",
+        "subheading": "Athyre",
+        "video_url": "https://www.youtube.com/watch?v=_9VUPq3SxOc",
         "button_link": "shopify://collections/all",
         "button_text": "Enter Sanctuary"
       }
@@ -25,14 +24,14 @@
       "type": "collection-intro",
       "settings": {
         "small_text": "The Rise Collection",
-        "main_text": "Rise to the Chalenge",
+        "main_text": "Armor for the spirit. Designed to move with you through every season of the soul.",
         "image": "shopify://shop_images/Branded_pic_5.png"
       }
     },
     "featured_products": {
       "type": "featured-collection",
       "settings": {
-        "color_scheme": "1",
+        "color_scheme": "2",
         "title": "New Arrivals",
         "collection": "rise-collection-1",
         "products_to_show": 4
@@ -45,7 +44,7 @@
         "heading": "Set Your Intention",
         "initial_text": "Click to Receive",
         "intentions": "I am enough., I move with purpose., I honor my temple., Peace begins within., Strength flows through me., I create my own path.",
-        "show_pattern": false
+        "show_pattern": true
       }
     },
     "blog": {
